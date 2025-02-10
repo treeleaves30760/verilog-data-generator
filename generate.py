@@ -93,7 +93,7 @@ class LoggedUserProxyAgent(autogen.UserProxyAgent):
 
 class VerilogGenerator:
     def __init__(self, ollama_base_url: str = "http://localhost:11434/v1",
-                 model: str = "deepseek-r1:7b",
+                 model: str = "deepseek-r1:14b",
                  log_dir: str = "conversation_logs"):
         self.logger = ConversationLogger(log_dir)
         self.datetime = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
@@ -427,6 +427,9 @@ Please fix the issues in both the module and testbench."""
     def process_topic(self, topic: str) -> bool:
         """Process a single topic through the entire workflow"""
         print(f"\nProcessing topic: {topic}")
+
+        if not os.path.exists(f"{self.result_folder}/{topic}"):
+            os.makedirs(f"{self.result_folder}/{topic}")
 
         # Generate specification
         spec = self.generate_spec(topic)

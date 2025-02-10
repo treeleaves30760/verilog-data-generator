@@ -129,7 +129,7 @@ Provide ONLY the specification without any additional text or explanations.
 Do NOT use markdown formatting or code blocks.""",
             llm_config={
                 "config_list": self.config_list,
-                "timeout": 60,
+                "timeout": 3600,
                 "temperature": 0.3
             }
         )
@@ -148,7 +148,7 @@ ALWAYS:
 NEVER add explanations or ask questions.""",
             llm_config={
                 "config_list": self.config_list,
-                "timeout": 60,
+                "timeout": 3600,
                 "temperature": 0.3
             }
         )
@@ -167,7 +167,7 @@ ALWAYS:
 NEVER add explanations or ask questions.""",
             llm_config={
                 "config_list": self.config_list,
-                "timeout": 60,
+                "timeout": 3600,
                 "temperature": 0.3
             }
         )

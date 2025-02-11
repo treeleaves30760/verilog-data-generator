@@ -1,0 +1,50 @@
+Timestamp: 2025-02-11 08:03:37
+Sender: spec_writer
+Topic: 8-bit ALU
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for an 8-bit ALU. Let me start by understanding what an ALU is. The Arithmetic Logic Unit is a fundamental part of a CPU that performs arithmetic and bitwise operations. For an 8-bit ALU, it should handle operations like addition, subtraction, AND, OR, etc., on 8-bit operands.
+
+First, I'll think about the module name. It's straightforward: alu_8bit.
+
+Next, the description should briefly mention its purpose. So, "An 8-bit Arithmetic Logic Unit (ALU) that performs basic arithmetic and bitwise operations." That sounds good.
+
+Now, onto the inputs. The ALU needs two 8-bit operands, let's call them A and B. Each will be input as 8 bits. Then there are control signals: operation mode (op_mode), which determines whether it's doing arithmetic or logic operations; a reset signal (rst) to handle resets; and a clock signal (clk) for timing.
+
+For the outputs, the ALU should produce an 8-bit result (result). Additionally, status flags like zero (z), carry out (co), overflow (ov), and negative (n) are essential. Each of these will be single bits.
+
+Moving on to functionality. The ALU needs to support operations like add, subtract, AND, OR, XOR, etc. I'll list the specific operations it should perform based on op_mode. Also, I need to describe how each status flag is generated. For example, z is 1 if the result is zero, co for carry out in addition, ov for overflow in subtraction or addition, and n for the sign bit.
+
+Timing requirements are crucial. The ALU operates synchronously with a clock (clk). The reset signal (rst) should reset all internal states when active. Operations should be completed by the next clock cycle after the inputs are stable.
+
+I need to make sure each part is clearly described without any markdown or extra explanations, just the facts in a structured format as specified.
+</think>
+
+```  
+1. Module Name: alu_8bit  
+2. Description: An 8-bit Arithmetic Logic Unit (ALU) that performs basic arithmetic and bitwise operations.  
+3. Inputs:  
+   - A: 8 input operands for arithmetic/logic operations.  
+   - B: 8 input operands for arithmetic/logic operations.  
+   - op_mode: 2 control signals to select between arithmetic or logic operations.  
+   - rst: 1-bit reset signal (active high).  
+   - clk: 1-bit clock signal.  
+4. Outputs:  
+   - result: 8-bit output of the ALU operation.  
+   - z: 1-bit zero flag indicating if the result is zero.  
+   - co: 1-bit carry out from the most significant bit during addition.  
+   - ov: 1-bit overflow flag for subtraction and addition operations.  
+   - n: 1-bit negative flag indicating if the result's sign bit is set.  
+5. Functionality:  
+   The ALU supports the following operations based on op_mode:  
+   - Arithmetic Operations: Addition, Subtraction, AND, OR, XOR.  
+   - Logic Operations: AND, OR, XOR, NOT (for single operand).  
+   Status flags are updated accordingly:  
+   - z is set if result == 0.  
+   - co is set for addition overflow beyond 8 bits.  
+   - ov is set for subtraction underflow or addition overflow.  
+   - n reflects the sign bit of the result.  
+6. Timing Requirements:  
+   The ALU operates synchronously with a clock (clk). All operations complete within one clock cycle after stable inputs. Reset (rst) initializes internal states and outputs to a known state.  
+```

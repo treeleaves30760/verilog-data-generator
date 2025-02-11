@@ -1,0 +1,46 @@
+Timestamp: 2025-02-11 08:02:15
+Sender: spec_writer
+Topic: 4-bit counter
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog specification for a 4-bit counter based on the user's query. Let me break down what they're asking for.
+
+First, the user specified that I should act as a Verilog specification writer. They want clear and structured specs for digital circuit designs. The format is important: module name, description, inputs, outputs, functionality, and timing requirements. No markdown or code blocks, just plain text in a specific order.
+
+They mentioned it's a 4-bit counter, so I should think about what that entails. A 4-bit counter typically counts from 0 to 15 (since 2^4 -1 =15). It usually has an increment function, maybe with a clock and reset input.
+
+Looking at the example response they provided, it's well-structured. The module name is "four_bit_counter," which makes sense. The description is brief but informative. Inputs include clock, reset, and an enable signal. Outputs are just the 4-bit count.
+
+For functionality, the counter should increment on each rising edge of the clock, only if enabled. It resets to zero when the reset input is high. Also, it's asynchronous reset, which means it doesn't wait for a specific clock cycle to reset.
+
+Timing requirements mention that the clock has a frequency (like 50MHz) and reset is active-high with timing details like setup and hold times. This is crucial for proper circuit operation.
+
+I should make sure all these elements are included in my response. The user emphasized clarity and structure, so I'll follow their example closely but ensure each part is detailed enough for implementation.
+
+Wait, the user also mentioned to provide ONLY the specification without any additional text or explanations. So I need to stick strictly to the format they outlined, avoiding any extra comments or notes.
+
+I should double-check that all inputs and outputs are correctly listed with their widths and descriptions. For the 4-bit counter, the output is four bits wide, so each bit (q0 to q3) represents a binary digit of the count.
+
+In the functionality section, I'll explain how the counter behaves under different conditions: reset, enable, and clock edges. It's important to note that it's an asynchronous reset because that affects how the circuit is implemented.
+
+For timing requirements, including the clock frequency gives guidance on the operating speed. The reset timing details ensure that the reset signal is applied correctly relative to the clock for reliable operation.
+
+I think I've covered all necessary parts. Now, putting it all together in the specified format without any markdown or extra text.
+</think>
+
+```  
+1. Module Name: four_bit_counter  
+2. Description: A 4-bit counter that increments its value on each rising edge of the clock signal. The counter resets to zero when the reset input is asserted.  
+3. Inputs:  
+   - clk: 1 bit Clock input  
+   - rst: 1 bit Active-high asynchronous reset input  
+   - en: 1 bit Enable input to control counting functionality  
+4. Outputs:  
+   - count: 4 bits Binary output representing the current count value (0 to 15)  
+5. Functionality:  
+   The counter increments its value by 1 on each rising edge of the clock signal when the enable input is high. When the reset input is asserted, the counter resets to zero immediately. The counting operation is controlled by the enable input, which allows or disables the counting functionality.  
+6. Timing Requirements:  
+   - Clock:clk: 50 MHz (example frequency)  
+   - Reset:rst: Active-high reset with setup time of 1 clock cycle and hold time of 1 clock cycle  
+```

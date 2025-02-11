@@ -1,0 +1,165 @@
+Timestamp: 2025-02-11 11:13:54
+Sender: testbench_writer
+Topic: Digital Up Converter
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Okay, I need to create a comprehensive testbench for the Digital Up Converter (DUC) as specified. Let me break down what's required and how to approach this.
+
+First, understanding the DUC functionality is crucial. It takes I/Q signals, mixes them with a carrier, and interpolates to get an RF output. The testbench needs to cover all input combinations and include clock generation, so I'll have to handle both sys_clk and carrier_clk.
+
+I'll start by defining the necessary inputs: i_signal, q_signal (both 16-bit), sys_clk, reset_n, carrier_freq, and carrier_clk. The outputs are rf_output, empty, and valid.
+
+The testbench should simulate various scenarios. I'll need to generate a clock with a specific frequency, say 100 MHz for sys_clk, and another for carrier_clk. Using Verilog's initial blocks, I can create these clocks by toggling them at the right intervals.
+
+Next, I'll initialize all inputs. The reset_n should be active high, so I'll set it to 1 initially and then toggle it to 0 for a short period before releasing it. This ensures the DUC is properly reset.
+
+For testing, I need to apply different combinations of i_signal and q_signal. I'll create a test_vector array with various pairs, including zeros and maximum values to check all edge cases. Each iteration will send these signals to the DUC and monitor the outputs.
+
+The testbench should also handle timing correctly. After each input is set, there's a delay to allow the DUC to process it. Then, I'll check if valid is asserted and wait for it before moving to the next test case.
+
+I must include success and failure messages. Using $display statements, I can print whether each test case passed or failed based on expected vs. actual rf_output values.
+
+Finally, I'll add an end condition once all test cases are completed, ensuring the simulation stops gracefully.
+
+Now, let's outline the steps in more detail:
+
+1. **Define Inputs and Clocks**:
+   - Declare all necessary inputs (i_signal, q_signal, sys_clk, reset_n, carrier_freq, carrier_clk).
+   - Set up clock generation for both system and carrier clocks using initial blocks.
+
+2. **Initialize DUC**:
+   - Apply the reset signal to ensure the DUC starts in a known state.
+   - Wait for a few clock cycles to allow the DUC to initialize properly.
+
+3. **Prepare Test Cases**:
+   - Create an array of test vectors containing different combinations of I and Q signals.
+   - Include edge cases like all zeros, maximum values, and mid-scale values.
+
+4. **Iterate Through Test Cases**:
+   - For each test case, set the corresponding I and Q signals.
+   - Wait for one clock cycle to ensure the DUC has processed the input.
+
+5. **Check Valid Signal**:
+   - Ensure the valid signal is asserted after setting the inputs.
+   - If not, record the failure and terminate the simulation.
+
+6. **Wait for Empty Signal**:
+   - After processing, check if the empty signal is asserted to indicate readiness for the next conversion.
+   - If not, record the failure.
+
+7. **Verify RF Output**:
+   - Capture the rf_output from the DUC.
+   - Compare it with the expected value based on the test case inputs.
+   - If there's a mismatch between the actual and expected RF outputs, the testbench records a failure; otherwise, it notes the success.
+
+8. **End of Test Cases**:
+   - Once all test cases are executed successfully, the testbench displays a completion message and terminates the simulation.
+
+This structured approach ensures that the DUC is thoroughly tested under various conditions, validating its functionality across different input scenarios.
+</think>
+
+```verilog
+module tb_duc;
+
+    // Define clock frequencies (you can adjust these values as needed)
+    localparam CLOCK_FREQ = 100 MHz;
+    localparam CARRIER_CLOCK_FREQ = 40 MHz;
+
+    // Declare signals for testing
+    reg i_signal, q_signal;
+    wire sys_clk, carrier_clk, valid, empty;
+    wire [15:0] rf_output;
+
+    // Clock generation blocks
+    initial begin
+        sys_clk = 0;
+        forever # (CLOCK_FREQ / 2) sys_clk = ~sys_clk;
+    end
+
+    initial begin
+        carrier_clk = 0;
+        forever # (CARRIER_CLOCK_FREQ / 2) carrier_clk = ~carrier_clk;
+    end
+
+    // DUT instantiation
+    Duc dut (
+        .i_signal(i_signal),
+        .q_signal(q_signal),
+        .sys_clk(sys_clk),
+        .carrier_clk(c_carrier_clk),
+        .valid(valid),
+        .empty(empty),
+        .rf_output(rf_output)
+    );
+
+    // Test cases setup
+    initial begin
+        // Reset the DUC
+        i_signal = 0;
+        q_signal = 0;
+        reset_duc();
+
+        // Define test vectors
+        reg [15:0] test_cases[4][2];
+        test_cases[0] = '{0, 0};          // All zeros
+        test_cases[1] = '{0xFFFF, 0};     // Maximum I signal
+        test_cases[2] = '{0, 0xFFFE};     // Near maximum Q signal
+        test_cases[3] = '{0x8000, 0x8000}; // Mid-scale I and Q signals
+
+        // Iterate through each test case
+        for (int i = 0; i < 4; i++) begin
+            // Apply the current test case
+            i_signal = test_cases[i][0];
+            q_signal = test_cases[i][1];
+
+            // Wait for one clock cycle to ensure signals are stable
+            #CLOCK_FREQ;
+
+            // Check if valid signal is asserted
+            if (!valid) begin
+                $display("FAIL: Valid signal not asserted after setting inputs.");
+                $finish;
+            end
+
+            // Wait for empty signal to be asserted
+            wait_for_empty();
+
+            // Capture and verify RF output
+            capture_and_verify_rf_output(test_cases[i]);
+        end
+
+        // All test cases passed
+        $display("INFO: All test cases passed successfully.");
+        $finish;
+    end
+
+    // Helper function to reset the DUC
+    task reset_duc();
+        sys_clk = 0;
+        carrier_clk = 0;
+        i_signal = 0;
+        q_signal = 0;
+        #CLOCK_FREQ;
+    endtask
+
+    // Helper function to wait for empty signal
+    task wait_for_empty();
+        @ (posedge carrier_clk)
+            if (!empty) begin
+                $display("FAIL: Empty signal not asserted after conversion.");
+                $finish;
+            end
+    endtask
+
+    // Helper function to capture and verify RF output
+    task capture_and_verify_rf_output(reg [15:0] expected_rf);
+        @ (posedge carrier_clk)
+            if (rf_output != expected_rf) begin
+                $display("FAIL: RF Output mismatch. Expected %h, Got %h.", expected_rf, rf_output);
+                $finish;
+            end
+    endtask
+
+endmodule
+```

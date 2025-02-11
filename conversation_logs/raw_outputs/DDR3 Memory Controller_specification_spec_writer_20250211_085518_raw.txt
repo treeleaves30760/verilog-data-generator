@@ -1,0 +1,64 @@
+Timestamp: 2025-02-11 08:55:18
+Sender: spec_writer
+Topic: DDR3 Memory Controller
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a DDR3 Memory Controller based on the user's example. Let me start by understanding what a DDR3 Memory Controller does. It manages communication between a processor and DDR3 memory, handling commands like read, write, refresh, etc.
+
+Looking at the previous response, it had sections: Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. I should follow that structure.
+
+First, the Module Name is straightforward—DDR3_Memory_Controller.
+
+For the Description, I'll briefly mention that it's a high-speed controller for DDR3 memory, managing commands and ensuring proper timing.
+
+Next are the Inputs. The user example included clock (clk), reset (rst_n), address lines (addr), command lines (cmd), data mask (dmask), write data (wdata), read data (rdata), write enable (wen), auto refresh enable (auto_rst_en), and interrupt output (intr). I should list each with their widths and descriptions.
+
+Outputs would be similar to the example, probably including clock signals like ck, ckb, data rate clock (drck), address and command lines (addrq, cmdq), data mask (dmaskq), write data (wdataq), read data (rdataq), write enable (wenq), auto refresh enable (auto_rst_eq), and interrupt input (intr_i). Each with their respective widths.
+
+In the Functionality section, I'll describe how it handles commands, manages timing, performs read/write operations, supports burst modes, refresh mechanisms, error detection, and interrupt handling. It's important to be clear but concise.
+
+For Timing Requirements, I'll note that it operates on a clock (clk) with a specified frequency, reset is active low, setup and hold times for inputs relative to the clock, and timing for outputs based on clock edges. The example used 160 MHz, so maybe I can use similar values unless specified otherwise.
+
+I should ensure all necessary details are included without being too verbose. Each section needs to be clear and structured as per the user's format.
+</think>
+
+```  
+Module Name: DDR3_Memory_Controller  
+Description: A high-speed DDR3 memory controller that manages read, write, refresh, and other memory operations with proper timing and protocol compliance.  
+
+Inputs:  
+- clk: 1 bit Description: System clock input.  
+- rst_n: 1 bit Description: Active-low reset signal.  
+- addr: 15 bits Description: Memory address (row, column, bank).  
+- cmd: 4 bits Description: Command interface (read, write, activate, refresh, etc.).  
+- dmask: 8 bits Description: Data mask for write operations.  
+- wdata: 64 bits Description: Write data input.  
+- rdata: 64 bits Description: Read data output (tri-stated).  
+- wen: 1 bit Description: Write enable signal.  
+- auto_rst_en: 1 bit Description: Auto-refresh enable control.  
+- intr: 1 bit Description: Interrupt input from memory device.  
+
+Outputs:  
+- ck: 1 bit Description: Memory clock output (differential pair).  
+- ckb: 1 bit Description: Complementary memory clock output.  
+- drck: 1 bit Description: Data rate clock output.  
+- addrq: 15 bits Description: Address lines with timing requirements.  
+- cmdq: 4 bits Description: Command lines with setup and hold times.  
+- dmaskq: 8 bits Description: Data mask output with proper timing.  
+- wdataq: 64 bits Description: Write data output with setup time.  
+- rdataq: 64 bits Description: Read data input with hold time.  
+- wenq: 1 bit Description: Write enable signal with required timing.  
+- auto_rst_eq: 1 bit Description: Auto-refresh control signal.  
+- intr_i: 1 bit Description: Interrupt output to the system.  
+
+Functionality:  
+The DDR3 Memory Controller manages all aspects of memory operations, including command sequencing, address translation, data masking, and timing compliance. It supports burst mode operations, refresh cycles (manual and auto), error detection, and interrupt handling. The controller ensures proper setup and hold times for inputs relative to the clock and generates differential clocks for the memory interface.  
+
+Timing Requirements:  
+- Clock (clk): 160 MHz  
+- Reset (rst_n): Active-low reset with a minimum of 100 ns.  
+- Setup time for all inputs relative to clk: 0.5 ns.  
+- Hold time for all inputs relative to clk: 0.5 ns.  
+- Output timing for data and commands must meet DDR3 specifications, including CK-to-DQ skew control.  
+```

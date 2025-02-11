@@ -1,0 +1,47 @@
+Timestamp: 2025-02-11 12:35:59
+Sender: module_writer
+Topic: Digital Frequency Counter
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog module for an 8-bit counter that can be reset and has a clock enable feature. Let me think about how to approach this.
+
+First, the module should have three ports: Clk, En, Rst, and Q. The Clk is the clock input, En is the enable input, Rst is the reset input, and Q is the 8-bit output.
+
+I remember that in Verilog, flip-flops are typically used to create counters. Since it's an 8-bit counter, I'll need eight D-flip-flops, each representing one bit of the output.
+
+Each flip-flop should capture the clock on the rising edge, but only when En is high. So, I'll use a clock enable condition in the always block. The condition Clk && ~Rst && En makes sense because we don't want to toggle when Rst is active (which would reset the counter).
+
+For the reset functionality, when Rst is high, all bits should be set to 0. So, I'll use a conditional statement that checks if Rst is high and assigns 0 to each bit of Q.
+
+I also need to handle the clock enable properly. The counter should only increment when En is high. Without this condition, the counter would increment on every rising edge of Clk, which might not be desired.
+
+Now, structuring the code: I'll define a module named cnt_8bit with the specified ports. Inside, I'll declare an 8-bit output Q. Then, in the always block, I'll check if Rst is high to reset Q. If not, and if En is high, I'll increment Q by 1.
+
+Wait, but in Verilog, assigning to each bit individually might be more efficient than using a single assignment for all bits. So, I can loop through each bit from 0 to 7 and assign the value based on the conditions.
+
+I should also ensure that the code is synthesizable, avoiding any non-synthesizable constructs like continuous assignments or procedural statements outside of initial blocks.
+
+Putting it all together, the module will have an always block that checks Rst first. If not reset, it then checks if En is high to decide whether to increment Q.
+
+I think this should work correctly. The counter increments only when En is high and doesn't change when Rst is active. Each bit of Q is updated based on these conditions.
+</think>
+
+```verilog
+module cnt_8bit (
+    input Clk,          // Clock input
+    input En,           // Enable input
+    input Rst,          // Reset input
+    output reg [7:0] Q  // 8-bit counter output
+);
+
+always @ (posedge Clk) begin
+    if (Rst) begin
+        Q <= 0;  // Reset counter to 0 when Rst is high
+    else if (En) begin
+        Q <= Q + 1;  // Increment counter on rising edge of Clk when En is high
+    end
+end
+
+endmodule
+```

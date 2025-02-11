@@ -1,0 +1,60 @@
+Timestamp: 2025-02-11 08:59:24
+Sender: spec_writer
+Topic: VGA Controller
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, I need to create a detailed Verilog specification for a VGA controller based on the user's request. Let me start by understanding what the user is asking for.
+
+The user provided an example of how they want the specification structured. It includes Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. Each section has specific details, so I should follow that format closely.
+
+First, the module name is straightforward: VGA_Controller.
+
+For the description, I need to briefly explain what a VGA controller does. It's responsible for generating timing signals (horizontal and vertical sync) and pixel data to interface with a VGA display.
+
+Next are the inputs. The example includes clock, reset, pixel clock enable, horizontal sync, vertical sync, RGB data, and an interrupt request. Each input has a width and description. I should make sure each is clearly defined, including their widths (like 1 bit for control signals and wider for RGB if necessary).
+
+Outputs include the VGA interface signals: R, G, B, HS, VS, and pixel clock. Again, specifying each with their respective widths and functions.
+
+In the functionality section, I need to describe how the controller works. It should generate sync signals based on user inputs, handle RGB data, support different resolutions, and manage timing through a FIFO for smooth video output. Including features like resolution switching and overscan makes it more comprehensive.
+
+Timing requirements are crucial. The example mentions clock frequencies (pixel clock, system clock), reset polarity, and latency after reset. I should specify that the pixel clock is positive-edge triggered, the system clock's frequency, and how long the controller waits before becoming operational after a reset.
+
+I also need to ensure all necessary details are included for implementation. That means defining each signal's role clearly, especially for someone who might be integrating this into a larger design.
+
+Let me double-check each section to make sure I haven't missed anything. The example provided by the user is quite thorough, so I should mirror that structure but tailor it specifically to a VGA controller.
+
+I think that covers all aspects. Now, I'll format it as per the user's instructions without any markdown or code blocks, just plain text within the specified sections.
+</think>
+
+```  
+1. Module Name: VGA_Controller  
+2. Description: A VGA controller module responsible for generating timing signals (horizontal and vertical sync) and pixel data to interface with a VGA display.  
+3. Inputs:  
+   - clk: 1 bit System clock input  
+   - rst_n: 1 bit Active-low reset signal  
+   - pixel_clk_en: 1 bit Enable pixel clock generation  
+   - hsync_in: 1 bit Horizontal sync input from graphics engine  
+   - vsync_in: 1 bit Vertical sync input from graphics engine  
+   - rgb_data: 24 bits RGB pixel data input (R[7:0], G[7:0], B[7:0])  
+   - irq: 1 bit Interrupt request output from VGA controller  
+4. Outputs:  
+   - vga_r: 8 bits Red component of RGB output to VGA interface  
+   - vga_g: 8 bits Green component of RGB output to VGA interface  
+   - vga_b: 8 bits Blue component of RGB output to VGA interface  
+   - vga_hs: 1 bit Horizontal sync output to VGA interface  
+   - vga_vs: 1 bit Vertical sync output to VGA interface  
+   - pixel_clk: 1 bit Pixel clock output for timing synchronization  
+5. Functionality:  
+   - Generates horizontal and vertical sync signals based on input timing controls.  
+   - Handles RGB data conversion and formatting for VGA output.  
+   - Supports multiple resolutions (e.g., 640x480, 800x600, 1024x768).  
+   - Implements a FIFO buffer to ensure smooth pixel data flow.  
+   - Includes overscan blanking to prevent artifacts on the VGA display.  
+   - Manages interrupt generation for system-level synchronization.  
+6. Timing Requirements:  
+   -clk: System clock at 25 MHz (adjustable)  
+   -rst_n: Active-low reset, self-clearing after release  
+   -pixel_clk: Generated from system clock with a programmable divisor (e.g., 4x for 60 Hz refresh rate)  
+   -Latency after rst_n assertion: 1 pixel clock cycle before operational
+```

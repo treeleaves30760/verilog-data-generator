@@ -1,0 +1,40 @@
+Timestamp: 2025-02-11 08:48:28
+Sender: module_writer
+Topic: Traffic Light Controller
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog module for a 4-to-1 multiplexer. Let me think about how to approach this.
+
+First, a 4-to-1 MUX has four data inputs and two control lines (since 2^2 = 4). The output should select one of the four inputs based on the combination of the control signals.
+
+In Verilog, I can implement this using a case statement or a series of if-else conditions. Using a case statement might be more efficient and cleaner for multiple control lines.
+
+I'll name the module mux_4to1 with inputs D0 to D3 as data inputs, S0 and S1 as control inputs (with S1 being the higher-order bit), and Y as the output.
+
+Inside the module, I'll use an assign statement with a case structure. Each case will correspond to a combination of S1 and S0, selecting the appropriate data input.
+
+I should also include comments explaining each part clearly, following the user's instructions.
+
+Now, putting it all together, the module will have the specified ports and internal logic using a case statement for selection.
+</think>
+
+```verilog
+module mux_4to1 (
+    input wire D0,
+    input wire D1,
+    input wire D2,
+    input wire D3,
+    input wire S0,
+    input wire S1,
+    output wire Y
+);
+
+    // Case statement to select one of four inputs based on control signals S1 and S0
+    assign Y = (S1 == 0 && S0 == 0) ? D0 :
+               (S1 == 0 && S0 == 1) ? D1 :
+               (S1 == 1 && S0 == 0) ? D2 :
+               D3;
+
+endmodule
+```

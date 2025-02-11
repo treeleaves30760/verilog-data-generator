@@ -1,0 +1,52 @@
+Timestamp: 2025-02-11 11:35:23
+Sender: spec_writer
+Topic: Digital Integrator
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Digital Integrator. Let me start by understanding what a digital integrator is. From what I remember, an integrator in analog electronics accumulates input over time, right? So in the digital domain, it should do something similar but discretely.
+
+First, I'll think about the module name. It's straightforward: "Digital_Integrator." 
+
+Next, the description. I need to briefly explain that this module computes the integral of a digital input signal using numerical integration methods. Since we're dealing with discrete time steps in digital circuits, it makes sense to use the trapezoidal rule because it's commonly used for its balance between accuracy and computational efficiency.
+
+Now, moving on to inputs. The first input is the clock signal, which is essential for timing. It's a 1-bit signal, so I'll denote that as `clk : 1 bit`. Then there's the reset signal, which is also 1 bit (`rst : 1 bit`). These are standard in synchronous circuits.
+
+The input data comes next. The input width isn't specified, but to keep it general, I'll assume a reasonable size like 16 bits: `in_data : 16 bits`. This allows for a good range of values without being overly large.
+
+For the outputs, the integrated value needs to be outputted. Again, assuming a similar bit-width as the input makes sense, so `out_integrated : 16 bits` should suffice. 
+
+Functionality-wise, I need to describe how the integrator works. It will continuously integrate the input data over time steps. The trapezoidal rule is used here because it's straightforward and suitable for digital implementation. Each step adds a portion of the current and previous values scaled by the time interval.
+
+Regarding timing requirements, since this module uses a clock signal, all operations are synchronous. The reset signal will likely reset the integrated value to zero when asserted. The specific clock period isn't given, but it's important to note that the integration occurs at each rising edge of the clock after the reset is released.
+
+I should also consider any necessary state variables or internal signals, like storing the previous input and the accumulated integral. But since the user didn't ask for an implementation, I'll focus on the specification they provided.
+
+Wait, in the initial example, the user included a `n_steps` parameter. That's a good point because it allows flexibility in how many steps of integration are performed before outputting the result. So I should include that as a parameter with a default value, say 10, and note that it's an unsigned integer.
+
+I also need to make sure all sections are covered: Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. Each section should be clear and concise without unnecessary details.
+
+Let me double-check the inputs and outputs. The clock is positive-edge triggered, so I'll mention that in timing. The reset is active-high, which is standard. For the functionality, I'll explain that each time step contributes a fraction of the current and previous data to the integral, scaled by the time interval.
+
+I think that's all. Now, putting it together in the specified format without any markdown or code blocks, just plain text as per the instructions.
+</think>
+
+```  
+1. Module Name: Digital_Integrator  
+2. Description: This module computes the digital integration of an input signal using numerical methods. It employs the trapezoidal rule for integration, suitable for discrete-time systems.  
+3. Inputs:  
+   - clk : 1 bit (System clock)  
+   - rst : 1 bit (Active-high reset signal)  
+   - in_data : 16 bits (Digital input to be integrated)  
+4. Outputs:  
+   - out_integrated : 16 bits (Result of the integration process)  
+5. Functionality:  
+   The Digital_Integrator module performs numerical integration on the input data using the trapezoidal rule. It accumulates the integral over time steps, updating the result based on the current and previous input values. The integration is performed at each rising edge of the clock signal after the reset is released.  
+6. Timing Requirements:  
+   - Clock: Positive-edge triggered system clock (clk)  
+   - Reset: Active-high reset signal (rst)  
+   - Integration occurs synchronously with the clock, with a time interval determined by the clock period.  
+
+Parameters:  
+- n_steps : unsigned integer (Default = 10) (Number of integration steps before output is valid)  
+```

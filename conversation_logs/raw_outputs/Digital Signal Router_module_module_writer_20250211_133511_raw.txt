@@ -1,0 +1,117 @@
+Timestamp: 2025-02-11 13:35:11
+Sender: module_writer
+Topic: Digital Signal Router
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, I need to create a Verilog module for a digital signal router based on the given specifications and testbench. Let me break down what's required.
+
+First, the module is called `router`, with inputs `data_in`, `clk`, `rst`, and `dest_addr`, and outputs `data_out_0` to `data_out_3`.
+
+The functionality:
+- On each rising edge of `clk`, if `rst` is high, all outputs are 0.
+- When `rst` is low, the router evaluates `dest_addr` and routes `data_in` to the corresponding output.
+- If `dest_addr` is 4-7, no output is triggered.
+
+I'll need to use a case statement for routing. Also, since it's synchronous, I should use a clocked always block with `posedge clk`.
+
+For reset:
+- When `rst` is high, all outputs are 0.
+- After the reset (when `rst` goes low), the router starts functioning.
+
+I'll also need to handle the setup time and propagation delay. Using Verilog constructs that ensure timing constraints can help here.
+
+Let me outline the code structure:
+
+1. Define the module with specified ports.
+2. Inside, declare all output wires.
+3. Use an always block triggered by `posedge clk` and `negedge rst`.
+4. In the reset state (rst is high), set all outputs to 0.
+5. After reset, use a case statement for dest_addr to route data_in to the correct output.
+
+I should also ensure that if dest_addr is invalid (>=4), no output is triggered, meaning all outputs remain as they are or stay at 0.
+
+Now, putting it all together in Verilog code.
+
+```verilog
+module router (
+    input wire [15:0] data_in,
+    input wire        clk,
+    input wire        rst,
+    input wire [2:0]  dest_addr,
+    output reg [15:0] data_out_0,
+    output reg [15:0] data_out_1,
+    output reg [15:0] data_out_2,
+    output reg [15:0] data_out_3
+);
+
+always @(posedge clk or negedge rst) begin
+    if (!rst) begin
+        case (dest_addr)
+            0: data_out_0 = data_in;
+            1: data_out_1 = data_in;
+            2: data_out_2 = data_in;
+            3: data_out_3 = data_in;
+            default: 
+                data_out_0 <= 0;
+                data_out_1 <= 0;
+                data_out_2 <= 0;
+                data_out_3 <= 0;
+        endcase
+    end else begin
+        data_out_0 <= 0;
+        data_out_1 <= 0;
+        data_out_2 <= 0;
+        data_out_3 <= 0;
+    end
+end
+
+endmodule
+```
+
+Wait, I think I might have made a mistake here. The case statement assigns the outputs correctly when rst is low, but in the else block (rst high), it sets all outputs to 0.
+
+But looking at the testbench, during reset, all data_outs are 0, which matches this code.
+
+I should also consider that data_in is a 16-bit bus, so each output is assigned the entire 16 bits. That's correct as per the module declaration.
+
+Another thing to note: using non-blocking assignments (`<=`) inside the if-else blocks ensures proper handling of clocked logic and setup times.
+
+I think this should work as intended.
+</think>
+
+```verilog
+module router (
+    input wire [15:0] data_in,
+    input wire        clk,
+    input wire        rst,
+    input wire [2:0]  dest_addr,
+    output reg [15:0] data_out_0,
+    output reg [15:0] data_out_1,
+    output reg [15:0] data_out_2,
+    output reg [15:0] data_out_3
+);
+
+always @(posedge clk or negedge rst) begin
+    if (!rst) begin
+        case (dest_addr)
+            0: data_out_0 = data_in;
+            1: data_out_1 = data_in;
+            2: data_out_2 = data_in;
+            3: data_out_3 = data_in;
+            default: 
+                data_out_0 <= 0;
+                data_out_1 <= 0;
+                data_out_2 <= 0;
+                data_out_3 <= 0;
+        endcase
+    end else begin
+        data_out_0 <= 0;
+        data_out_1 <= 0;
+        data_out_2 <= 0;
+        data_out_3 <= 0;
+    end
+end
+
+endmodule
+```

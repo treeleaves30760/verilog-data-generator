@@ -1,0 +1,44 @@
+Timestamp: 2025-02-11 11:26:44
+Sender: spec_writer
+Topic: Digital Comparator
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog specification for a Digital Comparator based on the user's query. Let me start by understanding what a digital comparator does. It compares two binary numbers and determines if one is greater than, less than, or equal to the other.
+
+The user wants the specification in a specific format with sections like Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. I should make sure each section is clear and concise.
+
+For the module name, "DigitalComparator" seems appropriate. The description should briefly explain its purpose—comparing two binary numbers and outputting the result.
+
+Next, the inputs. Both A and B are 4-bit binary numbers, so I'll list them as such with their respective bit widths. Each input has a description explaining what they represent.
+
+Outputs include Equal (E), Greater than (G), and Less than (L). These are single bits indicating the comparison result. I should describe each output clearly.
+
+In the functionality section, I need to outline how the comparator works. It compares A and B bit by bit from the most significant bit, determining if one is greater or if they're equal. If all bits are equal, it outputs E as 1; otherwise, it sets G or L based on which number is larger.
+
+For timing requirements, I'll note that the design uses a clock (clk) and an active-high reset (rst). The critical path delay should be under 10 nanoseconds for a 100 MHz clock, ensuring timely operations. Synchronous reset with positive edge detection will be used for proper initialization.
+
+I should ensure all details are included without unnecessary explanations, sticking to the specified format. No markdown or code blocks, just plain text within the given structure.
+</think>
+
+```  
+Module Name: DigitalComparator  
+Description: A 4-bit digital comparator that compares two binary numbers and outputs their relationship (equal, greater than, less than).  
+
+Inputs:  
+- A: 4-bit binary number to be compared.  
+- B: 4-bit binary number to be compared.  
+
+Outputs:  
+- E: 1-bit output indicating equality (A == B).  
+- G: 1-bit output indicating greater than (A > B).  
+- L: 1-bit output indicating less than (A < B).  
+
+Functionality:  
+The comparator performs a bitwise comparison of A and B. It starts from the most significant bit (MSB) and proceeds to the least significant bit (LSB). If all bits are equal, E is set to 1. Otherwise, G is set if A > B, and L is set if A < B.  
+
+Timing Requirements:  
+- Clock: clk (positive edge-sensitive clock).  
+- Reset: rst (active-high synchronous reset).  
+- Critical path delay: <= 10 ns for a 100 MHz clock.  
+```

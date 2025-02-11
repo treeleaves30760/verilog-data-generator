@@ -1,0 +1,84 @@
+Timestamp: 2025-02-11 13:07:30
+Sender: testbench_writer
+Topic: Digital Signal Demodulator
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a testbench for the Digital Signal Demodulator based on the provided specifications. Let me go through the requirements step by step.
+
+First, I'll define all the necessary inputs and outputs. The demodulator has a clock input (clock), an active-low reset signal (reset_n), and a modulated data input (modulated_data_in). The outputs include the demodulated data (demodulated_data_out), an error flag (error_flag), and a lock signal (lock).
+
+Next, I'll set up the clock generation. Since the clock is specified at 100 MHz, it should toggle every 10 nanoseconds. I'll use an initial block to generate this clock signal indefinitely.
+
+For the reset signal, I need to ensure it's active-low by setting it to 0 for a few cycles before releasing it by setting it to 1 after some time.
+
+Now, I'll focus on applying all possible input combinations. Given that modulated_data_in is a single bit, there are two primary states: 0 and 1. However, to thoroughly test the demodulator, I should simulate different scenarios such as transitions between these states and introducing random data to check error detection capabilities.
+
+I'll use a frame counter to generate varying patterns of modulated_data_in. For example, sending '0' for some cycles, then switching to '1', and even introducing random bits to simulate noise. This will help verify if the demodulator correctly captures transitions and asserts the lock signal appropriately.
+
+After each test case, I'll wait for a few clock cycles to allow the demodulator to process the input. Then, I'll check the outputs: demodulated_data_out should reflect the original data, error_flag should be 0 under normal conditions, and lock should be asserted once synchronization is achieved.
+
+I'll include $display statements to track the simulation progress and print success or failure messages based on the demodulator's responses. Finally, I'll end the simulation after all test cases are executed to ensure it doesn't run indefinitely.
+
+Putting it all together, the testbench will systematically test each aspect of the demodulator's functionality, ensuring comprehensive coverage of its operations.
+</think>
+
+```verilog
+module digital_signal_demodulator_testbench;
+    // Define inputs and outputs
+    reg             clock;
+    reg             reset_n;
+    reg             modulated_data_in;
+    
+    wire            demodulated_data_out;
+    wire            error_flag;
+    wire            lock;
+
+    // Clock generation
+    initial begin
+        clock = 0;
+        forever #10ns clock = ~clock;  // 100 MHz clock
+    end
+
+    // Reset generation
+    initial begin
+        reset_n = 0;
+        #20ns;  // Wait for two full clock cycles
+        reset_n = 1;
+    end
+
+    // Testbench logic
+    initial begin
+        $display("Digital Signal Demodulator Testbench");
+        $display("----------------------------------------");
+        
+        // Test case 1: Basic synchronization with data=0
+        #20ns; modulated_data_in = 0;       $display("Test Case 1: Testing basic synchronization with data=0");
+        #20ns; modulated_data_in = 1;       $display("Test Case 2: Testing basic synchronization with data=1");
+        
+        // Test case 3: Error detection under noise conditions
+        #20ns; modulated_data_in = $random; $display("Test Case 3: Random input to test error detection");
+        
+        // Test case 4: Lock assertion after valid frames
+        #20ns; modulated_data_in = 0;       $display("Test Case 4: Testing lock assertion with stable data=0");
+        #20ns; modulated_data_in = 1;       $display("Test Case 5: Testing lock assertion with stable data=1");
+        
+        // Monitor outputs
+        @(posedge clock) disable reset_n;
+        wait_for_clock(10); // Wait for 10 clock cycles
+        
+        if (lock == 1 && error_flag == 0) 
+            $display("Success: Demodulator locked onto signal with no errors");
+        else 
+            $display("Failure: Demodulator failed to lock or encountered errors");
+        
+        #5ns; $finish;
+    end
+
+    // Helper function for timing
+    function wait_for_clock(input integer cycles);
+        repeat (cycles) @(posedge clock);
+    endfunction
+
+endmodule
+```

@@ -1,0 +1,73 @@
+Timestamp: 2025-02-11 09:40:06
+Sender: spec_writer
+Topic: SHA-256 Hashing Unit
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a SHA-256 hashing unit. Let me think about how to approach this.
+
+First, I'll start by understanding what SHA-256 is. It's a cryptographic hash function that produces a 256-bit (32-byte) hash value. This hash is typically rendered as a hexadecimal number. The algorithm processes data in blocks of 512 bits and uses several steps including padding the message, initializing variables, processing each block through multiple rounds, and then producing the final hash.
+
+Now, I need to translate this into a Verilog module. Let's break down the components:
+
+1. **Module Name**: It should be something descriptive like `sha256_hash_unit`.
+
+2. **Description**: A brief overview of what the module does. It will take an input message and output its SHA-256 hash.
+
+3. **Inputs**:
+   - I'll need a clock signal (`clk`), a reset signal (`rst`), and the data input. The data input should be wide enough to handle the 512-bit blocks, so maybe `msg_in` as an array of bits with a depth of 64 (since 512 bits is 64 bytes) and each byte is 8 bits.
+   - Also, a write signal (`write`) to indicate when new data is coming in, and a ready signal from the previous stage (`prev_ready`) if this module is part of a larger system.
+
+4. **Outputs**:
+   - The hash output will be `hash_out`, which is 256 bits wide.
+   - A valid signal (`valid`) to indicate when the hash computation is complete.
+   - A ready signal (`next_ready`) to communicate with the next module in the chain.
+
+5. **Functionality**:
+   - The module should handle padding the message according to SHA-256 specifications, which involves adding a '1' bit followed by enough zeros to make the total length 512 bits.
+   - Initialize variables like H0 to H7 with predefined constants.
+   - Process each 512-bit block through multiple rounds (each round has 64 steps) using the SHA-256 algorithm's operations: Ch, Maj, Sigma1, Sigma2, etc.
+   - After processing all blocks, output the concatenated hash.
+
+6. **Timing Requirements**:
+   - The module should operate synchronously with a clock (`clk`).
+   - Reset functionality is necessary to bring the module back to its initial state when `rst` is asserted.
+   - There might be timing constraints on how long each step takes, but since this is a specification, I'll note that it's based on synchronous operations without delving into specific delays.
+
+I should also consider how the data flows in. Since SHA-256 processes 512-bit blocks, if the input message isn't exactly 512 bits, padding needs to be added. So, the module might need to handle multiple messages or just a single one? Probably, it's designed for a single block since it's a unit, but maybe it can handle multiple by resetting and processing each.
+
+Wait, in the initial response, I included `prev_ready` as an input and `next_ready` as an output. That suggests this module is part of a larger system where it's preceded by another module (like message preparation) and followed by another (like encryption). So, when `prev_ready` is high, it means the previous module has finished preparing the data, and this module can start processing.
+
+The inputs also include `msg_in`, which is an array of bits. Each byte is 8 bits, so 64 bytes make up 512 bits. The write signal probably indicates that a new message is being sent, but I'm not entirely sure how it's used in the context of a single block versus multiple blocks.
+
+In terms of functionality, after padding and initializing, each round involves processing each word (32-bit chunk) through a series of operations. Each step updates the hash variables H0 to H7 based on these operations. After all rounds, the final H values are concatenated to form the 256-bit hash.
+
+I should make sure that the module correctly handles the timing so that each operation completes before moving on to the next. Since it's synchronous, the clock will control the pace of processing.
+
+Also, considering reset: when `rst` is high, all internal states should be reset to their initial values, and any ongoing computation should halt.
+
+I think I've covered the main points. Now, structuring this into a clear specification without markdown or code blocks as per the user's request.
+</think>
+
+1. Module Name: sha256_hash_unit  
+2. Description: A hardware implementation of the SHA-256 cryptographic hash function, processing 512-bit message blocks to produce a 256-bit hash output.  
+3. Inputs:  
+   - clk: 1-bit Clock signal  
+   - rst: 1-bit Reset signal  
+   - msg_in: [64][8] Message data input (512 bits)  
+   - write: 1-bit Write enable for new message input  
+   - prev_ready: 1-bit Signal indicating previous module is ready  
+4. Outputs:  
+   - hash_out: [32][8] 256-bit hash output  
+   - valid: 1-bit Signal indicating valid hash output  
+   - next_ready: 1-bit Signal indicating readiness for next module  
+5. Functionality:  
+   - Implements SHA-256 algorithm, processing each 512-bit message block through 64 rounds of bitwise operations to generate a unique 256-bit hash.  
+   - Includes message padding according to SHA-256 specifications (adding '1' bit and zeros).  
+   - Uses five initialization constants (H0-H4) and three derived constants (H5-H7).  
+   - Processes each 32-bit word in the block using Ch, Maj, Sigma1, and Sigma2 functions.  
+   - Outputs final hash as a concatenation of H0-H7 after all rounds complete.  
+6. Timing Requirements:  
+   - Clock-driven synchronous design with rising-edge clocking.  
+   - Reset functionality to initialize all internal states.  
+   - Latency determined by number of processing rounds (variable based on input block).

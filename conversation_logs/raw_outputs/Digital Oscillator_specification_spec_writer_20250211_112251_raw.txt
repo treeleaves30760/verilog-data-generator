@@ -1,0 +1,52 @@
+Timestamp: 2025-02-11 11:22:51
+Sender: spec_writer
+Topic: Digital Oscillator
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog specification for a Digital Oscillator based on the user's query. Let me break down what they're asking for.
+
+First, the user provided an example of how they want the specification structured. They mentioned including Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. So I should follow that format closely.
+
+The module name is "digital_oscillator," which makes sense. The description needs to be brief but informative—something like a high-frequency square wave oscillator with configurable frequency, duty cycle, and phase shift.
+
+Looking at the inputs, there are several control signals: clk for clock, rst for reset, en for enable, freq_select for selecting between low or high frequencies, duty_cycle_sel for adjusting the duty cycle, and phase_shift_sel for phase shifting. Each input has a specific width and description, so I need to list them all with their respective widths.
+
+For outputs, there's only one: oscl_out, which is 1 bit wide and describes the digital square wave output.
+
+In the functionality section, I should explain how the oscillator works. It needs to generate a square wave based on control signals, allowing for frequency selection between two options, adjusting the duty cycle between 50% or 75%, and phase shifting by 90 degrees when enabled. Also, it should handle reset properly.
+
+Timing requirements are crucial here. The clock is a positive-edge-sensitive signal at 100 MHz. Reset is active high, so when rst is high, the output should be low. There's a setup time for control signals—each must be stable for 5 ns before the clock edge to ensure proper operation.
+
+I also need to make sure that all these details are included without any markdown or code blocks, just plain text in the specified format. The user emphasized clarity and structure, so I should present each section clearly with bullet points where necessary.
+
+Wait, in the example provided by the user, they used a code block with triple backticks. But the user's latest instruction says not to use code blocks, just provide the specification in clear format. Hmm, maybe I should avoid using any markdown and just write it as plain text within the response.
+
+I think that covers all parts. Let me structure each section step by step, ensuring each input and output is clearly defined with their widths and descriptions. The functionality should explain the oscillator's behavior based on control signals, and timing details must specify clock, reset, and setup times for inputs.
+</think>
+
+Module Name: digital_oscillator  
+Description: A high-frequency square wave oscillator with configurable frequency, duty cycle, and phase shift.  
+
+Inputs:  
+- clk: 1 bit Clock signal (positive-edge sensitive)  
+- rst: 1 bit Active-high reset signal  
+- en: 1 bit Enable signal  
+- freq_select: 2 bits Frequency selection (00: low frequency, 01: high frequency)  
+- duty_cycle_sel: 2 bits Duty cycle adjustment (00: 50%, 01: 75%)  
+- phase_shift_sel: 3 bits Phase shift control (0: no shift, 1: 90 degrees, 2: 180 degrees, 3: 270 degrees)  
+
+Outputs:  
+- oscl_out: 1 bit Digital square wave output  
+
+Functionality:  
+The digital oscillator generates a square wave with the following features:  
+1. Frequency is selectable between low and high based on freq_select.  
+2. Duty cycle can be adjusted to 50% or 75% based on duty_cycle_sel.  
+3. Phase shift of 90 degrees can be applied when phase_shift_sel is enabled.  
+4. The oscillator starts oscillating upon en = 1, with rst = 1 initializing the output to 0.  
+
+Timing Requirements:  
+- Clock (clk): Positive-edge sensitive at 100 MHz  
+- Reset (rst): Active-high signal; output resets to 0 when rst is high.  
+- Setup time for all control signals (en, freq_select, duty_cycle_sel, phase_shift_sel) is 5 ns before the rising edge of clk.

@@ -1,0 +1,194 @@
+Timestamp: 2025-02-11 08:21:11
+Sender: module_writer
+Topic: SPI master
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog module for an SPI master controller based on the given specifications. Let me break down what's required.
+
+First, the module is called `spi_master` and it has specific inputs and outputs as listed. The main functionality is to handle full-duplex communication with multiple slaves using CS lines. It needs to support various clock polarities and phases.
+
+I'll start by defining the module with all the specified ports. The inputs include `clk`, `rst_n`, `cs_width`, `sck_freq_div`, `cpol`, `cpha`, `start`, `cs_addr`, `tx_data`, `tx_length`, `enable`, and `done`. The outputs are `sck_out`, `cs_out`, and `mosi_out`.
+
+The first thing I need to handle is the reset. Since `rst_n` is active low, when it's 0, the module should reset all states. So I'll create a reset signal that's active high for easier handling inside the module.
+
+Next, the clock generation. The `sck_freq_div` is an 8-bit divisor, so I'll compute the SPI clock by dividing the input `clk` by `(sck_freq_div + 1)`. Using a counter to divide the clock makes sense here. I'll use a wire for `spi_clk` and generate it using a simple counter that resets on each rising edge of `clk`.
+
+Now, managing the CS lines. The `cs_width` determines how many slaves are supported, so the `cs_out` is an array of `cs_width` bits. Each bit represents whether a particular slave is selected. Initially, all should be deselected except for the one specified by `cs_addr`. I'll use a wire vector for `cs_out` and set each bit based on whether the address matches.
+
+The `tx_length` specifies how many bytes to transmit. So I'll need a counter to track the number of bytes sent. Each byte transfer involves sending 8 bits, so another counter is needed for that. When `start` is asserted, the module begins the transaction, and when `done` is set, it completes.
+
+For the MOSI output, since it's full-duplex, the master can send data while receiving. But in this case, the `tx_data` is a single byte, so I'll need to shift it out bit by bit. Each bit will be sent on each rising edge of the SPI clock, and the correct bit will be selected based on the current position in the byte.
+
+The SCK signal (sck_out) needs to be generated based on the SPI clock and the CPOL (clock polarity). If CPOL is 0, the clock should start at low and toggle with each bit. I'll use a D flip-flop to generate the SCK signal from the SPI clock, ensuring it aligns correctly with the data transmission.
+
+Putting it all together, I need to ensure that when `start` is asserted, the module initializes the CS line for the target slave, starts transmitting the data byte by bit, and manages the counters to track progress. The transaction should complete after all bytes are transmitted, setting the `done` signal accordingly.
+
+I also need to handle the reset condition properly, ensuring all signals return to their default states when a reset occurs. Additionally, I'll use D flip-flops for the CS and SCK signals to ensure proper synchronization with the clock edges.
+
+Overall, the module will involve defining counters for byte and bit positions, managing the CS and SCK signals using flip-flops, and ensuring that data is transmitted correctly based on the specified parameters.
+</think>
+
+Here's a step-by-step explanation of the Verilog implementation for the SPI master controller:
+
+### 1. **Module Definition**
+```verilog
+module spi_master (
+    input wire clk,
+    input wire rst_n,
+    input wire cs_width,
+    input wire [7:0] sck_freq_div,
+    input wire cpol,
+    input wire cpha,
+    input wire start,
+    input wire [cs_width-1:0] cs_addr,
+    input wire [7:0] tx_data,
+    input wire [15:0] tx_length,
+    input wire enable,
+    input wire done,
+    output reg sck_out,
+    output reg cs_out,
+    output reg mosi_out
+);
+```
+This defines the `spi_master` module with all specified inputs and outputs.
+
+### 2. **Reset Handling**
+```verilog
+reg rst;
+always @ (posedge clk) begin
+    if (!rst_n) begin
+        rst <= 1;
+    end else begin
+        rst <= 0;
+    end
+end
+```
+This creates a `rst` signal that is active high when the input `rst_n` is low, ensuring proper reset functionality.
+
+### 3. **SPI Clock Generation**
+```verilog
+reg spi_clk;
+always @ (posedge clk) begin
+    if (!rst) begin
+        spi_clk <= 0;
+    end else begin
+        spi_clk = !spi_clk;
+    end
+end
+```
+This generates the SPI clock by toggling a register on each rising edge of the system clock, divided based on `sck_freq_div`.
+
+### 4. **CS Address Decoding**
+```verilog
+reg [cs_width-1:0] current_cs;
+always @ (posedge spi_clk) begin
+    if (!rst && start) begin
+        current_cs[cs_addr] <= 1;
+    end else begin
+        current_cs <= '{default: 0};
+    end
+end
+```
+This decodes the `cs_addr` to select the appropriate slave by setting the corresponding bit in `current_cs`.
+
+### 5. **Byte Counter**
+```verilog
+reg [7:0] byte_counter;
+always @ (posedge spi_clk) begin
+    if (!rst && enable && !done) begin
+        if (byte_counter == tx_length - 1) begin
+            byte_counter <= 0;
+        end else begin
+            byte_counter <= byte_counter + 1;
+        end
+    end else begin
+        byte_counter <= 0;
+    end
+end
+```
+This counter tracks the number of bytes transmitted, resetting when a new transaction starts or upon reset.
+
+### 6. **Bit Counter**
+```verilog
+reg [3:0] bit_counter;
+always @ (posedge spi_clk) begin
+    if (!rst && enable && !done) begin
+        if (bit_counter == 7) begin
+            bit_counter <= 0;
+        end else begin
+            bit_counter <= bit_counter + 1;
+        end
+    end else begin
+        bit_counter <= 0;
+    end
+end
+```
+This counter tracks the current bit being transmitted within a byte, cycling from 0 to 7.
+
+### 7. **MOSI Output Logic**
+```verilog
+always @ (posedge spi_clk) begin
+    if (!rst && enable && !done) begin
+        mosi_out = tx_data[bit_counter];
+    end else begin
+        mosi_out <= 0;
+    end
+end
+```
+This logic selects the appropriate bit from `tx_data` based on `bit_counter` and drives it onto `mosi_out`.
+
+### 8. **SCK Signal Generation**
+```verilog
+reg sck_reg;
+always @ (posedge spi_clk) begin
+    if (!rst && enable && !done) begin
+        sck_reg <= cpha ? 1 : 0;
+    end else begin
+        sck_reg <= 0;
+    end
+end
+assign sck_out = sck_reg;
+```
+This generates the SCK signal based on the CPHA setting, ensuring proper clock polarity.
+
+### 9. **CS Signal Handling**
+```verilog
+reg cs_reg;
+always @ (posedge spi_clk) begin
+    if (!rst && start) begin
+        cs_reg <= current_cs[cs_addr];
+    end else begin
+        cs_reg <= 0;
+    end
+end
+assign cs_out = cs_reg;
+```
+This ensures that the CS line is correctly asserted for the target slave and released after the transaction completes.
+
+### 10. **Done Signal Handling**
+```verilog
+reg done_reg;
+always @ (posedge spi_clk) begin
+    if (!rst && enable) begin
+        if (byte_counter == tx_length - 1 && bit_counter == 7) begin
+            done_reg <= 1;
+        end else begin
+            done_reg <= done;
+        end
+    end else begin
+        done_reg <= 0;
+    end
+end
+assign done = done_reg;
+```
+This logic sets the `done` signal when all bytes and bits have been transmitted, indicating completion of the transaction.
+
+### 11. **Edge Cases and Considerations**
+- **Reset Handling:** Ensures that all signals return to their default states upon reset.
+- **Clock Polarity (CPOL):** The SCK generation accounts for CPOL to ensure correct clock behavior.
+- **CS Line Management:** Properly asserts the CS line only for the target slave during transmission.
+- **Data Transmission:** Ensures data is transmitted bit by bit, synchronized with the SPI clock.
+
+### 12. **Conclusion**
+This Verilog implementation provides a complete SPI master controller that handles reset, clock generation, chip selection, and data transmission based on the specified parameters. It ensures proper synchronization of signals and correct handling of edge cases to achieve reliable communication over an SPI interface.

@@ -1,0 +1,55 @@
+Timestamp: 2025-02-11 10:57:36
+Sender: module_writer
+Topic: Frequency Divider
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, let's break down the problem step by step. I need to create a Verilog module called "counter" that adheres to the given specifications and works seamlessly with the provided testbench.
+
+First, I'll analyze the testbench to understand what it expects from the counter module. The testbench uses nested loops to iterate over all possible combinations of the `incr` and `decr` inputs. For each combination, it waits for a full clock cycle (10ns) before applying the inputs and then checks if the count behaves as expected.
+
+From this, I can infer that the counter module must correctly handle:
+1. Resetting to 0 when the `rst` signal is active.
+2. Incrementing when `incr` is high, regardless of other inputs.
+3. Decrementing when `decr` is high, but only if `incr` is not also high in the same cycle.
+
+Next, I'll consider how to implement these functionalities in Verilog. The module will have:
+- Four input wires: `clk`, `rst`, `incr`, and `decr`.
+- One output wire: `count`, which is a 4-bit register.
+
+The key challenge here is ensuring that the increment and decrement operations don't interfere with each other within the same clock cycle. To address this, I'll implement a control logic where:
+- If `incr` is high, the counter increments.
+- If `decr` is high and `incr` is not high, the counter decrements.
+
+I'll use a sequential circuit approach, leveraging the `always @(posedge clk)` block to handle state transitions on each rising edge of the clock signal. This ensures that all changes occur in a synchronized manner.
+
+Finally, I'll write the Verilog code, making sure it's clean and well-commented for clarity. I'll test it with the provided testbench to ensure it passes all the checks.
+</think>
+
+```verilog
+module counter (
+    input  wire        clk,
+    input  wire        rst,
+    input  wire        incr,
+    input  wire        decr,
+    output reg [3:0]   count
+);
+
+    always @(posedge clk) begin
+        if (rst) begin
+            count <= 4'b0;
+        end else begin
+            // Handle increment and decrement with proper sequencing
+            if (incr) begin
+                count <= count + 1;
+            end
+            
+            // Apply decrement after one clock cycle delay to prevent simultaneous changes
+            if (!incr && decr) begin
+                count <= count - 1;
+            end
+        end
+    end
+
+endmodule
+```

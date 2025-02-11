@@ -1,0 +1,106 @@
+Timestamp: 2025-02-11 09:25:34
+Sender: testbench_writer
+Topic: PCIe Endpoint
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a testbench for a 2-bit full adder in Verilog. Hmm, where do I start? Well, first, I remember that a full adder has three inputs: A, B, and C_in, and two outputs: S (sum) and C_out (carry out). Since it's a 2-bit adder, each input can be either 0 or 1.
+
+I think the testbench needs to cover all possible combinations of A, B, and C_in. There are 2^3 = 8 possible cases. I should make sure each case is tested.
+
+I'll need to generate a clock because most digital circuits rely on a clock signal. So, I'll create a simple clock generator that toggles every 10 units of time. That means the clock will have a period of 20 units (10 for high, 10 for low).
+
+Next, I'll initialize all inputs to 0 at the start. Then, after some settling time (like 10 units), I'll start applying each test case. For each case, I need to wait until the clock goes high (posedge) before changing the inputs so that the adder has stable inputs when the clock edge occurs.
+
+After setting the inputs for a test case, I should wait for a couple of clock cycles to ensure the outputs have stabilized. Then, I'll check if the expected sum and carry match the actual outputs. If they do, print a success message; otherwise, print a failure with the specific inputs and observed outputs.
+
+I also need to include some delay after each test case so that the messages aren't printed all at once without any separation. Maybe add a `#10` after each test case.
+
+Wait, how do I handle the expected sum? Oh right, for full adder, the sum is A XOR B XOR C_in, and the carry out is (A AND B) OR (A AND C_in) OR (B AND C_in). So I can calculate the expected S and C_out for each combination.
+
+I should also make sure that the testbench doesn't end immediately after all tests. Maybe add a `#100` at the end to wait some time before stopping, so all messages are displayed properly.
+
+Let me outline the steps:
+
+1. Create a clock signal with a period of 20 units.
+2. Initialize A, B, C_in to 0.
+3. After settling, loop through all possible combinations of A, B, C_in (8 cases).
+4. For each case:
+   a. Set A, B, C_in at the start of a clock cycle.
+   b. Wait for two clock cycles to allow outputs to stabilize.
+   c. Check if S and C_out match expected values.
+   d. Print success or failure message.
+5. Add delays between test cases for clarity.
+
+I think that's all. Now I'll write the Verilog code accordingly, making sure to include all these steps.
+</think>
+
+```verilog
+module tb_full_adder_2bit;
+    // Clock generation
+    localparam CLOCK_PERIOD = 10;
+    localparam SETTLE_TIME = 10;
+
+    // Inputs
+    reg a, b, c_in;
+    wire s, c_out;
+
+    // Clock signal
+    reg clock;
+    initial begin
+        clock = 0;
+        forever begin
+            #CLOCK_PERIOD;
+            clock = ~clock;
+        end
+    end
+
+    // Testbench setup
+    initial begin
+        a = 0;
+        b = 0;
+        c_in = 0;
+
+        // Wait for settling time
+        #SETTLE_TIME;
+
+        // Test all combinations of A, B, C_in (8 cases)
+        integer test_case;
+        for (test_case = 0; test_case < 8; test_case++) begin
+            // Calculate expected sum and carry out
+            reg expected_s, expected_c_out;
+            {expected_s, expected_c_out} = 
+                {a ^ b ^ c_in, (a & b) | (a & c_in) | (b & c_in)};
+
+            // Apply inputs at the start of a clock cycle
+            #0;
+            a = test_case[1:0];
+            b = test_case[2:1];
+            c_in = test_case[3];
+
+            // Wait for two clock cycles to allow outputs to stabilize
+            #CLOCK_PERIOD * 2;
+
+            // Check results
+            if (s == expected_s && c_out == expected_c_out) begin
+                $display("Test case %d: Success!", test_case);
+                $display("Inputs: A=%b, B=%b, C_in=%b", a, b, c_in);
+                $display("Outputs: S=%b, C_out=%b", s, c_out);
+            end else begin
+                $display("Test case %d: Failure!", test_case);
+                $display("Inputs: A=%b, B=%b, C_in=%b", a, b, c_in);
+                $display("Expected: S=%b, C_out=%b", expected_s, expected_c_out);
+                $display("Observed:  S=%b, C_out=%b", s, c_out);
+            end
+
+            // Add delay between test cases
+            #10;
+        end
+
+        // Wait for some time before stopping
+        #100;
+        $stop;
+    end
+
+endmodule
+```

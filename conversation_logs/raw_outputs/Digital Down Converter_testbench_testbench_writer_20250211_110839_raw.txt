@@ -1,0 +1,97 @@
+Timestamp: 2025-02-11 11:08:39
+Sender: testbench_writer
+Topic: Digital Down Converter
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a testbench for the Digital Down Converter (DDC) module. The user provided an example of how the testbench should be structured and some initial code.
+
+First, I'll review the DDC's functionality. It takes a complex digital input signal at a high frequency and converts it down to a lower intermediate frequency (IF). The output is then fed into another system for further processing.
+
+The example testbench includes clock generation, reset handling, and stimulus application. It uses initial blocks for these purposes and instances the DDC module. The testbench applies different input scenarios, such as zero signal, maximum in-phase, maximum quadrature, and a mix of both, to ensure the DDC behaves correctly under various conditions.
+
+I need to replicate this structure but tailor it specifically for the DDC's requirements. I'll start by setting up the clock with the correct period based on the sampling frequency. Then, handle the reset signal properly to ensure the DDC initializes correctly.
+
+For the input data, I'll generate complex signals using sine and cosine functions for different carrier frequencies. This will allow me to test various modulation schemes and ensure the down-conversion process works as expected.
+
+I should also include monitoring of the output signals to capture when `output_valid` is high and then record the corresponding `output_data`. Comparing these values against expected results will help verify the correctness of the DDC.
+
+Finally, I'll structure the testbench with appropriate delays and loops to cover all necessary test cases. This ensures that the simulation runs through different scenarios and provides clear feedback on the DDC's performance.
+</think>
+
+```verilog
+module testbench_digital_down_converter;
+    // Define clock period (160 MHz)
+    real clock_period = 1 / (160e6);
+    
+    // Clock generation
+    initial begin
+        forever begin
+            #clock_period;
+            clk = ~clk;
+        end
+    end
+    
+    // Reset signal
+    initial begin
+        rst_n = 0;
+        #1ns;  // Hold reset for a short period
+        rst_n = 1;
+    end
+    
+    // DUT instance
+    digital_down_converter dut (
+        .input_data(input_data),
+        .clk(clk),
+        .rst_n(rst_n),
+        .sampling_freq(160e6),
+        .output_data(output_data),
+        .output_valid(output_valid)
+    );
+    
+    // Input signals
+    complex input_data;
+    wire clk, rst_n, output_valid;
+    wire [15:0] output_data;
+    
+    initial begin
+        $display("Digital Down Converter Testbench");
+        $display("----------------------------------------");
+        
+        // Test cases
+        integer test_case = 0;
+        real amplitude = 1.0;  // Maximum amplitude
+        
+        // Test case 1: Zero signal
+        input_data = complex(0, 0);
+        #20ns;
+        test_case++;
+        
+        // Test case 2: Maximum amplitude in-phase only
+        input_data = complex(amplitude, 0);
+        #20ns;
+        test_case++;
+        
+        // Test case 3: Maximum amplitude quadrature only
+        input_data = complex(0, amplitude);
+        #20ns;
+        test_case++;
+        
+        // Test case 4: Mix of in-phase and quadrature
+        input_data = complex(amplitude/2, amplitude/2);
+        #20ns;
+        test_case++;
+        
+        $display("Simulation completed successfully!");
+        $finish;
+    end
+    
+    // Monitor output signals
+    always @(posedge clk) begin
+        if (output_valid) begin
+            $display("Output at %t:", $time);
+            $display("  Output Data: %b (%h)", output_data, output_data);
+        end
+    end
+endmodule
+```

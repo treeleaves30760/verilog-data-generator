@@ -1,0 +1,41 @@
+Timestamp: 2025-02-11 13:29:26
+Sender: spec_writer
+Topic: Digital Signal Switch
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Digital Signal Switch based on the user's query. Let me start by understanding what exactly they're asking for.
+
+The user provided an example of a specification and wants one for a Digital Signal Switch. They specified that it should be in a clear format without markdown or code blocks, just plain text within a code block. So I need to follow that structure closely.
+
+First, the module name is straightforward: "DigitalSignalSwitch." Next, the description should briefly explain what it does. It's a 2-to-1 switch, so it takes two inputs and one control signal to route the selected input to the output.
+
+Looking at the inputs, there are three: IN_A, IN_B, and SEL. Each has a width of 1 bit. I need to describe each clearly. IN_A is the first input, IN_B the second, and SEL controls which one is passed through.
+
+For the outputs, only one output exists: OUT, also 1 bit wide. Its description should state that it's the selected input from either A or B.
+
+The functionality section needs a clear explanation of how the switch operates. It should mention that based on the SEL signal, the output routes IN_A when SEL is 0 and IN_B when SEL is 1. I'll make sure to note that the selection happens synchronously with each clock cycle.
+
+Timing requirements are next. The module uses a clock (CLK) with a frequency of 50 MHz and operates at a voltage of 3.3V. It has an active-high reset (RST) signal, which means it resets when RST is high. The setup time for inputs is 1 ns before the rising edge of CLK, and the hold time is 2 ns after the rising edge. The output propagation delay is 5 ns after the clock edge.
+
+I should ensure that all these details are included without any markdown or extra explanations. Just a straightforward list following the specified format. I'll double-check each section to make sure it's clear and concise, providing enough detail for someone to implement the module in Verilog correctly.
+</think>
+
+```  
+1. Module Name: DigitalSignalSwitch  
+2. Description: A 2-to-1 digital signal switch that routes one of two input signals to the output based on a control signal.  
+3. Inputs:  
+   - IN_A: 1 bit Description: First input signal  
+   - IN_B: 1 bit Description: Second input signal  
+   - SEL: 1 bit Description: Selection control signal (0 selects IN_A, 1 selects IN_B)  
+4. Outputs:  
+   - OUT: 1 bit Description: Output signal (routes either IN_A or IN_B based on SEL)  
+5. Functionality:  
+   The module routes the selected input to the output based on the SEL control signal. When SEL is 0, the output is equal to IN_A. When SEL is 1, the output is equal to IN_B. The selection occurs synchronously with each clock cycle.  
+6. Timing Requirements:  
+   - Clock (CLK): 50 MHz  
+   - Reset (RST): Active-high reset signal  
+   - Setup time for inputs: 1 ns before rising edge of CLK  
+   - Hold time for inputs: 2 ns after rising edge of CLK  
+   - Output propagation delay: 5 ns after rising edge of CLK  
+```

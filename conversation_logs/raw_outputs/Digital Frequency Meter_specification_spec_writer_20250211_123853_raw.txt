@@ -1,0 +1,104 @@
+Timestamp: 2025-02-11 12:38:53
+Sender: spec_writer
+Topic: Digital Frequency Meter
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Digital Frequency Meter based on the user's query. Let me break down what they're asking for.
+
+First, the user wants me to act as a Verilog specification writer. They provided an example response in a specific format and now want me to generate something similar but without any markdown or code blocks. The output should be clear and structured, following their outlined sections: Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements.
+
+I remember the user mentioned that I should only provide the specification without additional text or explanations. So, I need to make sure each section is concise and follows the format they specified.
+
+Looking at the example response, it's structured with bullet points under each main heading. The Inputs and Outputs sections list each signal with width and description. The Functionality and Timing Requirements are in paragraph form but still clear and to the point.
+
+I should start by understanding what a Digital Frequency Meter does. It measures the frequency of an input signal over time. So, it needs to count the number of cycles of the input signal within a specific period, then convert that into a frequency value which is displayed.
+
+For the module name, I'll go with something straightforward like `digital_freq_meter`.
+
+In the Description, I should briefly explain its purpose: measuring and displaying the frequency of an input signal in Hz.
+
+Next, the Inputs section. The main inputs would be:
+- clk: the system clock, typically a positive edge for synchronous operations.
+- rst_n: the active-low reset signal to initialize the module.
+- sig_in: the input signal whose frequency we're measuring. It should have a width of 1 bit since it's a digital signal.
+
+For Outputs, I need to display the frequency in Hz. The example used a 4-digit display with two segments for decimal points and control signals. So, I'll include:
+- seg_dp: segment common anode/digit enable.
+- seg_a to seg_g: each segment of the seven-segment display.
+- digit1 to digit4: each digit's data.
+- dp0 and dp1: decimal point controls.
+
+The Functionality section should outline how the module works. It needs to count cycles, calculate frequency, update the display, handle reset, and manage overflow/underflow for accurate readings.
+
+Timing Requirements will detail the clock period, reset duration, and any synchronization needed between signals.
+
+I need to ensure that each part is clear and follows the structure without using markdown or code blocks. Also, I should avoid any additional explanations beyond what's necessary for the specification.
+
+Wait, in the example response, they included a lot of details under each section. For instance, under Inputs, each input has its width and description. Similarly, Outputs are listed with their widths and purposes.
+
+I think I should follow that structure closely to meet the user's expectations. Also, using bullet points for Inputs and Outputs will make it easy to read, even without markdown.
+
+Let me outline the sections again:
+
+1. Module Name: digital_freq_meter
+2. Description: Measures and displays frequency of sig_in in Hz.
+3. Inputs:
+   - clk: 1-bit system clock with positive edge.
+   - rst_n: 1-bit active-low reset.
+   - sig_in: 1-bit input signal to measure.
+4. Outputs:
+   - seg_dp, seg_a to seg_g: For seven-segment display control.
+   - digit1 to digit4: Each digit's data (4 bits each).
+   - dp0 and dp1: Decimal point control.
+5. Functionality:
+   - Count cycles of sig_in within a time window.
+   - Calculate frequency as count / time_window.
+   - Update display every 16 clock periods for stability.
+   - Handle reset by resetting counters and displaying 0.00 Hz.
+   - Manage overflow/underflow to ensure accurate readings.
+
+6. Timing Requirements:
+   - Clock period of 10ns, reset active low for at least 100ns.
+   - Synchronization between sig_in and clk with a setup time of 1ns.
+
+I think that covers all necessary details. Now I'll structure it into the specified format without any markdown or code blocks, just plain text as per the user's request.
+</think>
+
+```  
+Module Name: digital_freq_meter  
+Description: A Digital Frequency Meter measures and displays the frequency of an input signal in Hertz (Hz).  
+
+Inputs:  
+- clk: 1 bit System Clock (Positive Edge)  
+- rst_n: 1 bit Active-Low Reset  
+- sig_in: 1 bit Input Signal to measure  
+
+Outputs:  
+- seg_dp: 1 bit Segment Common Anode/Digit Enable  
+- seg_a: 1 bit Segment A of the Seven-Segment Display  
+- seg_b: 1 bit Segment B of the Seven-Segment Display  
+- seg_c: 1 bit Segment C of the Seven-Segment Display  
+- seg_d: 1 bit Segment D of the Seven-Segment Display  
+- seg_e: 1 bit Segment E of the Seven-Segment Display  
+- seg_f: 1 bit Segment F of the Seven-Segment Display  
+- seg_g: 1 bit Segment G of the Seven-Segment Display  
+- digit1: 4 bits Most Significant Digit (MSB) of Frequency Value  
+- digit2: 4 bits Middle Two Digits of Frequency Value  
+- digit3: 4 bits Least Significant Digit (LSB) of Frequency Value  
+- dp0: 1 bit Decimal Point Control for First Digit  
+- dp1: 1 bit Decimal Point Control for Second Digit  
+
+Functionality:  
+The Digital Frequency Meter measures the frequency of the input signal (sig_in) by counting the number of cycles over a fixed time window. The frequency is calculated as count / time_window and displayed in Hz with two decimal places. The module includes:  
+- A counter to track the input signal cycles  
+- A timer to measure the elapsed time  
+- Logic to calculate frequency and update the display  
+- Reset functionality to initialize counters and displays  
+- Overflow/underflow detection for accurate measurements  
+
+Timing Requirements:  
+- Clock (clk): 10 ns period  
+- Reset (rst_n): Must be held low for at least 100 ns to fully reset the module  
+- Synchronization between sig_in and clk: Input signal must be stable for at least 1 ns before the clock edge  
+```

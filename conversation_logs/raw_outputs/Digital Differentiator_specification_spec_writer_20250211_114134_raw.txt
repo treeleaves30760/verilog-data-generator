@@ -1,0 +1,42 @@
+Timestamp: 2025-02-11 11:41:34
+Sender: spec_writer
+Topic: Digital Differentiator
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Digital Differentiator. Hmm, where do I start? Let me think about what a digital differentiator does. From what I remember, it's a circuit that computes the difference between consecutive samples of a digital signal. That makes sense because differentiation in discrete-time signals involves looking at the change over time steps.
+
+Alright, so first, the module name should be something clear like `digital_diff`. Now, for the description, I'll need to briefly explain its purpose—calculating the difference between current and previous input samples.
+
+Next are the inputs. The main input is the data signal, let's call it `data_in`, which is a single bit because we're dealing with digital signals. It should be asynchronous since it can change at any time. Then there's the clock (`clk`) and reset (`rst`). The reset is active-high, so when it's high, the circuit resets.
+
+For outputs, I'll need two things: the differentiated output `diff_out` which will also be a single bit, and a flag to indicate if the differentiation is valid. Let's name that `valid`, another single-bit output.
+
+Now, the functionality part. The digital differentiator should store the previous input value. So, when the clock rises, it captures the current `data_in` into a register, say `prev_data`. Then, on the next rising edge, it subtracts the new `data_in` from `prev_data` to get `diff_out`. But wait, I need to handle timing so that both samples are valid. That's where the `valid` output comes in—when the second sample is available after reset or a new cycle starts.
+
+Timing requirements: The circuit operates on the rising edge of the clock. Reset is active-high, meaning when `rst` is high, it resets all internal states, including setting `prev_data` to 0 and invalidating any pending differentiation until the next valid samples come in.
+
+I should also consider edge cases. For example, during reset, both `diff_out` and `valid` should be 0. After reset, on the first clock cycle, it captures the first sample but doesn't compute anything yet because there's no previous data. On the second clock cycle, it computes the difference between the current and previous samples and sets `valid` to 1.
+
+Wait, does this handle metastability? Probably not, but for simplicity, maybe we can assume that the input is stable enough or use a double flip-flop if needed, but that might complicate things. Let's stick with a single register for now.
+
+Also, what about the initial state after reset? `prev_data` should be 0, and `diff_out` should remain 0 until there are two valid samples.
+
+I think I've covered all the bases. Now, structuring this into the required format without any markdown or code blocks, just plain text with clear sections.
+</think>
+
+1. Module Name: digital_diff  
+2. Description: Digital Differentiator computes the difference between consecutive input samples.  
+3. Inputs:  
+   - data_in: 1 bit (Digital input signal)  
+   - clk: 1 bit (System clock)  
+   - rst: 1 bit (Active-high asynchronous reset)  
+4. Outputs:  
+   - diff_out: 1 bit (Result of differentiation between current and previous samples)  
+   - valid: 1 bit (Indicates if the output is valid after one clock cycle delay)  
+5. Functionality:  
+   The module captures the input data_in on each rising edge of clk. It stores the previous sample in a register named prev_data. On the next rising edge, it computes diff_out as (data_in - prev_data). The valid signal is set to 1 after one clock cycle delay from the rst or new data_in, indicating that diff_out is valid.  
+6. Timing Requirements:  
+   - Clock: clk (rising edge)  
+   - Reset: rst (active-high)  
+   - Valid output is delayed by one clock cycle after reset or new data input.

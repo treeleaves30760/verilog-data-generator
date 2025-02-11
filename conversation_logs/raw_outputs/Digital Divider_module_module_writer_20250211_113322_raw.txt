@@ -1,0 +1,78 @@
+Timestamp: 2025-02-11 11:33:22
+Sender: module_writer
+Topic: Digital Divider
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog module for a 4-bit counter that increments on each rising edge of the clock. The user has specified certain requirements: it must be efficient and correct, follow their guidelines, and include clear comments.
+
+First, I'll start by understanding the basic structure of a Verilog module. I know that modules have inputs and outputs defined at the top, followed by the logic inside. For a counter, I typically need a clock input (clk), a reset button (rst), and the output (count_out).
+
+The user mentioned using D-Flip-Flops (DFFs) for each bit of the 4-bit counter. That makes sense because each flip-flop can store one bit, and together they form a 4-bit register to hold the current count value.
+
+I should define a DFF module inside the main counter module. This will encapsulate the flip-flop behavior. The DFF needs a clock input (clk), a data input (d), and a reset input (rst). It will have a Q output that holds the state.
+
+In the main module, I'll instantiate four DFFs, each dedicated to one bit of the 4-bit counter. Each flip-flop's data input will be controlled by the current count value and the next state logic.
+
+The next step is to handle the increment operation. Since it's a 4-bit counter, I need to manage the carry-over when the count reaches 15 (binary 1111). After that, it should reset to 0. So, I'll compute the next value by adding 1 to the current count and then checking for overflow.
+
+I'll use a wire to hold the incremented value (next_val) and another to detect if all bits are 1s (all_ones). If all_ones is true, the counter resets; otherwise, it increments normally.
+
+For the DFF module, I need to ensure that during reset, the flip-flop's output is 0. The user specified using a conditional assignment for the Q output based on the rst signal.
+
+Putting it all together, I'll connect each bit of the count_out to the corresponding DFF's Q output. The control logic will manage the increment and reset operations efficiently.
+
+I should also include clear comments in the code to explain each part, especially where the next_val is computed and how the overflow is handled. This makes the code more understandable for someone reviewing it later.
+
+Finally, I'll make sure that all signals are properly declared as wires or reg variables. The clock is an input wire, while internal signals like count_out and next_val should be registers to hold their state correctly.
+
+I think that covers all the necessary steps. Now, I can write the Verilog code following these guidelines.
+</think>
+
+```verilog
+// 4-bit counter module with rising edge increment on clock
+module four_bit_counter (
+    input wire clk,
+    input wire rst,
+    output reg [3:0] count_out
+);
+
+    // D-Flip-Flop (DFF) macro to create a simple flip-flop
+    // This is used for each bit in the 4-bit counter
+    `define DFF(clk, rst, d, q) \
+        always @(posedge clk or posedge rst) begin \
+            if (rst) q <= 0; \
+            else       q <= d; \
+        end
+
+    // Instantiate four DFFs for each bit of the 4-bit counter
+    reg [3:0] count;
+    
+    // Create a DFF for each bit of the counter
+    `DFF(clk, rst, count[0], count_out[0])
+    `DFF(clk, rst, count[1], count_out[1])
+    `DFF(clk, rst, count[2], count_out[2])
+    `DFF(clk, rst, count[3], count_out[3])
+
+    // Compute the next value of the counter
+    wire [3:0] next_val;
+    wire all_ones;
+
+    // Check if all bits are 1 (overflow condition)
+    assign all_ones = (count == 4'b1111);
+
+    // Calculate next value, reset if overflow
+    always @(posedge clk) begin
+        if (rst) begin
+            count <= 0;
+        end else begin
+            if (all_ones) begin
+                count <= 0;
+            end else begin
+                count <= count + 1;
+            end
+        end
+    end
+
+endmodule
+```

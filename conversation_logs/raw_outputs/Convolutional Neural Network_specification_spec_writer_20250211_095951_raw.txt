@@ -1,0 +1,50 @@
+Timestamp: 2025-02-11 09:59:51
+Sender: spec_writer
+Topic: Convolutional Neural Network
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog specification for a Convolutional Neural Network (CNN). Let me break down what's required.
+
+First, the module name should be something like `cnn_core`. The description needs to briefly explain that it's a hardware implementation of a CNN with essential layers: convolution, pooling, activation, and fully connected. 
+
+For inputs, I'll need two main ones: `clk` for the clock signal and `rst` for reset. Then, the input data will come in through `input_data`, which is an array of size 784 (28x28) to match MNIST input. The input format should be described as a stream with each row representing a pixel value.
+
+Outputs include `output_class` which is a 10-bit vector for the predicted class, and `done` to signal when processing is complete. 
+
+Functionality-wise, I'll outline that it processes images through convolutional layers, applies ReLU activation, max pooling, flattens the data, and passes it through fully connected layers with softmax for classification.
+
+Timing requirements need a clock frequency of 100 MHz and reset polarity as active high. Processing time should be under 1ms per image to meet real-time constraints.
+
+I'll structure each section clearly without markdown or code blocks, ensuring all necessary details are included for implementation.
+</think>
+
+```  
+Module Name: cnn_core  
+Description: A hardware implementation of a Convolutional Neural Network (CNN) optimized for edge computing applications.  
+
+Inputs:  
+- clk: 1-bit Clock signal  
+- rst: 1-bit Reset signal (active high)  
+- input_data: 784-bit Input image data (28x28 pixels, grayscale)  
+- start: 1-bit Start signal to initiate processing  
+
+Outputs:  
+- output_class: 10-bit Output class prediction (one-hot encoded)  
+- done: 1-bit Signal indicating completion of processing  
+
+Functionality:  
+The CNN core implements a simplified version of LeNet-5 for MNIST digit classification. It includes the following layers:  
+1. Convolutional Layer with 4 kernels, each of size 5x5, producing 4 feature maps.  
+2. ReLU activation function applied to the output of convolution.  
+3. Max pooling layer with pool size 2x2 and stride 2.  
+4. Fully connected layer with 16 neurons followed by another fully connected layer with 10 neurons (output classes).  
+5. Softmax activation for final classification.  
+
+Timing Requirements:  
+- Clock frequency: 100 MHz  
+- Reset polarity: Active high  
+- Processing time per input image: Less than 1 ms  
+
+The module processes input images in a pipelined manner, with each layer operating asynchronously to improve throughput. The design assumes fixed-point arithmetic for efficient hardware implementation and minimal resource usage.  
+```

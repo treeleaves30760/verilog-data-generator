@@ -1,0 +1,87 @@
+Timestamp: 2025-02-11 13:11:48
+Sender: testbench_writer
+Topic: Digital Signal Mixer
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a comprehensive testbench for a 2-bit full-adder in Verilog. Let me think about how to approach this.
+
+First, I should understand what a full-adder does. A full-adder takes three inputs: A, B, and C_in (carry-in), and produces two outputs: S (sum) and C_out (carry-out). The truth table for a 2-bit full-adder would cover all possible combinations of A, B, and C_in.
+
+Since it's a 2-bit adder, I'll need to test all 8 possible input combinations. That means I'll loop through each combination, apply the inputs, wait for the circuit to settle, then check if the outputs are correct.
+
+I remember that in Verilog testbenches, we typically use initial blocks to simulate the test cases. So I'll start by creating an initial block where I can generate all possible input patterns.
+
+Next, I need to include clock generation because most digital circuits rely on a clock signal. The clock will toggle every 10 units of time (assuming each unit is a time step in the simulation). I'll use a while loop to continuously toggle the clock.
+
+For the test cases, I'll create two variables, a and b, which will take values from 0 to 1 for each bit. Then, c_in will also be either 0 or 1. Using a nested loop structure (for a in 0..1; for b in 0..1; for c_in in 0..1), I can cover all combinations.
+
+Inside the loops, I'll assign the inputs to A, B, and C_in. Then, wait for one clock period (using #1) to allow the circuit to compute the outputs. After that, I'll check if the computed sum (A ^ B ^ C_in) matches the expected S output and if the carry-out is correctly calculated as (A & B) | (A & C_in) | (B & C_in).
+
+If any combination fails, I'll display an error message indicating which test case failed. If all pass, I'll print a success message at the end.
+
+I should also make sure to include the $display and $finish functions to halt the simulation after testing is complete. This ensures that the testbench doesn't run indefinitely.
+
+Wait, in Verilog, the exponent operator might not be necessary here since we're dealing with bits. But for clarity, I can use variables a and b as 0 or 1, then compute A = a, B = b, etc.
+
+I think that's all. Now, putting it all together into the testbench code.
+</think>
+
+```verilog
+module tb_full_adder;
+    // Define inputs and outputs
+    reg        clock;
+    reg [1:0]  A, B;
+    reg        C_in;
+    wire [1:0] S;
+    wire       C_out;
+
+    // Clock generation
+    always begin
+        clock = 1; #5;
+        clock = 0; #5;
+    end
+
+    // DUT instantiation
+    full_adder dut (
+        .A(A),
+        .B(B),
+        .C_in(C_in),
+        .S(S),
+        .C_out(C_out)
+    );
+
+    initial begin
+        // Test all combinations of A, B, and C_in
+        for (a in 0..1) begin
+            for (b in 0..1) begin
+                for (c_in in 0..1) begin
+                    // Assign inputs
+                    A = a;
+                    B = b;
+                    C_in = c_in;
+
+                    // Wait for one clock period to allow propagation
+                    #1;
+
+                    // Calculate expected sum and carry-out
+                    wire expected_S = (a ^ b ^ c_in);
+                    wire expected_C_out = (a & b) | (a & c_in) | (b & c_in);
+
+                    // Compare actual outputs with expected values
+                    if ({S, C_out} != {expected_S, expected_C_out}) begin
+                        $display("Test case failed: A=%d, B=%d, C_in=%d", a, b, c_in);
+                        $display("Expected S=%d, C_out=%d; Actual S=%d, C_out=%d",
+                                 expected_S, expected_C_out, S, C_out);
+                        $finish;
+                    end
+                end
+            end
+        end
+
+        // All test cases passed
+        $display("All test cases passed successfully!");
+        $finish;
+    end
+endmodule
+```

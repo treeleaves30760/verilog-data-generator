@@ -1,0 +1,55 @@
+Timestamp: 2025-02-11 10:37:08
+Sender: spec_writer
+Topic: PID Controller
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a PID controller. Let me start by understanding what a PID controller is. From what I remember, PID stands for Proportional-Integral-Derivative, and it's used in control systems to regulate temperature, pressure, position, etc. The controller calculates the error between the setpoint and the actual process variable, then applies corrections based on proportional, integral, and derivative terms.
+
+Now, looking at the user's request, they want a structured specification with specific sections: Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. They also mentioned to avoid markdown and code blocks, just plain text in a clear format.
+
+First, I'll think about the module name. It should be something descriptive like "pid_controller".
+
+Next, the description. It needs to briefly explain what the module does. So, it's a digital implementation of a PID controller that calculates control outputs based on setpoint and process variables.
+
+Moving on to inputs. The user provided an example with three inputs: setpoint (32-bit), process_value (32-bit), and clock/reset. I should include these. Maybe also consider if there are other possible inputs, but the example seems sufficient.
+
+Outputs would be the control_output, again 32-bit. That makes sense as it's the output signal sent to the controlled system.
+
+For functionality, the description needs to outline how the PID controller works step by step. It should mention calculating error, then computing proportional, integral, and derivative terms, summing them up with coefficients, and applying saturation limits.
+
+Timing requirements are about clock and reset. The example mentions a clock signal and an active-low asynchronous reset. So I'll include that, specifying the clock is a standard digital clock and the reset is used to bring the module to a known state.
+
+I should also think about any necessary details for implementation. For instance, the integral term might need to prevent windup by limiting its value, but the example doesn't mention it, so maybe it's beyond the scope here. Also, the derivative filter could be implemented with a simple averaging or using a moving average to reduce noise.
+
+Wait, in the functionality section, I should make sure to explain each step clearly: error calculation, each term computation, summing, and saturation. Maybe also mention that the coefficients Kp, Ki, Kd are configurable parameters, which is important for flexibility.
+
+I need to ensure all parts are covered without being too verbose. The user wants it clear and structured, so I'll follow their format precisely, making sure each section is concise but informative.
+
+Let me double-check if there's anything else. Maybe the data types? Since inputs and outputs are 32-bit, that's specified, but perhaps considering integer or fixed-point representation could be important for implementation, but it's not in the example, so I'll stick to what's given.
+
+I think that's all. Now, putting it together following the user's format without any markdown.
+</think>
+
+```
+1. Module Name: pid_controller
+2. Description: Digital PID (Proportional-Integral-Derivative) Controller Implementation
+3. Inputs:
+   - setpoint: 32-bit Input representing the desired process value
+   - process_value: 32-bit Input representing the actual process measurement
+   - clock: 1-bit Clock signal for timing operations
+   - reset_n: 1-bit Active-low asynchronous reset signal
+4. Outputs:
+   - control_output: 32-bit Output representing the computed control signal
+5. Functionality:
+   The PID controller calculates the error between the setpoint and process_value.
+   It computes three terms:
+   - Proportional term (Kp * error)
+   - Integral term (Ki * integral of error over time)
+   - Derivative term (Kd * rate of change of error)
+   These terms are summed with their respective coefficients to produce the control output.
+   The output is limited by saturation limits to prevent excessive actuator operation.
+6. Timing Requirements:
+   - clock: Standard digital clock signal
+   - reset_n: Active-low asynchronous reset, used to initialize internal states and integral term to zero
+```

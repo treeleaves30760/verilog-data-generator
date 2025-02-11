@@ -1,0 +1,74 @@
+Timestamp: 2025-02-11 12:33:22
+Sender: spec_writer
+Topic: Digital Frequency Counter
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Digital Frequency Counter based on the user's example. Let me think through how to approach this.
+
+First, I'll start by understanding what a digital frequency counter does. It measures the frequency of an input signal over a specific time period. The key components are a clock, a reset button, an input signal whose frequency we're measuring, and outputs that display the measured frequency in binary or hexadecimal.
+
+Looking at the example provided, the module is named `digital_frequency_counter` with inputs like clk, rst_n, and freq_in, and outputs for hex display. The functionality includes counting the input pulses within a time window defined by the clock cycles, then converting that count into frequency and displaying it.
+
+I need to structure my specification similarly but ensure all necessary details are included. Let me break down each section:
+
+1. **Module Name**: Straightforward, I'll name it `digital_frequency_counter`.
+
+2. **Description**: A brief overview of what the module does—measuring input signal frequency over a time window and displaying the result.
+
+3. **Inputs**:
+   - clk: System clock.
+   - rst_n: Active-low reset.
+   - freq_in: The input signal whose frequency is to be measured.
+
+4. **Outputs**:
+   - hex_display: Six-digit hexadecimal display for the frequency.
+   - segment_output: Control signals for the seven-segment displays.
+   - anode_common: Common anode control for the display segments.
+   - led_status: Status LEDs, maybe indicating whether the counter is running or if there's an overflow.
+
+5. **Functionality**:
+   - The counter should measure the number of freq_in pulses within a fixed window (like 1 second) by dividing the clock to get a time base.
+   - Use a counter to count these pulses and calculate frequency as count divided by the time window.
+   - Convert this value into hexadecimal for display on six seven-segment digits, handling overflow if necessary.
+
+6. **Timing Requirements**:
+   - Clock is typically 50MHz, but could vary based on design constraints.
+   - Reset is active-low, so when rst_n is low, all counters and displays reset.
+   - The conversion of count to frequency should happen periodically, maybe every second, using a time window counter.
+
+I also need to consider how the display works. Each digit on the seven-segment display will be controlled by segment_output and anode_common signals. Maybe each digit lights up sequentially to create a multiplexed display effect, but for simplicity, perhaps all segments are active at once with common anode control.
+
+For the frequency calculation, I'll need a time window counter that increments every clock cycle until it reaches a certain value (like 50 million for a 50MHz clock, giving a 1-second window). Each freq_in pulse during this window is counted. Once the window ends, the frequency is calculated as count / window_cycles and then converted to hex.
+
+I should also think about overflow conditions—what happens if the count exceeds the maximum displayable value? Maybe an overflow LED lights up or the display rolls over.
+
+Putting it all together, I'll structure each section with clear inputs, outputs, functionality steps, and timing details. Make sure to specify widths for signals where necessary, like 6 bits for hex_display (but actually, each digit is a nibble, so maybe more lines needed). Wait, in the example, hex_display was 24 bits—each of six digits is 4 bits, so that makes sense.
+
+I need to ensure all parts are covered without being too vague. Maybe add details about how the seven-segment display is controlled, perhaps using a common anode or cathode setup, and how each segment is activated based on the hex digit.
+
+Also, considering the reset functionality—when rst_n is low, all counters reset, displays clear, etc. And when released, the system starts measuring again.
+
+I think that's a solid plan. Now I'll structure this into the required format without any markdown or code blocks, just plain text as per the user's request.
+</think>
+
+1. Module Name: digital_frequency_counter  
+2. Description: A module that measures and displays the frequency of an input signal in hexadecimal format using seven-segment displays.  
+3. Inputs:  
+   - clk: 1 bit (System clock)  
+   - rst_n: 1 bit (Active-low reset signal)  
+   - freq_in: 1 bit (Input signal whose frequency is to be measured)  
+4. Outputs:  
+   - hex_display: 24 bits (Six-digit hexadecimal display for the measured frequency, each digit represented by 4 bits)  
+   - segment_output: 7 bits (Control signals for each segment of the seven-segment displays)  
+   - anode_common: 6 bits (Common anode control signals for each digit of the display)  
+   - led_status: 3 bits (Status LEDs indicating operation, overflow, and reset states)  
+5. Functionality:  
+   - Measures the frequency of freq_in by counting the number of pulses within a fixed time window (e.g., 1 second).  
+   - Converts the count into frequency in Hz and displays it as a hexadecimal value on six seven-segment digits.  
+   - Includes overflow detection for high frequencies beyond the display range, indicated by an LED.  
+   - Implements a reset functionality to clear all counters and displays upon assertion of rst_n.  
+6. Timing Requirements:  
+   - clk: 50 MHz (System clock)  
+   - rst_n: Active-low reset signal with asynchronous behavior.  
+   - Time window for frequency measurement is determined by the clock cycle and counter overflow, typically set to 1 second.

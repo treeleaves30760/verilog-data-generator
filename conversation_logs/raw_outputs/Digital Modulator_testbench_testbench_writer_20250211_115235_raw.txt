@@ -1,0 +1,92 @@
+Timestamp: 2025-02-11 11:52:35
+Sender: testbench_writer
+Topic: Digital Modulator
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog testbench for the QPSK modulator based on the user's specifications. Let me go through the requirements again to make sure I cover everything.
+
+The modulator takes an 8-bit binary input and maps it using QPSK, which uses two bits per symbol. So each pair of bits is converted into one of four symbols (00, 01, 10, 11). The output is a 16-bit signal representing the encoded data.
+
+The testbench needs to include:
+- Clock generation
+- Reset handling
+- Testing all input combinations
+- Clear success or failure messages
+
+I'll start by setting up the clock. Using an always block that toggles every 10 time units seems straightforward. Then, I'll handle the reset signal, which is active-high. I'll initialize it to high for a few cycles before releasing it.
+
+Next, I'll generate all possible 8-bit inputs using a loop from 0 to 255. For each input, I'll apply it at the rising edge of the clock after the reset is released. Then, I'll wait a few clock periods to allow the modulator to process the data.
+
+For the encoded output, since QPSK typically uses two bits per symbol, but the output is 16 bits, I'm assuming each input corresponds to one 16-bit word. I'll check if the output matches the expected encoding based on the input bits.
+
+I'll include $display statements to show the test progress and results. After all tests are completed, I'll display a success message and finish the simulation.
+
+I think this covers all the requirements: clock generation, reset handling, testing all inputs, and providing clear feedback.
+</think>
+
+```verilog
+module testbench_qpsk_modulator;
+    // Define local parameters
+    localparam CLOCK_PERIOD = 10;
+
+    // Clock signal
+    reg clk;
+    always begin
+        #CLOCK_PERIOD;
+        clk = ~clk;
+    end
+
+    // Reset signal
+    reg rst;
+    initial begin
+        rst = 1;
+        #20;  // Wait for two clock periods
+        rst = 0;
+    end
+
+    // Input signals
+    reg data_in;
+    wire encoded_out;
+
+    // DUT instance
+    digital_modulator_mod inst_digital_modulator (
+        .data_in(data_in),
+        .clk(clk),
+        .rst(rst),
+        .encoded_out(encoded_out)
+    );
+
+    initial begin
+        $display("\nStarting QPSK Modulator Testbench");
+        #10;
+
+        // Test all possible 8-bit input combinations
+        for (data_in = 0; data_in < 256; data_in++) begin
+            #20;  // Wait for one clock period
+
+            $display("\nTesting data_in = %b", data_in);
+
+            // Apply the current data_in value
+            #10;
+
+            // Wait a few periods to allow modulator to process
+            #30;
+
+            // Check if encoded_out matches expected QPSK modulation
+            if (encoded_out == ((data_in >> 7) ^ (data_in >> 6))) begin
+                $display("Test PASSED for data_in = %b", data_in);
+            end else begin
+                $display("Test FAILED for data_in = %b", data_in);
+            end
+
+            #10;
+        end
+
+        // End of simulation
+        $display("\nSimulation complete");
+        $finish;
+    end
+
+endmodule
+```

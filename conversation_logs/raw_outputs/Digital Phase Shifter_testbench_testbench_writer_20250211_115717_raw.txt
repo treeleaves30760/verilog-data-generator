@@ -1,0 +1,116 @@
+Timestamp: 2025-02-11 11:57:17
+Sender: testbench_writer
+Topic: Digital Phase Shifter
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a testbench for the DigitalPhaseShifter module based on the given specifications. Let me break down what's required.
+
+First, the testbench needs to simulate all possible input combinations. The shift_amount is 9 bits, which means there are 512 possible positive values and 512 negative ones, totaling 1024 different values. Plus, the direction bit adds two possibilities, making it 2048 total cases. That's a lot, but I can automate this with loops.
+
+I'll start by including the necessary Verilog files. Since the testbench is in a separate file, I need to `include "DigitalPhaseShifter.v"`. 
+
+Next, I'll set up the clock generation using an always block. The clock will toggle every 10 time units, ensuring proper simulation of rising edges.
+
+For reset, I'll use another always block that initializes the reset signal for a few cycles to ensure the module starts in a known state.
+
+Now, the main part is testing all combinations. I'll loop through all possible shift amounts from -512 to +511 and both directions (0 and 1). For each combination, I'll apply the inputs to the DigitalPhaseShifter and wait for one clock cycle to let the module process the change.
+
+After each application, I'll check if the error flag is correctly set. If the absolute value of shift_amount exceeds 360, the error should be high. Otherwise, it should be low. I'll use `$display` to show the test case number and whether the error occurred, then assert an error if necessary.
+
+I also need to handle the clear signal properly. I'll apply a reset at the beginning of the simulation to ensure the module starts in a known state.
+
+Finally, I'll compile the testbench using `vlog -sv` with the specified options and run it using `vsim`.
+
+This approach ensures that all possible input combinations are tested comprehensively, and any issues with the shift_amount handling will be caught early.
+</think>
+
+```verilog
+#include "DigitalPhaseShifter.v"
+
+module DigitalPhaseShifter_tb;
+    // Clock generation
+    localparam CLOCK_PERIOD = 10;
+    
+    // Reset signal
+    localparam RESET_DURATION = 2;
+
+    // Inputs
+    reg aclk;
+    reg aclr;
+    reg [8:0] shift_amount; // signed 9-bit integer (-512 to +511)
+    reg direction;
+
+    // Outputs
+    wire dout;
+    wire error;
+
+    // DUT instance
+    DigitalPhaseShifter dut (
+        .aclk(aclk),
+        .aclr(aclr),
+        .shift_amount(shift_amount),
+        .direction(direction),
+        .dout(dout),
+        .error(error)
+    );
+
+    // Clock generation
+    always begin
+        aclk = 0;
+        # (CLOCK_PERIOD / 2);
+        aclk = 1;
+        # (CLOCK_PERIOD / 2);
+    end
+
+    // Reset signal
+    initial begin
+        aclr = 1;
+        repeat(RESET_DURATION) @(posedge aclk);
+        aclr = 0;
+    end
+
+    // Test all possible input combinations
+    integer i, j;
+    initial begin
+        $display("Digital Phase Shifter Testbench");
+        $display("-----------------------------");
+        $display("Testing all shift_amount (9-bit signed) and direction (1-bit)");
+        
+        for (i = -512; i <= 511; i++) begin
+            shift_amount = i;
+            
+            for (j = 0; j < 2; j++) begin
+                direction = j;
+                
+                // Apply inputs
+                # (CLOCK_PERIOD);
+                @(posedge aclk);
+                # (CLOCK_PERIOD);
+                
+                // Check error condition
+                if ($abs(i) > 360 || $abs(i) == 512) begin
+                    if (!error) begin
+                        $display("FAIL: Test case %d, direction %b - Error not detected for invalid shift_amount!", i, direction);
+                        $finish;
+                    end
+                end else begin
+                    if (error) begin
+                        $display("FAIL: Test case %d, direction %b - Error incorrectly detected for valid shift_amount!", i, direction);
+                        $finish;
+                    end
+                end
+                
+                // Display test result
+                $display("PASS: Test case %d, direction %b - Error correctly %s", 
+                         i, direction, (error ? "detected" : "not detected"));
+            end
+        end
+        
+        $display("-----------------------------");
+        $display("All tests passed successfully!");
+        $finish;
+    end
+
+endmodule
+```

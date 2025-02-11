@@ -1,0 +1,180 @@
+Timestamp: 2025-02-11 13:30:33
+Sender: testbench_writer
+Topic: Digital Signal Switch
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog testbench for a 2-to-1 digital signal switch. The user has provided specific requirements, so let me break this down step by step.
+
+First, understanding the DUT (Device Under Test): It's a simple switch that routes one of two inputs (IN_A or IN_B) to the output (OUT) based on the selector input (SEL). When SEL is 0, OUT should be equal to IN_A; when SEL is 1, OUT should be equal to IN_B.
+
+The testbench needs to cover all possible input combinations. Since there are three inputs (IN_A, IN_B, and SEL), each being a single bit, there are 2^3 = 8 possible test cases. I'll need to simulate each scenario to ensure the DUT behaves correctly in every situation.
+
+Next, considering the clock generation: The clock is specified at 50 MHz, which means a period of 20 ns (since period = 1/frequency). This will be handled by an always block that toggles the clock signal every 10 ns.
+
+For the reset signal (RST), it's active-high. I'll need to apply RST for at least one full clock cycle before starting the actual testing to ensure the DUT is in a known state.
+
+Now, looking at the timing requirements:
+- Inputs have a setup time of 1 ns before the rising edge of CLK.
+- Inputs must hold for 2 ns after the rising edge of CLK.
+- Outputs have a propagation delay of 5 ns from the rising edge of CLK.
+
+I'll need to account for these timing constraints in the testbench. This means that when applying input signals, I should set them up 1 ns before the clock's rising edge and keep them stable for 2 ns after the rising edge. The output should be checked only after the propagation delay has passed (5 ns after the rising clock edge).
+
+The testbench structure will include:
+1. An initial block to set up the environment.
+2. A clock generation always block.
+3. A loop to iterate through all possible input combinations.
+4. For each combination, apply inputs with proper timing and check outputs.
+
+I'll also need to include success/failure messages for each test case to quickly identify any issues during simulation.
+
+Now, putting it all together in Verilog code:
+
+```verilog
+module tb_mux_2to1;
+    // Define inputs and outputs
+    reg IN_A, IN_B, SEL, RST;
+    wire OUT, CLK;
+
+    // Clock generation
+    always begin
+        CLK = 0;
+        #10ns;  // Wait for half the period to toggle clock
+        CLK = 1;
+        #10ns;  // Wait for the other half of the period
+        CLK = 0;
+    end
+
+    initial begin
+        // Reset the DUT
+        RST = 1;
+        IN_A = 0;
+        IN_B = 0;
+        SEL = 0;
+
+        // Apply reset for one clock cycle
+        #20ns RST = 0;
+
+        // Test all combinations of IN_A, IN_B, and SEL
+        for (IN_A = 0; IN_A < 2; IN_A++) begin
+            for (IN_B = 0; IN_B < 2; IN_B++) begin
+                for (SEL = 0; SEL < 2; SEL++) begin
+                    // Wait for setup time before clock edge
+                    #1ns;
+                    // Apply inputs
+                    IN_A;
+                    IN_B;
+                    SEL;
+
+                    // Wait for hold time after clock edge
+                    #2ns;
+
+                    // Expected output calculation
+                    wire expected_out = (SEL == 0) ? IN_A : IN_B;
+
+                    // Wait for next clock cycle to ensure output has propagated
+                    #10ns;
+
+                    // Check actual output
+                    if (OUT != expected_out) begin
+                        $display("FAIL: IN_A=%b, IN_B=%b, SEL=%b, OUT Expected:%b, Actual:%b", 
+                                 IN_A, IN_B, SEL, expected_out, OUT);
+                        $stop;
+                    end else begin
+                        $display("PASS: IN_A=%b, IN_B=%b, SEL=%b, OUT=%b", 
+                                 IN_A, IN_B, SEL, OUT);
+                    end
+
+                    // Wait for next clock cycle before next test case
+                    #10ns;
+                end
+            end
+        end
+
+        // All tests passed
+        $display("ALL TEST CASES PASSED");
+        $finish;
+    end
+
+endmodule
+```
+
+This code sets up a comprehensive testbench that:
+- Generates a 50 MHz clock.
+- Applies a reset to the DUT.
+- Iterates through all possible input combinations.
+- Ensures inputs are set with proper timing constraints.
+- Checks the output against expected values, providing feedback for each test case.
+
+By following this approach, I can thoroughly verify the functionality of the 2-to-1 digital signal switch under all possible conditions.
+</think>
+
+```verilog
+module tb_mux_2to1;
+    // Define inputs and outputs
+    reg IN_A, IN_B, SEL, RST;
+    wire OUT, CLK;
+
+    // Clock generation
+    always begin
+        CLK = 0;
+        #10ns;  // Wait for half the period to toggle clock
+        CLK = 1;
+        #10ns;  // Wait for the other half of the period
+        CLK = 0;
+    end
+
+    initial begin
+        // Reset the DUT
+        RST = 1;
+        IN_A = 0;
+        IN_B = 0;
+        SEL = 0;
+
+        // Apply reset for one clock cycle
+        #20ns RST = 0;
+
+        // Test all combinations of IN_A, IN_B, and SEL
+        for (IN_A = 0; IN_A < 2; IN_A++) begin
+            for (IN_B = 0; IN_B < 2; IN_B++) begin
+                for (SEL = 0; SEL < 2; SEL++) begin
+                    // Wait for setup time before clock edge
+                    #1ns;
+                    // Apply inputs
+                    IN_A;
+                    IN_B;
+                    SEL;
+
+                    // Wait for hold time after clock edge
+                    #2ns;
+
+                    // Expected output calculation
+                    wire expected_out = (SEL == 0) ? IN_A : IN_B;
+
+                    // Wait for next clock cycle to ensure output has propagated
+                    #10ns;
+
+                    // Check actual output
+                    if (OUT != expected_out) begin
+                        $display("FAIL: IN_A=%b, IN_B=%b, SEL=%b, OUT Expected:%b, Actual:%b", 
+                                 IN_A, IN_B, SEL, expected_out, OUT);
+                        $stop;
+                    end else begin
+                        $display("PASS: IN_A=%b, IN_B=%b, SEL=%b, OUT=%b", 
+                                 IN_A, IN_B, SEL, OUT);
+                    end
+
+                    // Wait for next clock cycle before next test case
+                    #10ns;
+                end
+            end
+        end
+
+        // All tests passed
+        $display("ALL TEST CASES PASSED");
+        $finish;
+    end
+
+endmodule
+```

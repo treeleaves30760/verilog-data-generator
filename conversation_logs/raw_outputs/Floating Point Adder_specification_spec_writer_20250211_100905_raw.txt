@@ -1,0 +1,50 @@
+Timestamp: 2025-02-11 10:09:05
+Sender: spec_writer
+Topic: Floating Point Adder
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Floating Point Adder. Let me think about how to approach this.
+
+First, I'll start by understanding what a floating point adder does. It's responsible for adding two floating-point numbers according to the IEEE 754 standard. That means handling the sign, exponent, and mantissa correctly.
+
+The module name should be something clear like `fp_adder`. Now, for the description, it needs to mention that it performs addition with support for special cases like NaN, infinity, and zero. Also, it should handle underflow and overflow.
+
+Next, the inputs. The two numbers being added are `a` and `b`, each 32 bits wide. Then there's a clock signal `clk` and a reset `rst`. I'll list these as Inputs: - a: 32-bit input number; - b: 32-bit input number; - clk: clock; - rst: asynchronous reset.
+
+For the outputs, we need the result of the addition. So `sum` is a 32-bit output. Also, status flags like `invalid_op`, `div_by_zero`, and `overflow` are important for handling exceptions. I'll include these as Outputs: - sum: 32-bit output number; - invalid_op: indicates invalid operation (e.g., NaNs); - div_by_zero: overflow when dividing by zero; - overflow: overflow occurred during addition.
+
+Now, the functionality part. The adder should take two inputs and produce their sum. It needs to handle special cases like if either input is NaN, it returns NaN and sets `invalid_op`. If any input is infinity, it checks for adding infinities or finite numbers. For zero handling, negative zero should be treated correctly. Underflow and overflow must be detected, setting the appropriate status flags.
+
+Timing requirements: The adder operates on a clock `clk` with a period of 10ns. Reset is asynchronous, so when `rst` is high, it resets all internal states.
+
+I think that's a solid structure. I should make sure each part is clear and follows standard Verilog practices without any markdown or code blocks as per the instructions.
+</think>
+
+```  
+Module Name: fp_adder  
+Description: A 32-bit floating-point adder implementing IEEE 754 addition with special value handling.  
+
+Inputs:  
+- a: 32-bit input number  
+- b: 32-bit input number  
+- clk: clock signal  
+- rst: asynchronous reset  
+
+Outputs:  
+- sum: 32-bit output number  
+- invalid_op: 1-bit flag indicating an invalid operation (e.g., NaNs)  
+- div_by_zero: 1-bit flag for overflow due to division by zero  
+- overflow: 1-bit flag for overflow during addition  
+
+Functionality:  
+The floating-point adder performs the following operations:  
+1. Adds two 32-bit floating-point numbers according to IEEE 754 standard.  
+2. Handles special cases such as NaN, infinity, and zero.  
+3. Detects underflow and overflow conditions.  
+4. Sets status flags for invalid operations, division by zero, and overflow.  
+
+Timing Requirements:  
+- Clock (clk): 10ns period  
+- Reset (rst): Asynchronous reset active high  
+```

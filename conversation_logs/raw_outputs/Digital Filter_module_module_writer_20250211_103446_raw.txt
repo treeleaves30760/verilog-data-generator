@@ -1,0 +1,50 @@
+Timestamp: 2025-02-11 10:34:46
+Sender: module_writer
+Topic: Digital Filter
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog module for a 4-to-1 multiplexer based on the user's request. Let me think through how to approach this.
+
+First, understanding what a 4-to-1 MUX does: it takes four input signals and two control signals (S0 and S1) to select which of the four inputs is passed to the output. The selection is done by combining the two control bits into a binary address.
+
+I should define the module with the correct ports. The user specified the module name as `mux_4to1` with inputs D0, D1, D2, D3, S0, S1, and output Y. So I'll set that up.
+
+Next, writing the Verilog code. Since it's a combinational circuit, I can use a case statement or if-else statements to handle all possible combinations of S0 and S1. Using a case statement is more efficient and cleaner for multiple conditions.
+
+I need to ensure that all four cases are covered: 00, 01, 10, 11. Each case will assign the corresponding D input to Y.
+
+Including comments will help anyone reading the code understand what each part does. So I'll add a comment before the case statement explaining the selection process.
+
+I should also make sure that the code is synthesizable by avoiding any non-synthesizable constructs like loops or blocking assignments, which isn't an issue here since it's a straightforward MUX.
+
+Putting it all together, I'll structure the module with inputs and outputs declared first, then the always_comb statement for the logic. This should be efficient and correct as per the specifications.
+</think>
+
+```verilog
+// 4-to-1 Multiplexer Module
+// Inputs: D0, D1, D2, D3
+// Control inputs: S0, S1 (binary address to select input)
+// Output: Y
+module mux_4to1 (
+    input logic D0,
+    input logic D1,
+    input logic D2,
+    input logic D3,
+    input logic S0,
+    input logic S1,
+    output logic Y
+) 
+{
+    // When S is "00", output D0; when "01", output D1;
+    // when "10", output D2; when "11", output D3
+    always_comb begin
+        case ({S1, S0})  // Combine S1 and S0 into a 2-bit address
+            00: Y = D0;
+            01: Y = D1;
+            10: Y = D2;
+            default: Y = D3;  // Default case for "11"
+        endcase
+    end
+}
+```

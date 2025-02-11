@@ -1,0 +1,72 @@
+Timestamp: 2025-02-11 13:42:50
+Sender: module_writer
+Topic: Digital Signal Demultiplexer
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog module for a Digital Signal Demultiplexer based on the provided specification and testbench. Let me break down what's required.
+
+First, the demultiplexer has four outputs (data_out_0 to data_out_3) controlled by a 2-bit sel signal. The input is a single bit, data_in. There are also clock and reset signals involved.
+
+I'll start by defining the module with the correct name and ports as specified. The module should include a clock, reset, data_in, and sel as inputs, and four outputs for each possible selection.
+
+Next, I need to handle the reset functionality. When rst is high, all outputs should be 0. So, I'll use an always block that's triggered by the rising edge of clk. Inside this block, if rst is high, set all data_outs to 0.
+
+Without the reset, the demultiplexer should route data_in based on sel. Using a case statement inside the same clocked always block makes sense here. For each value of sel (0,1,2,3), assign data_in to the corresponding output. If sel is invalid, no action is needed as per the spec.
+
+I also need to ensure that the code is synthesizable, so I'll avoid any non-synthesizable constructs like $display or $error in the main module. Those should be placed in the testbench instead.
+
+Putting it all together, the module will have a clocked always block handling both reset and selection logic. This ensures that the demultiplexer operates correctly on each rising edge of the clock signal.
+</think>
+
+```verilog
+module DigitalSignalDemultiplexer (
+    input data_in,
+    input [1:0] sel,
+    input clk,
+    input rst,
+    output data_out_0,
+    output data_out_1,
+    output data_out_2,
+    output data_out_3
+);
+
+    always @(posedge clk) begin
+        if (rst) begin
+            data_out_0 <= 0;
+            data_out_1 <= 0;
+            data_out_2 <= 0;
+            data_out_3 <= 0;
+        end else begin
+            case (sel)
+                0: 
+                    data_out_0 <= data_in;
+                    data_out_1 <= 0;
+                    data_out_2 <= 0;
+                    data_out_3 <= 0;
+                1:
+                    data_out_0 <= 0;
+                    data_out_1 <= data_in;
+                    data_out_2 <= 0;
+                    data_out_3 <= 0;
+                2: 
+                    data_out_0 <= 0;
+                    data_out_1 <= 0;
+                    data_out_2 <= data_in;
+                    data_out_3 <= 0;
+                3:
+                    data_out_0 <= 0;
+                    data_out_1 <= 0;
+                    data_out_2 <= 0;
+                    data_out_3 <= data_in;
+                default: 
+                    data_out_0 <= 0;
+                    data_out_1 <= 0;
+                    data_out_2 <= 0;
+                    data_out_3 <= 0;
+            endcase
+        end
+    end
+
+endmodule
+```

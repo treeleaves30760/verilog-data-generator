@@ -1,0 +1,55 @@
+Timestamp: 2025-02-11 11:42:38
+Sender: module_writer
+Topic: Digital Differentiator
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, I need to create a Verilog module based on the given specifications and testbench. Let me break down what's required.
+
+First, the module name is `digital_diff`. It has inputs: data_in, clk, rst, and outputs diff_out, valid. The functionality involves capturing consecutive samples of data_in and computing their difference.
+
+I'll start by declaring the module with the specified ports. Inside, I'll need a register to store the previous data value, prev_data.
+
+The clock is asynchronous, so I'll use a positive-edge trigger for the main logic. When rst is high, both diff_out and valid should be 0, and prev_data should reset to 0.
+
+After releasing the reset, on each rising edge of clk, the current data_in will be stored in prev_data after one clock cycle. Then, on the next rising edge, the difference between the new data_in and prev_data is computed for diff_out. The valid signal indicates that this difference is ready after one cycle from the last reset or new data.
+
+I'll structure the code with always blocks: one for the reset and another for the clocked logic. I'll ensure that the outputs are properly assigned, especially handling the two-cycle delay for valid.
+
+Now, putting it all together in Verilog syntax, making sure to follow the specifications exactly without any extra explanations.
+</think>
+
+```verilog
+module digital_diff (
+    input data_in,
+    input clk,
+    input rst,
+    output diff_out,
+    output valid
+);
+
+// Internal signals
+reg prev_data;
+reg valid_reg;
+
+always @(posedge clk or posedge rst) begin
+    if (rst) begin
+        prev_data <= 0;
+        valid_reg <= 0;
+    end else begin
+        // Capture previous data on rising edge of clock
+        if (!valid_reg) begin
+            prev_data <= data_in;
+            valid_reg <= 1;
+        end else begin
+            // Compute difference after one cycle delay
+            diff_out <= (data_in != prev_data);
+            prev_data <= data_in;
+        end
+    end
+end
+
+assign valid = valid_reg;
+
+endmodule
+```

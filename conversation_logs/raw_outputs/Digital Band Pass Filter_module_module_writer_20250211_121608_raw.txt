@@ -1,0 +1,85 @@
+Timestamp: 2025-02-11 12:16:08
+Sender: module_writer
+Topic: Digital Band Pass Filter
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog module for a 4-bit counter that can be reset and has an increment/decrement mode. Let me think about how to approach this.
+
+First, the module should have four main ports: Clk (clock), Rst (reset), Mode (to switch between inc/dec), and Q (the output). The counter should count up when Mode is 0 and down when Mode is 1. It also needs a reset functionality that brings it back to 0.
+
+I'll start by defining the module with these ports: Clk, Rst, Mode, and Q. Since it's a 4-bit counter, Q will be a 4-bit output.
+
+Next, I need to declare the register for the counter state. Let's call it count, which is a 4-bit variable. It should be initialized to 0.
+
+Now, I'll write the always block that triggers on the rising edge of Clk. Inside this block, there are two main conditions: when Rst is active or not.
+
+If Rst is high (assuming active-high reset), count should be set to 0 immediately. That's straightforward.
+
+When Rst isn't active, I need to check the Mode. If Mode is 0, we increment the counter. But since it's a 4-bit counter, after 15 (which is 1111 in binary), it should wrap around to 0. So, if count is 15 and we're incrementing, it goes back to 0.
+
+If Mode is 1, we decrement the counter. Here, I need to handle the case when count is 0. If we try to decrement 0, it should go to 15. That way, it wraps around correctly.
+
+I'll use a ternary operator inside the always block to decide whether to increment or decrement based on Mode. So, if Mode is 0, add 1; else, subtract 1. But I have to make sure that when adding, we check for overflow, and when subtracting, check for underflow.
+
+Wait, in Verilog, using an if-else statement might be clearer than a ternary operator here. Let me think: inside the always block, after handling reset, I can have two conditions—Mode 0 and Mode 1. For each case, handle increment or decrement accordingly.
+
+Alternatively, I could use a single line with a conditional assignment. Hmm, perhaps using an if-else structure is more readable.
+
+So, in code:
+
+always @(posedge Clk) begin
+    if (Rst) begin
+        count <= 0;
+    else begin
+        if (Mode == 0) begin
+            if (count == 15) begin
+                count <= 0;
+            end else begin
+                count <= count + 1;
+            end
+        end else begin
+            if (count == 0) begin
+                count <= 15;
+            end else begin
+                count <= count - 1;
+            end
+        end
+    end
+end
+
+Wait, but in Verilog, the else statement needs to be properly nested. I think this structure should work.
+
+I also need to assign the count value to Q. So, outside the always block, I'll have an assignment: Q = count; because it's a combinational output.
+
+Putting it all together, the module will look like:
+
+module four_bit_counter (
+    input Clk, Rst, Mode,
+    output reg [3:0] Q
+);
+    reg [3:0] count;
+
+    always @(posedge Clk) begin
+        if (Rst) begin
+            count <= 0;
+        end else begin
+            if (Mode == 0) begin
+                if (count == 15) begin
+                    count <= 0;
+                end else begin
+                    count <= count + 1;
+                end
+            end else begin
+                if (count == 0) begin
+                    count <= 15;
+                end else begin
+                    count <= count - 1;
+                end
+            end
+        end
+    end
+
+    assign Q = count;
+endmodule
+```

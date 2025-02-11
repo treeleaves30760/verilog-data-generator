@@ -1,0 +1,93 @@
+Timestamp: 2025-02-11 13:22:37
+Sender: module_writer
+Topic: Digital Signal Combiner
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a testbench for the combiner module based on the user's specifications. The testbench should cover all possible input combinations and ensure the module behaves correctly under each scenario.
+
+First, I'll define the testbench module tb_combiner with the same inputs as the combiner module: in1, in2, in3, enable, rst_n, clk, and out.
+
+The clock generation will be handled within the testbench using an always block that toggles the clock every 5 time units. This ensures a consistent simulation environment.
+
+I'll start by resetting all inputs to 0 at the beginning and wait for a few clock cycles to ensure the circuit is in a known state before starting the tests.
+
+Next, I'll loop through all possible combinations of the input signals. Since there are three inputs (in1, in2, in3) each can be either 0 or 1, resulting in 8 total combinations. For each combination, I'll set the respective inputs, wait half a clock period to allow outputs to stabilize, and then check if the output matches the expected value based on the combiner's logic.
+
+If any test case fails, I'll display an error message indicating which specific case failed. If all tests pass, I'll show a success message.
+
+I need to structure the code with nested loops for in3, in2, and in1 to cover all combinations. The expected output is determined by whether any of the inputs are high when enable is active.
+
+Testing each combination ensures that all parts of the combiner function correctly under various conditions. This thorough testing will help catch any potential issues early in the design phase.
+</think>
+
+```verilog
+module tb_combiner;
+    // Inputs
+    reg in1, in2, in3;
+    reg enable, rst_n;
+    reg clk;
+    
+    // Output
+    wire out;
+    
+    // Clock generation
+    always begin
+        clk = 0; #5;
+        clk = 1; #5;
+    end
+    
+    // DUT instance
+    combiner dut (
+        .in1(in1),
+        .in2(in2),
+        .in3(in3),
+        .enable(enable),
+        .rst_n(rst_n),
+        .clk(clk),
+        .out(out)
+    );
+    
+    initial begin
+        // Initialize inputs
+        in1 = 0;
+        in2 = 0;
+        in3 = 0;
+        enable = 0;
+        rst_n = 0;
+        
+        // Wait for reset to complete
+        #10 rst_n = 1;
+        
+        // Test all combinations of in1, in2, in3
+        for (in3 = 0; in3 <= 1; in3++) begin
+            for (in2 = 0; in2 <= 1; in2++) begin
+                for (in1 = 0; in1 <= 1; in1++) begin
+                    // Set enable to test both enabled and disabled states
+                    for (enable = 0; enable <= 1; enable++) begin
+                        #10;
+                        
+                        // Calculate expected output
+                        if (enable) 
+                            logic expected_out = in1 | in2 | in3;
+                        else 
+                            logic expected_out = dut.ff_out;
+                        
+                        // Compare actual and expected outputs
+                        if (out != expected_out) begin
+                            $display("Test failed: in1=%b, in2=%b, in3=%b, enable=%b", 
+                                     in1, in2, in3, enable);
+                            $display("Expected output: %b, Actual output: %b", 
+                                     expected_out, out);
+                        end
+                    end
+                end
+            end
+        end
+        
+        // All tests passed
+        $display("All tests passed!");
+    end
+    
+endmodule
+```

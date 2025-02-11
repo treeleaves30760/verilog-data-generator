@@ -1,0 +1,82 @@
+Timestamp: 2025-02-11 12:31:06
+Sender: module_writer
+Topic: Digital Delay Line
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog module for a 4-bit counter that increments on each rising edge of the clock and has a reset functionality. Let me think about how to approach this.
+
+First, I'll define the module with the necessary ports: `clk` for the clock input, `rst` for the reset input, `count_out` as the 4-bit output bus, and `overflow` as an output flag indicating when the counter exceeds its maximum value.
+
+Since it's a 4-bit counter, the maximum value is 15 (binary 1111). I'll need to use flip-flops to store each bit of the count. I can declare four registers, one for each bit.
+
+The reset functionality should set all bits to 0 when `rst` is active (high). This means inside an always block triggered by the rising edge of `rst`, I'll assign 0 to all flip-flops and clear the overflow flag.
+
+For the counting logic, another always block will be used, triggered by the rising edge of `clk`. If the reset is not active, the counter increments. I'll calculate the new count by adding 1 to the current count. If the new count exceeds 15, I'll set the overflow flag and reset all bits; otherwise, I'll update each bit with the new value.
+
+I need to ensure that the flip-flops are updated correctly without any race conditions. Assigning them individually using `assign` statements inside the always block should work fine.
+
+Finally, I'll assign the four bits stored in the registers to the `count_out` bus so that the output reflects the current count.
+
+Putting it all together, here's the Verilog code for the 4-bit counter with reset and overflow detection.
+</think>
+
+```verilog
+// 4-bit counter module with reset and overflow detection
+module four_bit_counter (
+    input clk,          // Clock input (rising edge)
+    input rst,          // Reset input (active high)
+    output reg [3:0] count_out,  // 4-bit binary counter output
+    output reg overflow   // Overflow flag when counting exceeds 15
+);
+
+    // Internal registers for each bit of the counter
+    reg b0;  // Least significant bit
+    reg b1;
+    reg b2;
+    reg b3;  // Most significant bit
+
+    // Reset functionality: sets all bits to 0 and clears overflow on rst rising edge
+    always @(posedge rst) begin
+        b0 <= 0;
+        b1 <= 0;
+        b2 <= 0;
+        b3 <= 0;
+        overflow <= 0;
+    end
+
+    // Counting logic: increments counter on each clock cycle if not in reset state
+    always @(posedge clk) begin
+        if (rst == 1) begin
+            // Reset state: set all bits to 0 and clear overflow
+            b0 <= 0;
+            b1 <= 0;
+            b2 <= 0;
+            b3 <= 0;
+            overflow <= 0;
+        end else begin
+            // Calculate new count value
+            reg [4:0] new_count = {b3, b2, b1, b0} + 1;
+
+            // Check if the new count exceeds the maximum (15)
+            if (new_count == 5'b10000) begin
+                overflow <= 1;  // Set overflow flag
+                b0 <= 0;
+                b1 <= 0;
+                b2 <= 0;
+                b3 <= 0;       // Reset all bits to 0 on overflow
+            end else begin
+                overflow <= 0;  // Clear overflow flag if not overflowing
+                b0 <= new_count[0];
+                b1 <= new_count[1];
+                b2 <= new_count[2];
+                b3 <= new_count[3];  // Update each bit with new value
+            end
+        end
+    end
+
+    // Assign the four bits to the output bus
+    assign count_out = {b3, b2, b1, b0};
+
+endmodule
+```

@@ -1,0 +1,46 @@
+Timestamp: 2025-02-11 11:32:00
+Sender: testbench_writer
+Topic: Digital Divider
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, the user provided another query about creating a Verilog testbench. They included specific instructions to wrap code in ```verilog blocks and avoid explanations.
+
+I need to ensure I follow their guidelines precisely. First, I'll structure the response with the verilog block as specified. The testbench should include clock generation using an initial loop, iterate through all input combinations, and display success or failure messages without any extra text.
+
+Since they didn't specify a particular module name or inputs/outputs, I'll use generic names like `your_module_name`, `a`, `b`, and `output`. I'll also include placeholders for expected results using a function call, which the user can replace with actual logic.
+
+I should make sure the code is clean and adheres to their requirements. No explanations or additional text—just the Verilog code as they asked.
+</think>
+
+```verilog
+module tb_your_module_name();
+    // Clock generation
+    initial begin
+        clock = 0;
+        forever #1 clock = ~clock;
+    end
+
+    // Test all input combinations
+    initial begin
+        $display("Starting testbench for your_module_name...");
+        
+        for (a = 0; a < 2; a++) begin
+            for (b = 0; b < 2; b++) begin
+                #0.1;
+                your_module_input_a = a;
+                your_module_input_b = b;
+                
+                #1;
+                if (your_module_output != expected_result(a, b)) begin
+                    $display("Test failed: Inputs %d and %d", a, b);
+                    $finish;
+                end
+            end
+        end
+        
+        $display("All tests passed successfully!");
+        $finish;
+    end
+endmodule
+```

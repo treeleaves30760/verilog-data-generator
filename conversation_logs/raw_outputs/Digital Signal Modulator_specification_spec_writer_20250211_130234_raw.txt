@@ -1,0 +1,49 @@
+Timestamp: 2025-02-11 13:02:34
+Sender: spec_writer
+Topic: Digital Signal Modulator
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Digital Signal Modulator based on the user's example. Let me think through how to approach this.
+
+First, I should understand what a Digital Signal Modulator does. From what I know, it takes digital data and modulates it onto a carrier signal, typically using methods like BPSK or QPSK. The specification needs to outline the module's structure, inputs, outputs, functionality, and timing requirements.
+
+Looking at the example provided, the user included sections for Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. Each input and output was listed with their width and description, which is clear and structured.
+
+So, I'll start by defining the module name as `digital_signal_modulator`. The description should briefly explain its purpose, something like "Modulates digital data onto a carrier signal using BPSK/QPSK."
+
+Next, for inputs, I need to list all necessary signals. From the example, there were clock (clk), reset (rst), data_in (the digital data), and maybe a modulate enable signal. The width for data_in would be 1 bit since it's a single data stream.
+
+For outputs, the main one is the modulated signal, which would likely be a differential pair (like D0 and D1) to represent the quadrature components. Each would be 1 bit wide.
+
+In the functionality section, I should describe how the module works: sampling the input data at the clock rate, converting it into symbols, and then modulating them onto the carrier by adjusting the phase based on the modulation technique (BPSK for binary or QPSK for quad).
+
+Timing requirements are crucial. The clock is essential, so I'll note a 100MHz clock with positive edge sampling. Reset is active high, meaning it's asserted when the reset signal is high. There should be a minimum pulse width for effective reset, maybe 2 clock cycles.
+
+I also need to consider setup and hold times for data_in relative to the clock to ensure proper data capture. Maybe specify that data must be stable 10ns before and after the clock edge.
+
+Putting it all together, I'll structure each section clearly without markdown or code blocks, just plain text as per the user's request.
+</think>
+
+```
+Module Name: digital_signal_modulator  
+Description: Modulates digital data onto a carrier signal using BPSK/QPSK.  
+
+Inputs:  
+- clk: 1 Description: System clock.  
+- rst: 1 Description: Active-high reset signal.  
+- data_in: 1 Description: Digital data input to be modulated.  
+- modulate_enable: 1 Description: Enable modulation operation.  
+
+Outputs:  
+- d0: 1 Description: Modulated signal I/Q component (D0).  
+- d1: 1 Description: Modulated signal I/Q component (D1).  
+
+Functionality:  
+The module samples the digital data input at each clock cycle, converts it into symbols, and modulates them onto a carrier signal using BPSK or QPSK. The modulation process adjusts the phase of the carrier based on the input data. The differential output signals (D0 and D1) represent the in-phase and quadrature components of the modulated signal.  
+
+Timing Requirements:  
+- Clock: clk Description: 100MHz clock with positive edge sampling.  
+- Reset: rst Description: Active-high reset; must be held high for at least two clock cycles to ensure proper initialization.  
+- Data Input: data_in Description: Must be stable 10ns before and after the clock edge.  
+```

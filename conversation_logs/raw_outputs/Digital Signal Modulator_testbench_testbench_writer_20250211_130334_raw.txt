@@ -1,0 +1,108 @@
+Timestamp: 2025-02-11 13:03:34
+Sender: testbench_writer
+Topic: Digital Signal Modulator
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog testbench for the BPSK/QPSK modulator based on the user's specifications. Let me break down what needs to be done step by step.
+
+First, I'll start by understanding the module's functionality. The modulator takes digital data and converts it into symbols using either BPSK or QPSK modulation. It outputs two differential signals (d0 and d1) representing the in-phase and quadrature components of the modulated signal.
+
+The testbench needs to cover all possible input combinations, which are determined by the inputs: data_in (1 bit), rst (1 bit), clk (1 bit), and modulate_enable (1 bit). This gives us a total of 2^4 = 16 possible input combinations. However, since data_in is only 1 bit, it simplifies to 8 unique test cases.
+
+Next, I'll focus on the clock generation. The user specified a 100MHz clock with positive edge sampling. In Verilog, this can be easily implemented using an always block that toggles the clock signal every 5 nanoseconds (since 100MHz is 10ns period).
+
+The reset signal needs to be handled carefully. It must be held high for at least two clock cycles to ensure proper initialization. I'll initialize rst to 1, wait for two clock periods, then drop it to 0.
+
+For the data input, it must be stable 10ns before and after each clock edge. This means that any changes to data_in should occur well before the clock edge to ensure proper sampling.
+
+I'll also need to monitor the outputs d0 and d1. Since these are differential signals, I'll check both lines for correct modulation based on the input data and enable signal.
+
+Finally, I'll include clear success/failure messages using $display statements to indicate whether each test case passed or failed.
+
+Now, putting it all together, I'll structure the testbench with an initial block that steps through each test case, applies the appropriate inputs, waits for the necessary settling time, and then checks the outputs. Each test case will be followed by a short delay to allow signals to settle before moving on to the next one.
+
+I need to ensure that the testbench is self-contained and can be directly simulated in Verilog without any additional setup or dependencies. This includes proper initialization of all signals and clean termination after all tests are completed.
+</think>
+
+```verilog
+`timescale 1ns / 1ps
+
+module tb_modulator_bpsk_qpsk;
+    // Define signals
+    reg clk, rst, data_in, modulate_enable;
+    wire d0, d1;
+
+    // DUT instance
+    modulator_bpsk_qpsk dut (
+        .clk(clk),
+        .rst(rst),
+        .data_in(data_in),
+        .modulate_enable(modulate_enable),
+        .d0(d0),
+        .d1(d1)
+    );
+
+    // Clock generation
+    always begin
+        clk = 0;
+        #(5ns);
+        clk = 1;
+        #(5ns);
+    end
+
+    initial begin
+        // Initialize signals
+        rst = 1;
+        data_in = 0;
+        modulate_enable = 0;
+
+        // Reset the DUT properly
+        rst = 1;
+        #(20ns);  // Wait for two clock cycles
+        rst = 0;
+        #(10ns);
+
+        // Test all input combinations
+        // 1. data_in=0, modulateEnable=0
+        data_in = 0;
+        modulate_enable = 0;
+        #(30ns);
+        check_output(0, 0);
+
+        // 2. data_in=1, modulateEnable=0
+        data_in = 1;
+        modulate_enable = 0;
+        #(30ns);
+        check_output(1, 0);
+
+        // 3. data_in=0, modulateEnable=1
+        data_in = 0;
+        modulate_enable = 1;
+        #(30ns);
+        check_output(0, 1);
+
+        // 4. data_in=1, modulateEnable=1
+        data_in = 1;
+        modulate_enable = 1;
+        #(30ns);
+        check_output(1, 1);
+
+        // Additional test cases if needed
+        // ...
+
+        $finish;
+    end
+
+    task check_output(input bit expected_d0, expected_d1);
+        if (d0 == expected_d0 && d1 == expected_d1) begin
+            $display("TEST CASE PASSED: data_in=%b, modulate_enable=%b -> d0=%b, d1=%b", 
+                     data_in, modulate_enable, d0, d1);
+        end else begin
+            $display("TEST CASE FAILED: data_in=%b, modulate_enable=%b. Expected d0=%b, d1=%b but got d0=%b, d1=%b",
+                     data_in, modulate_enable, expected_d0, expected_d1, d0, d1);
+        end
+    endtask
+
+endmodule
+```

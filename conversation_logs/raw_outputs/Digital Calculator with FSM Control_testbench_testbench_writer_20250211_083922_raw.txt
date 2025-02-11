@@ -1,0 +1,112 @@
+Timestamp: 2025-02-11 08:39:22
+Sender: testbench_writer
+Topic: Digital Calculator with FSM Control
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a testbench for the digital_calculator module. The user has provided specific instructions, so I'll follow them carefully.
+
+First, I'll start by setting up the time scale using `timeunit` and `timeprecision`. This ensures that timing in the simulation is accurate.
+
+Next, I'll define all the inputs and outputs of the testbench. The digital_calculator has switches for numbers 0-9, two operation buttons (add and subtract), a clock, and a reset button. The outputs include the segments of a 7-segment display, a result validity LED, and a power status LED.
+
+I'll initialize all inputs to their default states. This means setting the switches to 0, operation buttons to 0, clock to 0, and reset to 1. I'll also set the display segments to a default state where nothing is lit up.
+
+The testbench needs to generate a clock signal. I'll create a simple loop that toggles the clock every 5 nanoseconds. This will provide a consistent clock signal for the digital_calculator module.
+
+Now, I'll focus on testing the Finite State Machine (FSM) of the digital_calculator. I'll define the different states: IDLE, NUM_ENTRY1, OP_SELECT, NUM_ENTRY2, CALCULATE, and SHOW_RESULT. Each state represents a specific phase in the operation of the calculator.
+
+I'll write code to simulate entering two numbers, selecting an operation, and verifying that the result is displayed correctly. This involves transitioning through each state and ensuring that the inputs are applied at the right time.
+
+Finally, I'll add success and failure messages to help verify if the test cases pass or fail. This will make it easier to identify any issues during simulation.
+
+Overall, my goal is to create a comprehensive testbench that thoroughly tests all aspects of the digital_calculator module, ensuring that it functions correctly under various input conditions.
+</think>
+
+```verilog
+`timescale 1ns / 1ps
+
+module digital_calculator_testbench;
+    // Inputs
+    reg [9:0] switch;          // Number switches (0-9)
+    reg op_add, op_sub;        // Operation buttons
+    reg clock, reset;           // Clock and reset signals
+    
+    // Outputs
+    wire [6:0] display_segments;  // 7-segment display segments a-g
+    wire result_valid;            // Result validity LED
+    wire power_on;                // Power status LED
+
+    // Testbench variables
+    integer test_case;
+    parameter 
+        IDLE = 0,
+        NUM_ENTRY1 = 1,
+        OP_SELECT = 2,
+        NUM_ENTRY2 = 3,
+        CALCULATE = 4,
+        SHOW_RESULT = 5;
+
+    initial begin
+        // Initialize all inputs to 0
+        switch <= 0;
+        op_add <= 0;
+        op_sub <= 0;
+        clock <= 0;
+        reset <= 1;
+        
+        display_segments = 7'b0000000;  // Default segments off
+        result_valid = 0;
+        power_on = 1;                  // Power on LED
+        
+        $display("Starting digital calculator testbench...");
+    end
+
+    always begin
+        clock = 0;
+        #5;
+        clock = 1;
+        #5;
+        clock = 0;
+        #5;
+    end
+
+    initial begin
+        reset <= 1;
+        #10;
+        reset <= 0;
+        #10;
+        reset <= 1;
+        
+        // Test case: Basic addition
+        test_case = 1;
+        switch[3] <= 1;  // Enter '3'
+        #10;
+        switch[3] <= 0;
+        op_add <= 1;     // Press add button
+        #10;
+        op_add <= 0;
+        
+        switch[5] <= 1;  // Enter '5'
+        #10;
+        switch[5] <= 0;
+        op_sub <= 1;     // Press subtract button
+        #10;
+        op_sub <= 0;
+        
+        switch[8] <= 1;  // Enter '8'
+        #10;
+        switch[8] <= 0;
+        
+        op_add <= 1;     // Press add button to calculate
+        #10;
+        op_add <= 0;
+        
+        #50;
+        $display("Test case %d: Addition result displayed: %b", test_case, display_segments);
+        $display("Result validity: %b", result_valid);
+        $display("------------------------");
+    end
+
+endmodule
+```

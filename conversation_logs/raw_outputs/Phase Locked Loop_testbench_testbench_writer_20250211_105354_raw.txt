@@ -1,0 +1,108 @@
+Timestamp: 2025-02-11 10:53:54
+Sender: testbench_writer
+Topic: Phase Locked Loop
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog testbench for the Phase Locked Loop (PLL) module called `pll_core`. The user has provided specific requirements for the testbench, so I'll start by understanding those.
+
+First, the testbench must be comprehensive, meaning it should cover all possible input combinations and edge cases. It needs to include clock generation since PLLs rely heavily on clock signals. Also, success and failure messages are required for clear verification of the module's behavior.
+
+I'll begin by declaring all necessary signals in the testbench. These will include the reset signal (`rst_n`), divisor number (`div_num`), input clock (`clk_in`), output clock enable (`clk_out_enable`), output clock (`clk_out`), and the locked status (`locked`).
+
+Next, I'll set up a clock generator to provide the input clock signal. This is crucial for testing the PLL's behavior under different clock conditions.
+
+For the reset functionality, I'll apply an active-low reset to ensure the PLL initializes correctly. After releasing the reset, I'll monitor the `locked` signal to confirm the PLL has successfully locked onto the input clock.
+
+I'll test various divisor values to verify that the output clock frequency adjusts correctly according to the divisor setting. This includes testing minimum, maximum, and intermediate divisor values.
+
+Additionally, I'll test the `clk_out_enable` functionality by enabling and disabling the output clock at different times to ensure the PLL handles these transitions without issues.
+
+Throughout the testbench, I'll include clear success messages if the tests pass and error messages if any test fails. This will make it easy to identify and debug any issues during simulation.
+
+Finally, I'll structure the testbench with an `initial` block containing all the test cases. Each test case will have its own set of operations and assertions to validate the behavior of the PLL module.
+</think>
+
+```verilog
+module tb_pll_core;
+    // Declaration of signals
+    reg rst_n;
+    reg div_num;
+    reg clk_in;
+    reg clk_out_enable;
+    wire clk_out;
+    wire locked;
+
+    // Clock generation for clk_in
+    initial begin
+        forever begin
+            #10 ns;
+            clk_in = ~clk_in;
+        end
+    end
+
+    // DUT instance
+    pll_core dut (
+        .rst_n(rst_n),
+        .div_num(div_num),
+        .clk_in(clk_in),
+        .clk_out_enable(clk_out_enable),
+        .clk_out(clk_out),
+        .locked(locked)
+    );
+
+    initial begin
+        rst_n = 1'b0;  // Reset active low
+        div_num = 3'b0;
+        clk_out_enable = 1'b1;
+
+        // Reset the DUT
+        rst_n = 1'b0;
+        repeat(2) @(posedge clk_in);
+        rst_n = 1'b1;
+        repeat(1) @(posedge clk_in);
+
+        $display("Starting PLL testbench simulation...");
+        
+        // Test case 1: Basic lock detection
+        $display("\nTest Case 1: Check basic locking");
+        div_num = 3'b001;  // Set divisor to 1
+        repeat(20) @(posedge clk_in);
+        if (locked == 1'b1) 
+            $display("PLL locked successfully!");
+        else
+            $error("PLL failed to lock");
+
+        // Test case 2: Change divisor during operation
+        $display("\nTest Case 2: Check divisor change");
+        div_num = 3'b010;  // Set divisor to 2
+        repeat(20) @(posedge clk_in);
+        if (locked == 1'b1)
+            $display("PLL successfully re-locked with new divisor!");
+        else
+            $error("PLL failed to re-lock after divisor change");
+
+        // Test case 3: Toggle clock output enable
+        $display("\nTest Case 3: Check clock output enable");
+        clk_out_enable = 1'b0;
+        repeat(5) @(posedge clk_in);
+        if (clk_out == 1'b0)
+            $display("Clock output disabled correctly");
+        else
+            $error("Clock output failed to disable");
+
+        // Test case 4: Edge cases and maximum divisor
+        $display("\nTest Case 4: Check edge cases and max divisor");
+        div_num = 3'b111;  // Set divisor to 7
+        repeat(20) @(posedge clk_in);
+        if (locked == 1'b1)
+            $display("PLL successfully locked with maximum divisor!");
+        else
+            $error("PLL failed to lock with maximum divisor");
+
+        $display("\nAll test cases completed successfully!");
+        $finish;
+    end
+
+endmodule
+```

@@ -1,0 +1,51 @@
+Timestamp: 2025-02-11 12:11:13
+Sender: module_writer
+Topic: Digital High Pass Filter
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, I need to create a Verilog module for a digital high pass filter based on the given specifications. Let me go through the requirements step by step.
+
+First, the module needs to have specific ports: clk, rst, d_in, and d_out. All of these are 1-bit except d_in and d_out, which are 16 bits. The functionality is defined by the difference equation y[n] = x[n] - x[n-1], which means the output is the current input minus the previous input.
+
+I'll start by declaring the module with the correct ports. Since it's a synchronous design, I'll use flip-flops to store the previous input. The reset signal is active-high, so when rst is 1, I need to initialize the internal state.
+
+Next, I'll implement the difference equation using basic Verilog constructs. I'll use a D-type flip-flop to store x[n-1]. On each clock cycle, the current d_in will be subtracted from the stored previous value to produce d_out.
+
+I should ensure that all signals are properly declared with appropriate widths. The inputs and outputs are 16-bit signed integers, so I'll use signed types where necessary.
+
+Now, considering the testbench provided, it generates a clock, handles reset, and iterates through various input values. My module needs to process each sample correctly when the clock edges occur.
+
+I'll structure the Verilog code with a always block for the clock-driven logic. Inside this block, I'll handle the reset condition and then compute the output based on the current and previous inputs.
+
+Finally, I'll make sure that all flip-flops are properly initialized during reset to avoid any undefined behavior at startup.
+</think>
+
+```verilog
+module digital_high_pass_filter (
+    input  clk,
+    input  rst,
+    input  d_in,
+    output d_out
+);
+
+    // Internal state storage for previous input sample
+    reg prev_in;
+    
+    // Difference equation: y[n] = x[n] - x[n-1]
+    always @(posedge clk) begin
+        if (rst) begin
+            prev_in <= 0;
+            d_out   <= 0;
+        end else begin
+            // Store previous input sample
+            reg current_in = d_in;
+            // Calculate output as difference between current and previous samples
+            d_out <= current_in - prev_in;
+            // Update previous input for next cycle
+            prev_in <= current_in;
+        end
+    end
+
+endmodule
+```

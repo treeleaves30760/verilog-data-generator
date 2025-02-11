@@ -1,0 +1,44 @@
+Timestamp: 2025-02-11 08:40:41
+Sender: module_writer
+Topic: Digital Calculator with FSM Control
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog module for a 2-to-1 multiplexer based on the user's request. Let me think about how to approach this.
+
+First, I should recall what a multiplexer does. A 2-to-1 mux takes two inputs and one control signal. Depending on the control signal, it selects either of the two inputs as the output.
+
+The module name specified is `mux_2to1`, which makes sense. The ports are `a` and `b` for the inputs, `sel` for the selector, and `y` for the output. All are 1-bit signals, so I'll set their widths to 1.
+
+In Verilog, I can use a conditional assignment for the output. If the selector is 0, choose input a; otherwise, choose input b. This translates directly into an if-else statement in the always block.
+
+I should make sure the code is efficient and synthesizable. Using a simple if-else structure is straightforward and works well for this purpose. I'll also add comments to explain each part clearly.
+
+Now, putting it all together: the module will have an always block that assigns y based on sel. If sel is 0, y equals a; else, y equals b. This should cover all possible cases since sel is a single bit (either 0 or 1).
+
+I think that's all. The code should be concise and meet the user's requirements exactly.
+</think>
+
+```verilog
+// 2-to-1 Multiplexer Module
+// Inputs: a, b (data inputs)
+//         sel (selector input)
+// Output: y (selected output)
+module mux_2to1 (
+    input wire a,
+    input wire b,
+    input wire sel,
+    output wire y
+);
+
+    always @(*) begin
+        // If selector is 0, output a; else, output b
+        if (sel == 0) begin
+            y = a;
+        end else begin
+            y = b;
+        end
+    end
+
+endmodule
+```

@@ -1,0 +1,95 @@
+Timestamp: 2025-02-11 11:23:42
+Sender: testbench_writer
+Topic: Digital Oscillator
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog testbench for the digital_oscillator module based on the provided specification. Let me think through how to approach this.
+
+First, understanding the requirements is key. The oscillator has several control inputs: en, rst, freq_select, duty_cycle_sel, and phase_shift_sel. It also operates at 100 MHz with a positive-edge clock. The testbench needs to cover all possible input combinations and include clear success or failure messages.
+
+I'll start by setting up the testbench structure. I'll define the module tb_digital_oscillator with the same inputs and outputs as the oscillator, plus some additional signals for monitoring and control.
+
+Next, I need a clock generator. Since the clock runs at 100 MHz, each period is 10 ns. Using an initial block, I can create a forever loop that alternates the clock every 5 ns to ensure positive edges are captured correctly.
+
+For reset, I'll apply it for a short duration (20 ns) after the start and then release it. This ensures the oscillator initializes properly.
+
+The testbench should cover all input combinations. There are 2^7 = 128 possible combinations since there are seven control inputs. However, testing each combination individually would be time-consuming. Instead, I can loop through all possibilities using a for loop in an initial block.
+
+Each iteration will set the control signals and wait for a few clock cycles to allow the oscillator to respond. After setting each input combination, I'll display success messages if the output behaves as expected. If any unexpected behavior occurs, an error message should be displayed.
+
+I also need to include monitoring of the output signal oscl_out. Using $monitor or $display statements will help track its state over time.
+
+Finally, I'll add a final message indicating all tests passed successfully and stop the simulation after 100 ms to prevent infinite loops.
+
+Now, putting it all together in Verilog code, ensuring that each part is correctly implemented without any syntax errors. I'll make sure to include clear success/failure messages using $display and proper timing with # delays.
+</think>
+
+```verilog
+module tb_digital_oscillator;
+    // Inputs
+    input wire        rst;
+    input wire        en;
+    input wire [1:0]  freq_select;
+    input wire [1:0]  duty_cycle_sel;
+    input wire [2:0]  phase_shift_sel;
+    input wire        clk;
+
+    // Output
+    output reg        oscl_out;
+
+    // Clock generation
+    initial begin
+        forever begin
+            #5ns clk = ~clk;
+        end
+    end
+
+    // Reset signal
+    initial begin
+        rst = 1;
+        en = 0;
+        freq_select = 0;
+        duty_cycle_sel = 0;
+        phase_shift_sel = 0;
+        oscl_out = 0;
+        #20ns rst = 0;
+    end
+
+    // Test all input combinations
+    initial begin
+        $display("Digital Oscillator Testbench");
+        $display("----------------------------------");
+        $display("Testing all input combinations...");
+        
+        for (freq_select = 0; freq_select < 2; freq_select++) {
+            for (duty_cycle_sel = 0; duty_cycle_sel < 2; duty_cycle_sel++) {
+                for (phase_shift_sel = 0; phase_shift_sel < 4; phase_shift_sel++) {
+                    for (en = 0; en < 2; en++) {
+                        #15ns;
+                        $display("Frequency Select: %b", freq_select);
+                        $display("Duty Cycle Select: %b", duty_cycle_sel);
+                        $display("Phase Shift Select: %b", phase_shift_sel);
+                        $display("Enable: %b", en);
+                        
+                        #10ns;
+                        if (oscl_out == (en ? 1 : 0)) {
+                            $display("Test passed - Output matches expected value");
+                        } else {
+                            $error("Test failed - Output mismatch");
+                        }
+                        
+                        #5ns;
+                        $display("----------------------------------");
+                    }
+                }
+            }
+        }
+        
+        #100ms;
+        $display("All tests completed successfully!");
+        $stop;
+    end
+
+endmodule
+```

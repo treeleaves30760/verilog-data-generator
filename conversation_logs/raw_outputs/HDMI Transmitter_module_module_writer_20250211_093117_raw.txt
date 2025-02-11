@@ -1,0 +1,42 @@
+Timestamp: 2025-02-11 09:31:17
+Sender: module_writer
+Topic: HDMI Transmitter
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog module for a 4-to-1 multiplexer. Let me think about how to approach this.
+
+First, understanding what a 4-to-1 MUX does: it takes four input signals and two selector bits (since 2^2 = 4) and outputs one of the inputs based on the selector combination.
+
+I'll start by defining the module structure with the specified name `mux_4to1` and ports A, B, C, D as inputs, Sel being a 2-bit selector, and Y as the output.
+
+Next, I need to implement the logic. Using case statements seems appropriate here because it clearly maps each combination of Sel to an input. I'll use a case statement for all possible values of Sel (00, 01, 10, 11) and assign Y accordingly.
+
+Including comments will help clarify each part of the code. It's important to ensure that the module name and ports match exactly as specified.
+
+Finally, I'll structure the Verilog code within a `verilog` block, making sure it's efficient and uses synthesizable constructs only.
+</think>
+
+```verilog
+// 4-to-1 Multiplexer Module
+// This module selects between four input signals based on two selector bits
+module mux_4to1 (
+    input logic A,          // Input 00
+    input logic B,          // Input 01
+    input logic C,          // Input 10
+    input logic D,          // Input 11
+    input logic [1:0] Sel,  // Selector bits (2 bits)
+    output logic Y          // Output (selected input)
+);
+
+    always @(*) begin
+        case (Sel)            // Select between A, B, C, D based on Sel[1:0]
+            00: Y = A;        // When selector is 00, output A
+            01: Y = B;        // When selector is 01, output B
+            10: Y = C;        // When selector is 10, output C
+            11: Y = D;        // When selector is 11, output D
+        endcase
+    end
+
+endmodule
+```

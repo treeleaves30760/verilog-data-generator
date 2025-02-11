@@ -1,0 +1,118 @@
+Timestamp: 2025-02-11 10:04:49
+Sender: testbench_writer
+Topic: Matrix Multiplier
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a testbench for the Matrix Multiplier as per the user's specifications. The matrix is 8x8 with 16-bit elements each, and the result is a 32-bit vector.
+
+First, I'll start by setting up the Verilog module for the testbench. I'll name it `tb_matrix_multiplier`. Inside this module, I'll instantiate the Matrix_Multiplier as the DUT (Device Under Test).
+
+Next, I need to generate a clock signal. I'll create an always block that toggles the clock every 10 nanoseconds.
+
+Then, there's the reset signal. I'll initialize it to 1 for a short duration to ensure the DUT starts in a known state.
+
+The start signal will be used to initiate the matrix multiplication process. I'll assert this after releasing the reset.
+
+For matrices A and B, I'll create 8x8 arrays with each element being a 16-bit vector. To test all combinations, I'll initialize these matrices with specific patterns or random data.
+
+The output matrix C will be checked after the multiplication completes. I'll use display statements to verify each element of C against expected results.
+
+I'll also need to handle the done signal. Once it's asserted, the testbench can proceed to check the outputs and then finish.
+
+Including clear success/failure messages is crucial for quick debugging. I'll use SystemVerilog functions like $error and $fatal to indicate when tests pass or fail.
+
+Finally, I'll compile the testbench and simulate it using a Verilog simulator to verify that all tests pass as expected.
+</think>
+
+```verilog
+module tb_matrix_multiplier;
+    // Define matrix multiplier module
+    Matrix_Multiplier DUT (
+        .clk(clk),
+        .rst(rst),
+        .start(start),
+        .A(A),
+        .B(B),
+        .C(C),
+        .done(done)
+    );
+
+    // Clock generation
+    always begin
+        clk = 0;
+        #10;  // 50MHz clock (period=20ns)
+        clk = 1;
+        #10;
+    end
+
+    // Reset signal
+    initial begin
+        rst = 1;
+        #20;  // Wait for two clock cycles to ensure reset is applied
+        rst = 0;
+    end
+
+    // Start signal
+    initial begin
+        start = 0;
+        #30;  // Wait until after reset and clock cycles
+        start = 1;
+        #10;
+        start = 0;
+    end
+
+    // Initialize matrices A and B with specific patterns
+    initial begin
+        for (i = 0; i < 8; i++) begin
+            for (j = 0; j < 8; j++) begin
+                A[i][j] = {16{i + j}};  // Example pattern: A[i][j] = i + j (16-bit)
+                B[i][j] = {16{i * j}};  // Example pattern: B[i][j] = i * j (16-bit)
+            end
+        end
+
+        #20;  // Wait until after reset and start is asserted
+    end
+
+    // Monitor done signal and check results
+    initial begin
+        @(posedge done);
+        $display("Matrix multiplication completed successfully");
+        
+        // Verify each element of C
+        for (i = 0; i < 8; i++) begin
+            for (j = 0; j < 8; j++) begin
+                // Calculate expected value based on A and B patterns
+                integer expected_val;
+                expected_val = 0;
+                for (k = 0; k < 8; k++) begin
+                    expected_val += (A[i][k] * B[k][j]);
+                end
+                if (C[i][j] != expected_val) begin
+                    $error("Mismatch at C[%d][%d]: Expected %h, Actual %h", i, j, expected_val, C[i][j]);
+                end
+            end
+        end
+        
+        $display("All tests passed successfully");
+        $finish;
+    end
+
+    // Tasks to display matrices
+    task display_matrix;
+        input [7:0] matrix[8][8];
+        string name;
+        begin
+            for (i = 0; i < 8; i++) begin
+                $display("%s row %d: %h", name, i, matrix[i]);
+            end
+            $display("----------------------------------------");
+        end
+    endtask
+
+    // Final termination if simulation ends without completion
+    final begin
+        $fatal("Simulation ended without completion");
+    end
+endmodule
+```

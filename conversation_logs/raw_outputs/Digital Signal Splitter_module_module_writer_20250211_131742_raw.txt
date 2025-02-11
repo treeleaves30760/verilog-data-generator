@@ -1,0 +1,51 @@
+Timestamp: 2025-02-11 13:17:42
+Sender: module_writer
+Topic: Digital Signal Splitter
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog module for a 4-to-1 multiplexer. Let me think through this step by step.
+
+First, understanding what a 4-to-1 MUX does: it takes four data inputs and one control input (which is two bits wide since 2^2 = 4) and selects one of the four inputs to pass to the output based on the control signal.
+
+The module should be named `mux_4to1` as per the specification. The ports include data_in with four bits (in0 to in3), a control bit sel which is two bits wide, and the output data_out.
+
+I need to ensure the code is efficient and correct. I'll start by defining the module with the correct port declarations. Each data input will be an input logic wire, sel will be an input logic [1:0] (two bits), and data_out will be an output logic wire.
+
+Next, implementing the logic inside the module. Since it's a 4-to-1 MUX, the control signal sel determines which of the four inputs is selected. I can use a case statement to handle each possible value of sel.
+
+In Verilog, using a case statement with if-else conditions is efficient and clear for this scenario. Each case corresponds to one of the four possible combinations of sel (00, 01, 10, 11), assigning data_out accordingly.
+
+I should also ensure that all possible cases are covered to avoid any undefined behavior. Including a default case ensures that if none of the specified cases match (though it shouldn't happen with a two-bit control), data_out defaults to a known state, which I've set to in0 for consistency.
+
+Let me structure the code:
+
+1. Define the module with the correct name and ports.
+2. Use an always_comb statement since this is a purely combinational circuit.
+3. Within that block, use a case statement to handle each possible sel value and assign data_out accordingly.
+
+I think that's all. The code should be clear and efficient.
+</think>
+
+```verilog
+module mux_4to1 (
+    input logic in0,
+    input logic in1,
+    input logic in2,
+    input logic in3,
+    input logic [1:0] sel,
+    output logic data_out
+);
+
+always_comb begin
+    case (sel)
+        00: data_out = in0;
+        01: data_out = in1;
+        10: data_out = in2;
+        11: data_out = in3;
+        default: data_out = in0; // Default case, though not necessary for 2-bit sel
+    endcase
+end
+
+endmodule
+```

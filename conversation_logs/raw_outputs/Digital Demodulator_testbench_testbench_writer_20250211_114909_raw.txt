@@ -1,0 +1,87 @@
+Timestamp: 2025-02-11 11:49:09
+Sender: testbench_writer
+Topic: Digital Demodulator
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, so I need to create a Verilog testbench for a demodulator based on the user's specifications. Let me break down what needs to be done.
+
+First, I'll start by understanding the requirements. The user mentioned that the demodulator should handle 16-bit signals and perform operations like processing amplitude, frequency, or phase shifts. They also emphasized ensuring input widths match and that the functionality aligns with typical demodulator tasks.
+
+I'll structure the testbench to include clock generation since it's essential for synchronous circuits. The clock will run at 10 MHz, which is a common choice for such applications. I'll use a `while` loop to generate the clock signal by toggling the clock line every 50 nanoseconds.
+
+Next, I need to test all possible input combinations. Since the demodulator deals with 16-bit signals, I'll create two 16-bit input vectors, `input_signal` and `expected_output`. These will be initialized with specific values that cover different scenarios, ensuring comprehensive testing.
+
+To make the testbench user-friendly, I'll include clear success and failure messages. If all tests pass, it will display "Demodulator Testbench: All Tests Passed!" and if any fail, it will show a failure message along with the test number where it occurred.
+
+I'll set up the initial values for the inputs and outputs before starting the simulation. The clock will be initialized to 0, and the test loop will run through each input combination, checking the output after each setup.
+
+In the loop, I'll iterate over all possible combinations of `input_signal` and `expected_output`. For each iteration, I'll set the inputs, wait a cycle for the demodulator to process, then check if the actual output matches the expected value. If it doesn't, I'll display the failure message with the specific test number where the discrepancy occurred.
+
+Finally, after all tests are run, I'll display a success message to indicate that everything worked as expected.
+
+I need to ensure that the code is clean and follows Verilog best practices. All variables will be properly named and commented for clarity. The testbench should be self-contained so that it can be directly used in a simulator without additional setup.
+
+In summary, the testbench will include clock generation, comprehensive input testing, clear success/failure messages, and thorough coverage of all possible input scenarios to validate the demodulator's functionality.
+</think>
+
+```verilog
+`timescale 1ns / 1ps
+
+module demodulator_testbench;
+    // Clock generation
+    localparam CLOCK_FREQ = 10 MHz;
+    localparam PERIOD = 1 / CLOCK_FREQ;
+
+    reg clock;
+    initial begin
+        clock = 0;
+        forever #PERIOD/2 clock = ~clock;
+    end
+
+    // Input and output signals
+    reg [15:0] input_signal;
+    wire [15:0] output_signal;
+
+    // Demodulator instance under test
+    demodulator dut (
+        .clk(clock),
+        .rst(0),  // No reset functionality in this testbench
+        .input(input_signal),
+        .output(output_signal)
+    );
+
+    // Test cases and verification
+    initial begin
+        $display("Demodulator Testbench");
+        $display("------------------------");
+
+        // Initialize input and output vectors
+        reg [15:0] input_vector [0:2^16-1];
+        wire [15:0] expected_output [0:2^16-1];
+
+        // Populate test cases with specific values
+        input_vector[0] = 16'h0000;
+        expected_output[0] = 16'h0000;
+
+        input_vector[1] = 16'hFFFF;
+        expected_output[1] = 16'h0001;
+
+        // Continue populating test cases as needed...
+
+        $display("Starting tests...");
+        #10ns;  // Wait for initial setup
+
+        for (int i = 0; i < 2^16; i++) begin
+            input_signal = input_vector[i];
+            #5ns;
+            if (output_signal != expected_output[i]) begin
+                $display("Failure: Test %d - Output mismatch", i);
+                $finish;
+            end
+        end
+
+        $display("Demodulator Testbench: All Tests Passed!");
+    end
+endmodule
+```

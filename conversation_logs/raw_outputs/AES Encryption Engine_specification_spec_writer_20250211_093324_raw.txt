@@ -1,0 +1,67 @@
+Timestamp: 2025-02-11 09:33:24
+Sender: spec_writer
+Topic: AES Encryption Engine
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for an AES Encryption Engine. Let me think about how to approach this.
+
+First, I should understand what AES is. AES stands for Advanced Encryption Standard and it's a symmetric block cipher that encrypts data in blocks of 128 bits. The standard supports key lengths of 128, 192, and 256 bits. So the engine needs to handle these different key sizes.
+
+The user provided a detailed specification earlier, which I can use as a reference. It included module name, description, inputs, outputs, functionality, and timing requirements. I need to follow that structure but make sure all details are correct and comprehensive.
+
+Starting with the Module Name: aes_engine. That seems appropriate.
+
+Description should briefly explain what it does. So, "High-speed AES encryption engine supporting 128/192/256-bit keys." That covers the key sizes and mentions performance.
+
+Inputs section needs to list all necessary signals. The user included aes_key, aes_input, start, reset_n, clock, and aes_done. I should verify each of these:
+
+- aes_key: width is 256 bits since it's the maximum supported. Description says "AES encryption key (128/192/256 bits)" but maybe better to specify that it can be configured for different lengths.
+
+Wait, in Verilog, signals have fixed widths, so perhaps the aes_key should be 256 bits, and then within the module, we handle cases where the actual key is shorter. So the input is a 256-bit bus, but only parts are used based on the selected key length.
+
+Similarly, aes_input is 128 bits, which makes sense as AES operates on 128-bit blocks.
+
+Start is a control signal to begin encryption when asserted. Reset_n is active-low reset, so it's an input with no width specified (assuming it's a single bit). Clock is the system clock, also a single bit.
+
+Outputs include aes_output for the encrypted block and aes_done as a status signal when encryption completes.
+
+Functionality needs to describe what the engine does step by step. It should accept key and plaintext, process them according to AES algorithm, produce ciphertext, and notify when done.
+
+I should outline each step: initialization (maybe on reset), waiting for start signal, processing data through AES rounds, and signaling completion.
+
+Timing Requirements mention clock frequency up to 300 MHz, which is a design constraint. Reset_n must be asynchronous, so the engine can halt any operation upon assertion.
+
+Other considerations include pipelining for high speed, handling multiple encryption requests if supported (though the user's spec seems to handle one at a time), and low power consumption.
+
+Wait, in the original response, the functionality was described with steps like initialization on reset, waiting for start, processing plaintext through AES rounds, and signaling done. That makes sense.
+
+I should make sure that all necessary details are included without being too verbose. Also, ensure that the inputs and outputs are correctly specified with their widths and purposes.
+
+Is there anything I might be missing? Maybe the exact number of clock cycles per operation or specific timing for each AES round, but since it's a high-level spec, perhaps that's not necessary. Instead, just note that the engine is optimized for speed up to 300 MHz.
+
+I think that covers all aspects. Now, I'll structure this into the required format without any additional explanations.
+</think>
+
+```verilog
+1. Module Name: aes_engine  
+2. Description: High-speed AES encryption engine supporting 128/192/256-bit keys.  
+3. Inputs:  
+   - aes_key: 256-bit AES encryption key (128/192/256 bits)  
+   - aes_input: 128-bit Plaintext input to be encrypted  
+   - start: 1-bit Start signal to begin encryption process  
+   - reset_n: 1-bit Asynchronous active-low reset signal  
+   - clock: 1-bit System clock input  
+4. Outputs:  
+   - aes_output: 128-bit Ciphertext output after encryption  
+   - aes_done: 1-bit Completion signal when encryption is complete  
+5. Functionality:  
+   The AES engine processes plaintext into ciphertext using the AES algorithm with support for 128/192/256-bit keys. It performs the following steps:  
+   - Initialization on reset_n assertion.  
+   - Waits for start signal to begin encryption.  
+   - Encrypts the aes_input according to AES specifications, producing aes_output.  
+   - Asserts aes_done when encryption completes.  
+6. Timing Requirements:  
+   - Clock frequency: Up to 300 MHz  
+   - Reset_n is asynchronous and halts all operations upon assertion.  
+```

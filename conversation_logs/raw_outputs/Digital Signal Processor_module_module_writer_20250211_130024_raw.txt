@@ -1,0 +1,49 @@
+Timestamp: 2025-02-11 13:00:24
+Sender: module_writer
+Topic: Digital Signal Processor
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog module for a 4-bit counter that increments on each rising edge of the clock. Let me think through this step by step.
+
+First, I'll start by understanding what a 4-bit counter does. It counts from 0 (binary 0000) up to 15 (binary 1111), and then wraps around back to 0. So, it's a state machine with 16 states.
+
+I know that in Verilog, I can use flip-flops to store each bit of the count. Since it's a 4-bit counter, I'll need four flip-flops, one for each bit. Each flip-flop will take the clock signal and a reset signal as inputs.
+
+The reset signal is important because it allows me to set the counter back to 0 at any time. I should make sure that the reset is synchronous, meaning it only resets the counter on the rising edge of the clock. This prevents issues with metastability.
+
+Next, I need to handle the increment operation. For each bit except the most significant bit (MSB), the next state is simply the current state XOR 1 if there's a carry from the previous bit. The MSB will toggle when all lower bits have completed their cycle.
+
+I also need to ensure that after reaching 15, the counter wraps around to 0. This means that when the count_out is 15 (binary 1111), I should set it back to 0 on the next rising edge of the clock.
+
+Putting this all together, I'll write a Verilog module with the following components:
+- Four flip-flops to store each bit of the count.
+- Logic to handle the carry between bits.
+- A reset mechanism that sets all bits to 0 when activated.
+- Wrap-around logic to reset the counter after reaching 15.
+
+I should also consider using non-blocking assignments (<=) in the always block to ensure proper pipelining and avoid issues with combinational loops.
+
+Finally, I'll test the module by simulating it with different clock cycles and reset conditions to make sure it behaves as expected.
+</think>
+
+```verilog
+module four_bit_counter (
+    input clk,
+    input rst,
+    output reg [3:0] count_out
+);
+
+always @(posedge clk) begin
+    if (rst) begin
+        count_out <= 4'b0000;
+    else begin
+        count_out <= count_out + 1;
+        if (count_out == 4'b1111) begin
+            count_out <= 4'b0000;
+        end
+    end
+end
+
+endmodule
+```

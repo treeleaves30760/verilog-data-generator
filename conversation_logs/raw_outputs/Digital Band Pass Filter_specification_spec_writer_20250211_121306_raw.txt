@@ -1,0 +1,57 @@
+Timestamp: 2025-02-11 12:13:06
+Sender: spec_writer
+Topic: Digital Band Pass Filter
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Digital Band Pass Filter (BPF). Let me start by understanding what a BPF does. From what I remember, a band pass filter allows signals within a certain frequency range to pass through while attenuating frequencies outside that range. In the digital domain, this is typically implemented using digital signal processing techniques.
+
+First, I should figure out how a digital BPF is usually designed. I think it's often realized using a second-order Butterworth filter or something similar. That would require some recursive computation, which in Verilog can be handled with shift registers and adders.
+
+Looking at the inputs and outputs: The input will likely be a clock signal (clk), a reset signal (rst), and the digital data input (d_in). The output will be the filtered data (d_out) along with valid flags indicating when the output is ready (valid).
+
+For the module name, something like `digital_bpf` makes sense. 
+
+Now, for the inputs:
+- clk: This is straightforward, a clock signal that drives the timing of the filter.
+- rst: A reset button to initialize the state of the filter.
+- d_in: The digital input data, probably 16 bits wide since it's common in many applications.
+
+Outputs:
+- d_out: The filtered output, same width as the input for consistency.
+- valid: A single bit indicating when the output is valid. This might be necessary because the BPF has a pipeline; it takes some time to compute each sample, so this flag tells the user when the data is ready.
+
+Functionality-wise, I need to describe that the filter passes signals within a specified frequency range. It should have tunable center and bandwidth frequencies, which means the module needs parameters for these. The implementation will involve delay elements (like shift registers) and adders to perform the recursive filtering.
+
+Timing requirements are crucial. Since it's a digital circuit, everything is clocked. So, the filter operates on each rising edge of the clock. There should be a minimum clock frequency requirement to ensure that the filter can compute all necessary operations within one clock cycle. Also, after reset, there might be a setup time before valid outputs are produced.
+
+I need to make sure all these points are covered in the specification. Let me structure it step by step as per the user's format:
+
+1. Module Name: digital_bpf
+2. Description: A second-order Butterworth band pass filter with tunable center and bandwidth frequencies.
+3. Inputs:
+   - clk: 1-bit clock signal
+   - rst: 1-bit reset signal
+   - d_in: 16-bit input data
+4. Outputs:
+   - d_out: 16-bit filtered output
+   - valid: 1-bit flag indicating valid output
+5. Functionality: The filter passes signals within a specified frequency range, using delay elements and adders for computation.
+6. Timing Requirements: Clock-driven, reset functionality, setup time after reset.
+
+I think that covers the main points. I should ensure that each part is clear and concise without unnecessary details. Also, since it's a specification, I need to keep it formal and precise.
+</think>
+
+```  
+1. Module Name: digital_bpf
+2. Description: A second-order Butterworth band pass filter with tunable center and bandwidth frequencies.
+3. Inputs:
+   - clk: 1-bit clock signal
+   - rst: 1-bit reset signal
+   - d_in: 16-bit input data
+4. Outputs:
+   - d_out: 16-bit filtered output
+   - valid: 1-bit flag indicating valid output
+5. Functionality: The filter passes signals within a specified frequency range, using delay elements and adders for computation.
+6. Timing Requirements: Clock-driven, reset functionality, setup time after reset.
+```

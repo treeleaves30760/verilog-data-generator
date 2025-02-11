@@ -1,0 +1,52 @@
+Timestamp: 2025-02-11 08:08:10
+Sender: spec_writer
+Topic: UART receiver
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, I need to create a detailed Verilog specification for a UART receiver based on the user's query. Let me start by understanding what the user is asking for.
+
+The user provided an example of how they want the specification structured. It includes Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. They emphasized that I should follow this format strictly without any markdown or code blocks, just plain text within a code block.
+
+First, I'll think about the UART receiver's components. A UART receiver typically handles serial data input, extracts individual bits, decodes them into bytes, and manages various control signals like RXD, CTS, and DSR. It also needs to handle flow control with RTS and CTS signals.
+
+For the Module Name, it should be something clear like uart_receiver. The Description should briefly explain what it does—receiving serial data and converting it to parallel form.
+
+Next are the Inputs. I'll list each input signal: RXD for received data, which is a single bit; CLOCK for timing, usually a 50MHz clock; RESET for resetting the state; CTS for clear-to-send from the transmitter; and DSR for data-set ready. Each of these needs their width specified as 1.
+
+Outputs include TXD for transmitting data back, typically 8 bits wide; RTS for request-to-send; and the usual control signals like READY, OVR (overrun), FE (frame error), PE (parity error), and RXRDY (receive ready). I'll make sure each output has the correct width, mostly 1 except TXD which is 8.
+
+Functionality needs a clear description. The receiver should sample the RXD signal on the falling edge of CLOCK to capture each bit. It should handle start bits, data bits, parity, and stop bits. Error detection for frame errors, parity errors, and overruns is essential. FIFO storage would be nice for handling multiple bytes before they're processed.
+
+In the Timing Requirements section, I'll specify that the clock runs at 50MHz, which is a common UART clock speed. The reset signal should be asynchronous, meaning it resets all states regardless of the clock. For timing details, I'll mention that each bit takes two clock cycles to sample, and there's a fixed delay after reset before the receiver starts operating again.
+
+I also need to ensure that the specification doesn't include any additional explanations or markdown. It should be concise and follow the structure provided by the user exactly. Each section is labeled clearly, and all necessary details are included for someone implementing the UART receiver in Verilog.
+
+Let me double-check each part: Module Name is clear, Description is brief but informative, Inputs and Outputs are listed with correct widths and descriptions, Functionality covers all key operations, and Timing Requirements include clock speed, reset type, and specific timing details. I think that's everything needed for a comprehensive specification.
+</think>
+
+```  
+1. Module Name: uart_receiver  
+2. Description: A UART receiver module that decodes serial data into parallel form and handles flow control signals.  
+3. Inputs:  
+   - RXD: 1 bit Serial data input (UART receive)  
+   - CLOCK: 50MHz System clock  
+   - RESET: 1 bit Asynchronous reset signal  
+   - CTS: 1 bit Clear-to-send from transmitter  
+   - DSR: 1 bit Data-set ready (optional)  
+4. Outputs:  
+   - TXD: 8 bits Parallel data output (UART transmit)  
+   - RTS: 1 bit Request-to-send to transmitter  
+   - READY: 1 bit Indicates receiver is ready for new data  
+   - OVR: 1 bit Overrun error flag  
+   - FE: 1 bit Frame error flag  
+   - PE: 1 bit Parity error flag  
+   - RXRDY: 1 bit Receive ready signal (data available)  
+5. Functionality:  
+   The UART receiver module captures serial data from the RXD input, samples it at the falling edge of the CLOCK signal, and converts it into parallel form. It handles start bits, data bits, parity checking, and stop bits. The module includes error detection for frame errors, parity errors, and overruns. It also manages flow control signals (CTS and DSR) and generates appropriate responses on RTS. FIFO storage is implemented to handle multiple received bytes before they are processed by the system.  
+6. Timing Requirements:  
+   - CLOCK: 50MHz system clock  
+   - RESET: Asynchronous reset signal that halts all operations and resets internal states  
+   - Each bit in the serial stream takes two clock cycles for sampling (falling edge)  
+   - After reset, the receiver requires a fixed delay before it can start receiving new data (typically 2 characters worth of time)  
+```

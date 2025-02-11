@@ -1,0 +1,100 @@
+Timestamp: 2025-02-11 13:31:26
+Sender: module_writer
+Topic: Digital Signal Switch
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog module for a 2-to-1 digital signal switch based on the given specifications and testbench. Let me go through the requirements step by step.
+
+First, the module is called `mux_2to1`, which I should follow exactly. The inputs are `IN_A`, `IN_B`, `SEL`, `RST`, and `CLK`. The output is `OUT`.
+
+The functionality is straightforward: when `SEL` is 0, `OUT` equals `IN_A`; when `SEL` is 1, `OUT` equals `IN_B`. But there's a catch with the timing requirements. The selection happens synchronously on each clock cycle, so I need to handle setup and hold times for inputs and ensure the output propagates correctly.
+
+Looking at the testbench, it uses a clock that toggles every 20ns (period of 40ns). The reset is applied for one clock cycle after the initial setup. Then, all combinations of `IN_A`, `IN_B`, and `SEL` are tested with delays to account for setup and hold times.
+
+I realize I need to handle asynchronous resets because `RST` is active-high. So, during the rising edge of `CLK`, if `RST` is 1, the module should reset, probably setting `OUT` to a known state, maybe 0.
+
+For the timing constraints: inputs must be set 1ns before the clock's rising edge and held for 2ns after. The output should change 5ns after the clock edge. So, I need to use a D-type flip-flop with proper setup times.
+
+I'll structure the module using a process that is sensitive to the clock's rising edge. Inside this process, I'll handle the reset condition and then determine which input (`IN_A` or `IN_B`) to route based on `SEL`.
+
+To manage the timing correctly, I should use a D flip-flop for each input path. This way, the inputs are captured at the correct time, ensuring setup and hold times are met. The output will be determined by the selected input after the clock edge, with a propagation delay of 5ns.
+
+I'll also include comments to clarify each part of the code, making it clear how the module functions under different conditions, especially reset scenarios.
+
+Finally, I'll test the module in simulation, ensuring that all test cases pass as per the provided testbench. This includes checking for correct output values and proper timing after each clock cycle.
+</think>
+
+```verilog
+module mux_2to1 (
+    input IN_A,         // First input signal
+    input IN_B,         // Second input signal
+    input SEL,          // Selection control signal (0 selects IN_A, 1 selects IN_B)
+    input RST,          // Active-high reset signal
+    input CLK,          // Clock signal at 50 MHz
+    output OUT           // Output signal (routes either IN_A or IN_B based on SEL)
+);
+    
+    // Internal signals for synchronized inputs
+    wire a_sync, b_sync;
+    
+    // Synchronize inputs with clock
+    DFlipFlopdff_a (
+        .clk(CLK),
+        .rst(RST),
+        .d(IN_A),
+        .q(a_sync)
+    );
+    
+    DFlipFlopdff_b (
+        .clk(CLK),
+        .rst(RST),
+        .d(IN_B),
+        .q(b_sync)
+    );
+    
+    // Synchronous selection logic
+    always @(posedge CLK) begin
+        if (RST) begin
+            OUT <= 0;  // Reset state: output is 0
+        end else begin
+            case (SEL)
+                0: OUT <= a_sync;  // Select IN_A
+                default: OUT <= b_sync;  // Select IN_B
+            endcase
+        end
+    end
+    
+endmodule
+
+// D-Type Flip-Flop Definition
+module DFlipFlopdff_a (
+    input clk,
+    input rst,
+    input d,
+    output reg q
+);
+    always @(posedge clk) begin
+        if (rst) begin
+            q <= 0;
+        end else begin
+            q <= d;
+        end
+    end
+endmodule
+
+module DFlipFlopdff_b (
+    input clk,
+    input rst,
+    input d,
+    output reg q
+);
+    always @(posedge clk) begin
+        if (rst) begin
+            q <= 0;
+        end else begin
+            q <= d;
+        end
+    end
+endmodule
+```

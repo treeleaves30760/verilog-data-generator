@@ -1,0 +1,85 @@
+Timestamp: 2025-02-11 12:07:55
+Sender: module_writer
+Topic: Digital Low Pass Filter
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Okay, I need to create a Verilog module for a 2nd-order Butterworth Digital Low Pass Filter. The user has provided specific coefficients and a structure outline.
+
+First, I'll define the module with the given ports: clk, rst, data_in, and data_out. All signals are 1-bit except data_in and data_out, which are 16 bits.
+
+I notice the previous code used localparams for coefficients, but Verilog doesn't support floating-point arithmetic well in synthesis. So, I'll convert these to integer multipliers and shifters by scaling them up.
+
+To handle the recursive nature of the filter, I'll need flip-flops for storing x_n1, x_n2, y_n1, and y_n2. These will be 16-bit registers.
+
+The main process will run on the rising edge of the clock. On reset, all states are cleared, and data_out is set to 0. Otherwise, it calculates the next output using the difference equation.
+
+I'll use 32-bit variables for intermediate calculations to prevent overflow. After computing the result, I'll cast it back to a 16-bit signed integer for data_out.
+
+Finally, I'll synchronize data_in with the clock to ensure proper alignment of input samples.
+</think>
+
+```verilog
+module dlpf (
+    input  clk,
+    input  rst,
+    input  data_in,
+    output data_out
+);
+
+// Internal state variables declaration
+reg [15:0] x_n2, y_n2;  // Previous two inputs and outputs for recursive calculation
+reg [15:0] x_n1, y_n1;
+
+// Coefficients scaled to integer values (multipliers and shifters)
+localparam 
+    b0 = 4899/1000,
+    b1 = 1736/1000,
+    b2 = 748/1000,
+    a1 = 9356/1000,
+    a2 = 3020/1000;
+
+// Difference equation calculation using integer arithmetic to prevent overflow
+always @(posedge clk) begin
+    if (rst) begin
+        // Reset condition: clear all internal states and output
+        x_n2 <= 0;
+        y_n2 <= 0;
+        x_n1 <= 0;
+        y_n1 <= 0;
+        data_out <= 0;
+    end else begin
+        // Store current input for next cycle calculations
+        x_n2 <= x_n1;
+        x_n1 <= data_in;
+
+        // Recursive filter calculation using 32-bit intermediate results
+        reg [31:0] next_data_out;
+        reg [31:0] b0_x, b1_x, b2_x, a1_y, a2_y;
+
+        // Calculate each term separately to avoid overflow
+        b0_x = $signed({data_in}) * b0;
+        b1_x = $signed(x_n1) * b1;
+        b2_x = $signed(x_n2) * b2;
+        a1_y = $signed(y_n1) * a1;
+        a2_y = $signed(y_n2) * a2;
+
+        // Sum all terms to compute next output
+        next_data_out = (b0_x + b1_x + b2_x - a1_y - a2_y);
+        
+        // Assign the computed value to the output, ensuring 16-bit signed integer range
+        data_out <= ($signed(next_data_out[31:16])) >> 1;
+        
+        // Update previous outputs for next cycle
+        y_n2 <= y_n1;
+        y_n1 <= data_out;
+    end
+end
+
+// Synchronize input data with clock
+always @(posedge clk) begin
+    x_n1 <= data_in;
+end
+
+endmodule
+```

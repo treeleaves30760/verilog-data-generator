@@ -1,0 +1,64 @@
+Timestamp: 2025-02-11 09:14:19
+Sender: spec_writer
+Topic: Ethernet MAC
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for an Ethernet MAC module. Let me start by understanding what a MAC is and its components.
+
+First, the Module Name should be something like eth_mac. The description needs to briefly explain that it's an IEEE 802.3 compliant MAC layer chip. 
+
+Next, looking at the inputs and outputs. For inputs, I'll need a clock (clk) and reset (rst_n), both typically 1-bit signals. Then, there are MII interfaces: rx_clk for receiving data, rx_data for the actual data, and maybe a signal like rx_valid to indicate valid data. Similarly, on the transmit side, tx_en to enable transmission and tx_data for sending data.
+
+For outputs, I should include collision detection (coll), which is 1 bit. Then, the MII outputs: tx_clk, tx_data, and tx_valid. Also, control signals like carrier detect (cd), link status (link), duplex mode (duplex), and auto-negotiation complete (auto_neg_done) are important.
+
+Moving on to functionality. The MAC should handle both half-duplex and full-duplex modes. It needs to perform collision detection in half-duplex, which involves checking for simultaneous transmission attempts. In full-duplex, it uses pause frames to manage traffic without collisions.
+
+Auto-negotiation is a key part too. This means the MAC should automatically detect the link partner's capabilities and negotiate parameters like speed and duplex mode. It should also generate and interpret auto-negotiation messages.
+
+The MAC must support various features like unicast, multicast, and broadcast filtering for receiving frames. Addressing this, it needs to compare incoming frame addresses with its own MAC address or configured multicast groups.
+
+Pause frame handling is another point. In half-duplex, the MAC should respond to pause frames by stopping transmission. Full-duplex uses explicit pause mechanisms.
+
+For timing requirements, the clock (clk) is crucial—usually a 125 MHz crystal oscillator for MII compatibility. The reset signal (rst_n) should be an active-low asynchronous reset. All internal operations must synchronize with the clk, and the MAC should handle resets properly without missing frames.
+
+I also need to consider the interface types: MII for media-independent interfaces, GMII for gigabit, but sticking with MII for simplicity here.
+
+Putting it all together, I'll structure each section clearly, making sure inputs and outputs are listed with their widths and descriptions. The functionality should cover RX and TX paths, collision detection, auto-negotiation, address filtering, and pause handling. Timing details will include clock specs and reset considerations.
+
+I think that's a solid outline. Now, I'll format it according to the user's instructions without any markdown or extra explanations.
+</think>
+
+```  
+1. Module Name: eth_mac  
+2. Description: IEEE 802.3 compliant Ethernet MAC layer chip with MII interface.  
+3. Inputs:  
+   - clk: 1 bit Clock signal  
+   - rst_n: 1 bit Active-low reset signal  
+   - rx_clk: 1 bit Receive clock (MII)  
+   - rx_data: 4 bits Receive data (MII)  
+   - rx_valid: 1 bit Indicate valid receive data  
+   - tx_en: 1 bit Transmit enable (MII)  
+   - tx_data: 4 bits Transmit data (MII)  
+4. Outputs:  
+   - coll: 1 bit Collision detect output  
+   - tx_clk: 1 bit Transmit clock (MII)  
+   - tx_data: 4 bits Transmit data (MII)  
+   - tx_valid: 1 bit Indicate valid transmit data  
+   - cd: 1 bit Carrier detect  
+   - link: 1 bit Link status  
+   - duplex: 1 bit Duplex mode indicator  
+   - auto_neg_done: 1 bit Auto-negotiation complete  
+5. Functionality:  
+   - Implements MAC layer protocol for Ethernet communication.  
+   - Supports half-duplex and full-duplex operation.  
+   - Performs collision detection in half-duplex mode.  
+   - Handles auto-negotiation of link parameters (speed, duplex).  
+   - Manages MII/GMII interface for physical layer communication.  
+   - Implements address filtering for unicast, multicast, and broadcast frames.  
+   - Supports pause frame handling in half-duplex mode.  
+6. Timing Requirements:  
+   - Clock frequency: 125 MHz (for MII) or higher (for GMII).  
+   - Asynchronous reset on rst_n (active low).  
+   - Synchronization of internal operations with clk.  
+```

@@ -1,0 +1,96 @@
+Timestamp: 2025-02-11 08:52:46
+Sender: testbench_writer
+Topic: RISC-V Processor Core
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a testbench for a 2-bit full adder in Verilog. Hmm, where do I start? Well, first, I know that a full adder takes three inputs: A, B, and C_in, and produces two outputs: S (sum) and C_out (carry out). Since it's a 2-bit adder, each input can be either 0 or 1.
+
+I remember that in Verilog, testbenches typically include clock generation, so I'll need to create a clock signal. That means using a forever loop with #1 for the positive edge and #1 for the negative edge. Okay, got that part down.
+
+Next, I need to generate all possible input combinations. Since there are three inputs (A, B, C_in), each can be 0 or 1, so there are 2^3 = 8 test cases. I'll have to loop through these and apply each combination one by one.
+
+For each case, I should wait for the clock to ensure that the inputs are stable before the rising edge. So, I'll use `#1` after each input assignment to let things settle. Then, on the rising edge (`posedge clk`), I can check if the outputs match what they're supposed to be.
+
+I need to calculate the expected sum and carry for each combination. Let me list them out:
+
+0. A=0, B=0, C_in=0 → S=0, C_out=0
+1. A=0, B=0, C_in=1 → S=1, C_out=0
+2. A=0, B=1, C_in=0 → S=1, C_out=0
+3. A=0, B=1, C_in=1 → S=0, C_out=1
+4. A=1, B=0, C_in=0 → S=1, C_out=0
+5. A=1, B=0, C_in=1 → S=0, C_out=1
+6. A=1, B=1, C_in=0 → S=0, C_out=1
+7. A=1, B=1, C_in=1 → S=1, C_out=1
+
+Wait, did I get that right? Let me double-check the full adder truth table. Yeah, looks correct.
+
+In the testbench, for each case, after assigning inputs and waiting a cycle, I'll check if the sum and carry match the expected values. If they do, I'll display a success message; otherwise, an error.
+
+I should also include initial power-up delays to simulate real-world scenarios where the circuit starts up. So, I'll have `#10` before generating the clock to let everything initialize properly.
+
+Putting it all together, I'll structure the testbench with a module that includes the clock, inputs A, B, C_in, and outputs S, C_out. The test cases will loop through each combination, apply the inputs, wait for the clock cycle, then check the outputs.
+
+I think that's all. Now, let me write the code accordingly.
+</think>
+
+```verilog
+`timescale 1ns / 1ps
+
+module tb_full_adder_2bit();
+    // Clock generation
+    localparam CLOCK_PERIOD = 1 ns;
+    
+    // Inputs
+    reg a, b, c_in;
+    wire s, c_out;
+
+    // DUT (Design Under Test)
+    full_adder_2bit dut (
+        .a(a),
+        .b(b),
+        .c_in(c_in),
+        .s(s),
+        .c_out(c_out)
+    );
+
+    // Clock signal
+    always begin
+        clk = 1'b1;
+        #CLOCK_PERIOD/2;
+        clk = 1'b0;
+        #CLOCK_PERIOD/2;
+    end
+
+    initial begin
+        // Power-up delay
+        #10;
+
+        // Test all combinations of a, b, c_in (3 inputs)
+        for (a=0; a<2; a++) 
+            for (b=0; b<2; b++)
+                for (c_in=0; c_in<2; c_in++) begin
+                    #1;
+                    {a, b, c_in} = {a, b, c_in};
+                    
+                    // Wait for rising edge of clock
+                    @posedge clk;
+                    
+                    // Expected sum and carry
+                    wire expected_s = a ^ b ^ c_in;
+                    wire expected_c_out = (a & b) | (a & c_in) | (b & c_in);
+                    
+                    if (s == expected_s && c_out == expected_c_out) begin
+                        $display("TEST PASS: a=%d, b=%d, c_in=%d | s=%d, c_out=%d", 
+                            a, b, c_in, s, c_out);
+                    end else begin
+                        $error("TEST FAIL: a=%d, b=%d, c_in=%d | s=%d (expected %d), c_out=%d (expected %d)", 
+                            a, b, c_in, s, expected_s, c_out, expected_c_out);
+                    end
+                    
+                    #1;
+                end
+    end
+
+endmodule
+```

@@ -1,0 +1,66 @@
+Timestamp: 2025-02-11 10:32:31
+Sender: spec_writer
+Topic: Digital Filter
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a detailed Verilog specification for a Digital Filter based on the user's request. Let me break down what they're asking for.
+
+First, the user provided an example of how they want the specification structured. It includes Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. Each section has specific details, like input and output names with widths and descriptions, and clear explanations of operations and timing.
+
+I should follow that structure closely. The module name is straightforward: Digital_Filter.
+
+For the description, I need to briefly explain what the digital filter does. It's a 16th-order elliptic filter with both low-pass and high-pass functionalities. That makes sense because it allows for two configurations, which adds flexibility.
+
+Now, looking at the inputs. The example had clock (clk), reset (rst_n), data_in (16 bits), enable (1 bit), and mode (3 bits). I should include similar signals but make sure they're relevant to a digital filter. Maybe add a coefficient select input if needed, but in the example, it's not present. So perhaps stick with what's given.
+
+The outputs are data_out (16 bits) and ready (1 bit). That seems standard for such a module.
+
+Functionality-wise, I need to describe how the filter processes the input. It should perform convolution using coefficients stored in memory. The example mentions 16th-order, so it's processing multiple taps. Also, handling both low-pass and high-pass by mode selection makes sense. Maybe include details about forward and reverse filtering if applicable.
+
+For timing requirements, the example specifies a clock frequency of 100 MHz, reset polarity as active-low, and latency after enable is asserted. I should mirror that but ensure it's accurate for a digital filter implementation.
+
+I also need to make sure all inputs and outputs are correctly specified with their widths and descriptions. Each input and output should be clear in what they do and how they're used within the module.
+
+Wait, in the example provided by the user, the specification was given without any code blocks or markdown, just plain text. So I should present it similarly, ensuring each section is clearly labeled and concise.
+
+I think I have all the components needed. Now, putting it together step by step to make sure nothing's missed.
+</think>
+
+1. Module Name: Digital_Filter  
+2. Description: A 16th-order elliptic digital filter capable of low-pass and high-pass configurations.  
+3. Inputs:  
+   - clk: 1 bit (System clock)  
+   - rst_n: 1 bit (Active-low reset signal)  
+   - data_in: 16 bits (Input data to be filtered)  
+   - enable: 1 bit (Enable filtering process)  
+   - mode: 3 bits (Filter configuration: 000 for low-pass, 001 for high-pass)  
+4. Outputs:  
+   - data_out: 16 bits (Filtered output data)  
+   - ready: 1 bit (Indicates when the filter is ready to accept new input)  
+5. Functionality:  
+   The Digital_Filter module performs a finite impulse response (FIR) filtering operation on the input data. It supports both low-pass and high-pass configurations based on the mode input. The filter uses pre-defined coefficients stored in memory, with 16 taps for a 16th-order response. When enabled, the filter processes the input data sequentially, applying the appropriate frequency response according to the selected mode.  
+6. Timing Requirements:  
+   - Clock: clk (100 MHz)  
+   - Reset: rst_n (active-low reset)  
+   - Latency: The module introduces a latency of 16 clock cycles after enable is asserted before the first valid output is produced.  
+
+```  
+Module Name: Digital_Filter  
+Description: A 16th-order elliptic digital filter capable of low-pass and high-pass configurations.  
+Inputs:  
+- clk: 1 bit (System clock)  
+- rst_n: 1 bit (Active-low reset signal)  
+- data_in: 16 bits (Input data to be filtered)  
+- enable: 1 bit (Enable filtering process)  
+- mode: 3 bits (Filter configuration: 000 for low-pass, 001 for high-pass)  
+Outputs:  
+- data_out: 16 bits (Filtered output data)  
+- ready: 1 bit (Indicates when the filter is ready to accept new input)  
+Functionality:  
+The Digital_Filter module performs a finite impulse response (FIR) filtering operation on the input data. It supports both low-pass and high-pass configurations based on the mode input. The filter uses pre-defined coefficients stored in memory, with 16 taps for a 16th-order response. When enabled, the filter processes the input data sequentially, applying the appropriate frequency response according to the selected mode.  
+Timing Requirements:  
+- Clock: clk (100 MHz)  
+- Reset: rst_n (active-low reset)  
+- Latency: The module introduces a latency of 16 clock cycles after enable is asserted before the first valid output is produced.  
+```

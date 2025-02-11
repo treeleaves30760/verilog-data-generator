@@ -1,0 +1,105 @@
+Timestamp: 2025-02-11 13:42:06
+Sender: testbench_writer
+Topic: Digital Signal Demultiplexer
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog testbench for the Digital Signal Demultiplexer based on the given specification. Let me think through this step by step.
+
+First, I'll start by understanding what the demultiplexer does. It takes a single input and routes it to one of four outputs based on the value of sel. The reset signal rst is active-high, meaning when rst is 1, all outputs should be 0.
+
+I need to generate a clock with a period of 10 ns since the frequency is 100 MHz. I'll use an initial block to create the clock signal by toggling it every 5 ns.
+
+Next, I'll handle the reset signal. Since rst is active-high and synchronous, I'll set it high for at least one full clock cycle (20 ns) after the clock starts before releasing it.
+
+Now, I need to test all possible combinations of sel and data_in. There are four possible sel values (0 to 3) and two possible data_in values (0 and 1), making a total of eight test cases. I'll use loops or sequential assignments to cycle through these combinations.
+
+For each test case, after updating sel and data_in, I'll wait for one clock cycle to ensure the demultiplexer has processed the inputs. Then, I'll check if only the selected output matches data_in and all others are 0. If any test case fails, I'll display an error message indicating which case failed.
+
+Finally, if all tests pass, I'll display a success message. I need to make sure that the testbench includes clear messages for success and failure as per the instructions.
+
+I should also ensure that the testbench is self-contained and can be directly simulated without errors. This means checking all connections and ensuring proper timing with delays where necessary.
+</think>
+
+```verilog
+module DigitalSignalDemultiplexer_tb;
+    // Inputs
+    reg data_in;
+    reg sel;
+    reg clk;
+    reg rst;
+
+    // Outputs
+    wire data_out_0;
+    wire data_out_1;
+    wire data_out_2;
+    wire data_out_3;
+
+    // Clock generation
+    initial begin
+        clk = 0;
+        forever #5ns clk = ~clk;
+    end
+
+    // Reset signal
+    initial begin
+        rst = 1;
+        #20ns rst = 0; // Wait for one full clock cycle to ensure reset is applied
+    end
+
+    // Test cases
+    initial begin
+        $display("Digital Signal Demultiplexer Testbench");
+        $display("----------------------------------------");
+
+        // Test with data_in = 0
+        data_in = 0;
+        sel = 0;
+        #10ns; // Wait for one clock cycle
+        sel = 1;
+        #10ns;
+        sel = 2;
+        #10ns;
+        sel = 3;
+        #10ns;
+
+        // Test with data_in = 1
+        data_in = 1;
+        sel = 0;
+        #10ns;
+        sel = 1;
+        #10ns;
+        sel = 2;
+        #10ns;
+        sel = 3;
+        #10ns;
+
+        $display("All test cases passed!");
+        $finish;
+    end
+
+    // Check outputs
+    always @(posedge clk) begin
+        if (rst == 1) begin
+            $display("Reset is active, all outputs should be 0");
+            if (data_out_0 != 0 || data_out_1 != 0 || data_out_2 != 0 || data_out_3 != 0) begin
+                $error("Outputs are not correctly reset during rst=1");
+            end
+        end else begin
+            case (sel)
+                0: 
+                    if (data_out_0 != data_in) $error("sel=0 failed, data_out_0 should be %b", data_in);
+                1: 
+                    if (data_out_1 != data_in) $error("sel=1 failed, data_out_1 should be %b", data_in);
+                2: 
+                    if (data_out_2 != data_in) $error("sel=2 failed, data_out_2 should be %b", data_in);
+                3: 
+                    if (data_out_3 != data_in) $error("sel=3 failed, data_out_3 should be %b", data_in);
+                default:
+                    $display("sel is invalid, no output should be selected");
+            endcase
+        end
+    end
+
+endmodule
+```

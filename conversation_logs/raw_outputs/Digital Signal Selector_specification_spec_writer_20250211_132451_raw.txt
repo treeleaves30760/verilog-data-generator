@@ -1,0 +1,47 @@
+Timestamp: 2025-02-11 13:24:51
+Sender: spec_writer
+Topic: Digital Signal Selector
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, I need to create a detailed Verilog specification for a Digital Signal Selector based on the user's query. Let me start by understanding what exactly they're asking for.
+
+The user mentioned that I should act as a Verilog specification writer and provide clear, structured specs. They also specified the format, which includes Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. Plus, they want it in a code block without any markdown or extra explanations.
+
+First, I'll think about what a Digital Signal Selector does. It's a circuit that selects between multiple digital signals based on a control input. So the key here is to have multiple data inputs, a select signal, and then an output that switches based on the select.
+
+Looking at the example provided in their query, it seems they want 4 data inputs (D0 to D3), each being 1 bit wide. The select signal (S) is also 2 bits wide, allowing for four possible selections. The output Y is a single bit.
+
+For the Inputs section, I'll list each data input with their width and description. Then include the select input similarly. For Outputs, just the Y output.
+
+In the Functionality part, I need to describe how the selector works. It should pass the selected data input to the output based on the binary value of S. So when S is 00, it selects D0; 01 for D1, and so on up to 10 for D3.
+
+Timing Requirements are crucial. The module will operate under a clock signal (Clk) with a specified frequency, say 50 MHz. It should have a reset functionality that's active high, meaning when the Rst_n is low, it resets the state. There might be setup and hold times for the inputs relative to the clock, like 1ns and 2ns respectively.
+
+I also need to ensure that the spec is concise and only includes necessary details without any extra explanations. The user emphasized not using markdown or code blocks beyond what's specified, so I'll stick to plain text within a single code block as per their example.
+
+Putting it all together, I'll structure each section clearly, making sure each input and output is properly described with width and function. The functionality should be straightforward, explaining the selection process. Timing details will include clock specs, reset type, and setup/hold times to guide proper implementation.
+
+I think that covers everything the user asked for. Now, I'll format it exactly as they showed in their example, ensuring clarity and adherence to their instructions.
+</think>
+
+```  
+1. Module Name: DigitalSignalSelector  
+2. Description: A 4-to-1 digital signal selector that routes one of four input signals to the output based on a 2-bit control input.  
+3. Inputs:  
+   - D0: 1 bit Description: First data input  
+   - D1: 1 bit Description: Second data input  
+   - D2: 1 bit Description: Third data input  
+   - D3: 1 bit Description: Fourth data input  
+   - S[1]: 1 bit Description: Select control bit (MSB)  
+   - S[0]: 1 bit Description: Select control bit (LSB)  
+4. Outputs:  
+   - Y: 1 bit Description: Selected output signal  
+5. Functionality:  
+   The module selects one of the four input signals (D0, D1, D2, or D3) based on the binary value of the select control S[1:0]. When S is "00", D0 is selected; when S is "01", D1 is selected; when S is "10", D2 is selected; and when S is "11", D3 is selected. The output Y reflects the value of the selected input.  
+6. Timing Requirements:  
+   - Clock: Clk 50 MHz Description: System clock signal  
+   - Reset: Rst_n Active High Description: Asynchronous reset signal  
+   - Setup Time: 1 ns Description: Minimum setup time for inputs relative to the clock  
+   - Hold Time: 2 ns Description: Minimum hold time for inputs relative to the clock  
+```

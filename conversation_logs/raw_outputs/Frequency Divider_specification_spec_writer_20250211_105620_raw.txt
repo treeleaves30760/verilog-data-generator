@@ -1,0 +1,50 @@
+Timestamp: 2025-02-11 10:56:20
+Sender: spec_writer
+Topic: Frequency Divider
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog specification for a Frequency Divider based on the user's query. Let me start by understanding what exactly is required.
+
+First, the user mentioned that they want a detailed specification without any additional text or explanations, and it should be in a clear format using code blocks. They provided an example of how the response should look, which includes sections like Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements.
+
+So, I'll structure my response following those exact sections to ensure clarity and meet their expectations. 
+
+Starting with the Module Name: It's straightforward—Frequency Divider.
+
+Next, the Description needs to be brief but informative. A frequency divider takes an input clock signal and divides its frequency by a specified integer. This is essential in many digital systems for generating lower-frequency clocks.
+
+Moving on to Inputs. The main inputs are the clock (clk) and reset (rst). Both should be 1-bit signals. I'll note that rst is active high, meaning it's typically pulled high, so when it's asserted, the module resets its state.
+
+For Outputs, the primary output is the divided clock (div_clk), also a 1-bit signal. Additionally, including an optional output like div_count could be useful for monitoring or debugging purposes. It should be N bits wide to accommodate the division factor up to 2^N - 1.
+
+Functionality-wise, I need to describe how the module operates. The counter starts at zero when rst is released and increments on each rising edge of clk. When the count reaches the division factor minus one, it resets to zero and asserts div_clk. This ensures that div_clk rises once every 'n' cycles of clk.
+
+Regarding Timing Requirements, I'll specify the clock period (T) as 1 ns for simulation purposes. The reset is active high, so when rst is high, the counter resets. It's important to mention that the user might need to adjust these parameters based on their specific hardware and requirements.
+
+I should make sure not to include any markdown or code blocks beyond what's specified. Also, avoid any additional explanations—just stick to the structure provided.
+
+Wait, in the example response, they included a note about excluding markdown and code blocks but then put it within ``` code block. I think that was an instruction for me as the assistant, not part of the final output. So, in my case, I'll present the specification without any extra text, just the structured sections.
+
+I should also ensure that all necessary details are included for implementation. That means specifying each input and output clearly, including their widths and descriptions. The functionality section needs to be clear enough for someone to understand how the module works without ambiguity.
+
+Let me double-check if I've covered everything: Module Name, Description, Inputs with names, widths, and descriptions, Outputs similarly, Functionality explained in a straightforward manner, and Timing Requirements with clock details and reset information.
+
+I think that's all. Now, I'll format it exactly as the user requested without any additional text or markdown.
+</think>
+
+```  
+1. Module Name: Frequency Divider  
+2. Description: A digital circuit that divides an input clock signal by a specified integer factor.  
+3. Inputs:  
+   - clk: 1-bit Input clock signal  
+   - rst: 1-bit Active-high reset signal  
+4. Outputs:  
+   - div_clk: 1-bit Output clock signal, divided by the specified factor  
+   - [Optional]: div_count: N-bit Monitoring output showing the current count (if required)  
+5. Functionality:  
+   The module divides the input clock (clk) by a specified integer factor (n). On each rising edge of clk, the internal counter increments until it reaches n-1. When the counter overflows, it resets to 0 and asserts div_clk. This ensures that div_clk rises once every n cycles of clk.  
+6. Timing Requirements:  
+   - Clock period (T): 1 ns (for simulation purposes)  
+   - Reset is active high (rst = 1)  
+```

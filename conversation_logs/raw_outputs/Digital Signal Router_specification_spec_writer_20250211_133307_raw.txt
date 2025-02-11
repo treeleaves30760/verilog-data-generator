@@ -1,0 +1,50 @@
+Timestamp: 2025-02-11 13:33:07
+Sender: spec_writer
+Topic: Digital Signal Router
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog specification for a Digital Signal Router based on the user's query. Let me break down what they're asking for.
+
+First, the user wants a structured specification following specific sections: Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. They also mentioned not to use markdown or code blocks, just plain text with each section clearly labeled.
+
+I should start by understanding what a Digital Signal Router does. It's a component that directs digital signals from one input to multiple outputs based on control signals. So the key here is the routing functionality controlled by a destination address.
+
+For the Module Name, I'll name it `digital_signal_router`. That's straightforward and descriptive.
+
+In the Description section, I need to briefly explain its purpose. It should mention that it routes signals from an input to one of several outputs based on a control signal. Including words like "flexible" and "synchronous operation" would be good here.
+
+Next are the Inputs. The main inputs will be the data coming in (`data_in`), a clock signal (`clk`), and a reset signal (`rst`). There should also be a destination address (`dest_addr`) that determines where the data is sent. I'll specify their widths: 16 bits for data, 1 bit each for clock and reset, and 3 bits for the destination since there are four outputs (0 to 3).
+
+For Outputs, there will be four signals (`data_out_0` to `data_out_3`), each 16 bits wide. Each output corresponds to a specific destination.
+
+The Functionality section needs to clearly describe how the router operates. It should state that when the reset is active, all outputs are low. Otherwise, on each clock edge, the data input is sent to the output corresponding to `dest_addr`. If the address is invalid (like 4 or higher), maybe default to the first output or handle it as per design requirements.
+
+Timing Requirements are crucial. The router should operate synchronously with a specified clock frequency, say 100 MHz. Reset should be active high, and there should be a setup time before the clock edge where inputs must stabilize. Also, propagation delay from input to output needs to be minimal, like less than 5 nanoseconds.
+
+I also need to ensure that all necessary details are included for implementation, such as how invalid addresses are handled, but since the user didn't specify, I'll assume valid addresses are 0-3 and handle others by defaulting or perhaps not addressing them here.
+
+Putting it all together, each section should be concise yet informative. I need to avoid any markdown or code blocks, just plain text with clear headings as per the format provided.
+</think>
+
+```
+1. Module Name: digital_signal_router
+2. Description: A digital signal router that directs input signals to one of multiple output ports based on a control signal.
+3. Inputs:
+   - data_in: 16-bit description="Input data signal to be routed."
+   - clk: 1-bit description="System clock input."
+   - rst: 1-bit description="Active-high reset signal."
+   - dest_addr: 3-bit description="Destination address for routing control (0-3)."
+4. Outputs:
+   - data_out_0: 16-bit description="Output data to destination 0."
+   - data_out_1: 16-bit description="Output data to destination 1."
+   - data_out_2: 16-bit description="Output data to destination 2."
+   - data_out_3: 16-bit description="Output data to destination 3."
+5. Functionality:
+   The router receives a 16-bit data input and routes it to one of four output ports based on the 3-bit dest_addr control signal. When rst is high, all outputs are reset to 0. On each rising edge of clk, the router evaluates the dest_addr and forwards the data_in to the corresponding output. If dest_addr is invalid (4-7), no output is triggered.
+6. Timing Requirements:
+   - Clock:clk:100MHz description="System clock with 100MHz frequency."
+   - Reset:rst:high description="Active-high reset signal with a minimum hold time of 5ns."
+   - Setup Time:Setup_time=2ns description="Minimum setup time for inputs relative to the rising edge of clk."
+   - Propagation Delay:Propagation_delay=5ns description="Maximum propagation delay from data_in to any output."
+```

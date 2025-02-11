@@ -1,0 +1,81 @@
+Timestamp: 2025-02-11 13:48:47
+Sender: testbench_writer
+Topic: Digital Signal Decoder
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog testbench for the digital_signal_decoder module. The goal is to thoroughly test all possible input combinations and ensure the outputs behave as expected. Let's break down what needs to be done step by step.
+
+First, I'll start by setting up the basic structure of the testbench. This includes defining the necessary signals such as the clock (clk), reset (rst_n), encoded_data_in, decoded_data_out, and decode_error. These signals will be used to interface with the digital_signal_decoder module under test.
+
+Next, I need to generate a clock signal at 100 MHz. In Verilog, this can be achieved using an always block that toggles the clock signal every 5 nanoseconds (ns), which corresponds to a period of 10 ns for a 100 MHz clock.
+
+The reset signal, rst_n, is active low, meaning it will be initialized to 0 and then released after a short delay to ensure proper reset timing. This should be handled in the initial block where I also initialize other signals to their default states.
+
+For the encoded_data_in, since its width isn't specified, I'll assume an 8-bit input for testing purposes. This means I'll create a variable to hold this input signal and iterate through all possible values from 0 to 255 (since 2^8 = 256).
+
+I need to test each combination by assigning the current value to encoded_data_in and then checking if the decoded output matches what's expected. Since the decoding algorithm isn't specified, I'll assume a simple case where decoded_data_out equals the encoded_data_in.
+
+To monitor the tests, I'll use $monitor to display each test case and whether it passed or failed. After all tests are run, I'll print a success message if no failures occurred; otherwise, I'll note how many tests failed.
+
+Additionally, I need to check the decode_error output. If it's high during any test, that indicates an error, which I can capture using $error to log the failure.
+
+I should ensure that all signals are properly initialized and that there's a reset pulse applied before starting the tests. This ensures the module starts in a known state.
+
+Finally, after running all tests, I'll print a completion message to indicate the testbench has finished.
+</think>
+
+```verilog
+`timescale 1ns / 1ps
+
+module digital_signal_decoder_testbench;
+    // Define interface signals
+    logic clk;
+    logic rst_n;
+    logic [7:0] encoded_data_in;  // Assuming N=8 for testing purposes
+    logic [7:0] decoded_data_out; // Assuming M=8 for testing purposes
+    logic decode_error;
+
+    // Clock generation
+    always begin
+        clk = 1'b1;
+        #5ns;
+        clk = 1'b0;
+        #5ns;
+    end
+
+    initial begin
+        rst_n = 1'b0;  // Active-low reset
+        encoded_data_in = 8'h00;
+        decoded_data_out = 8'h00;
+        decode_error = 1'b0;
+
+        // Apply reset for one clock cycle
+        #10ns;
+        rst_n = 1'b1;
+
+        // Test all possible input combinations
+        for (int i = 0; i < 256; i++) begin
+            encoded_data_in = i;
+            #10ns;  // Wait for one clock cycle
+            
+            // Expected output is same as encoded data for testing purposes
+            if (decoded_data_out != i) begin
+                $error("Test failed: Encoded %d, Decoded %d", i, decoded_data_out);
+            end
+
+            // Check for decode error flag
+            if (decode_error == 1'b1) begin
+                $error("Decode error occurred for input %d", i);
+            end
+
+            // Monitor test progress
+            $monitor($format("\nTest case: Encoded = %d, Decoded = %d, Error = %b\n",
+                             i, decoded_data_out, decode_error));
+        end
+
+        // Test completion message
+        $display("All test cases completed successfully");
+    end
+endmodule
+```

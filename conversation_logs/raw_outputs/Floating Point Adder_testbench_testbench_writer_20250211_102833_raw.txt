@@ -1,0 +1,153 @@
+Timestamp: 2025-02-11 10:28:33
+Sender: testbench_writer
+Topic: Floating Point Adder
+Phase: testbench
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a testbench for a 2-bit full adder in Verilog. Hmm, where do I start? Well, first, I remember that a full adder has three inputs: A, B, and C_in, and two outputs: S (sum) and C_out (carry). Since it's a 2-bit adder, each of these inputs can be either 0 or 1.
+
+I think the testbench needs to generate all possible input combinations. There are 3 inputs, so that's 2^3 = 8 different cases. I should make sure each case is tested.
+
+Now, how do I structure this in Verilog? I know I'll need a clock signal because most digital circuits use synchronous timing. So, I'll create a clock generator using a simple always block with a period of 10 ns—5 ns high and 5 ns low.
+
+Next, I'll need to reset the circuit at the beginning. Using a `rst` signal that's active high makes sense. I'll apply it for a few clock periods to ensure everything is initialized properly.
+
+For each test case, I'll have to wait until the clock goes high (posedge) before changing the inputs and then wait another cycle to let the circuit settle. After that, I can check if the outputs match what's expected.
+
+I should also include some success or failure messages. In Verilog simulations, you can use `$display` for messages. Maybe print out whether each test case passed or failed.
+
+Let me outline the steps:
+
+1. **Clock Generation**: Create a clock with a 10 ns period.
+2. **Reset Signal**: Apply reset for a few cycles after the clock starts.
+3. **Test Cases**: Loop through all 8 possible input combinations of A, B, and C_in.
+4. **Strobe Signal**: Use a `strobe` to indicate when inputs are valid, probably on the rising edge of the clock.
+5. **Check Outputs**: After each test case, wait for one clock cycle and then check if S and C_out match the expected values.
+6. **Messages**: Print pass or fail messages for each test case.
+
+I also need to make sure that the testbench includes all necessary signals: A, B, C_in, S, C_out, rst, and clk. The `strobe` signal will help in indicating when the inputs are valid, so the DUT knows when to compute the sum.
+
+Wait, how do I handle the strobe? Maybe set it high just before changing the inputs and then low after a cycle. That way, the DUT only processes the input when strobe is high.
+
+I should also initialize all signals at the start with `initial` blocks. For example, setting rst to 1, then 0 after some time.
+
+Let me think about the timing:
+
+- At time 0, apply reset.
+- After a few clock cycles (like 3), release reset.
+- Then, for each test case:
+  - Set the inputs A, B, C_in.
+  - Activate strobe to signal the DUT to process the inputs.
+  - Wait for one clock cycle.
+  - Check if the outputs match the expected values.
+  - Print the results.
+
+I need to make sure that the timing is correct. Using `#CLOCK_PERIOD` after each step should handle the delays properly.
+
+For the expected sum and carry, I can calculate them using the same logic as the full adder:
+- The sum S is A XOR B XOR C_in.
+- The carry C_out is (A AND B) OR (A AND C_in) OR (B AND C_in).
+
+I'll use these expressions to compute the expected values for each test case.
+
+Now, putting it all together in Verilog:
+
+1. Define the module with the necessary inputs and outputs.
+2. Create the clock generator using an always block.
+3. Initialize all signals at the start.
+4. Use a loop to iterate through all 8 possible input combinations.
+5. For each iteration:
+   - Set A, B, C_in based on the current index.
+   - Activate strobe.
+   - Wait for one clock cycle.
+   - Deactivate strobe.
+   - Wait for another clock cycle.
+   - Calculate expected_S and expected_C_out.
+   - Compare actual S and C_out with expected values.
+   - Print the results.
+
+I should also handle the display properly, showing each test case's inputs, outputs, and whether it passed or failed.
+
+Finally, after all test cases are done, print a completion message.
+
+I think that covers everything I need to do. Now, let me write the Verilog code accordingly.
+</think>
+
+```verilog
+module tb_full_adder_2bit;
+    // Define the clock period (10 ns)
+    timeunit 1ns;
+    
+    // Clock signal
+    wire clk;
+    
+    // Reset signal
+    reg rst;
+    
+    // Inputs to the full adder
+    reg A, B, C_in;
+    
+    // Outputs from the full adder
+    wire S, C_out;
+    
+    // Strobe signal to indicate when inputs are valid
+    reg strobe;
+    
+    // DUT (Design Under Test) instantiation
+    full_adder_2bit DUT (
+        .A(A),
+        .B(B),
+        .C_in(C_in),
+        .S(S),
+        .C_out(C_out)
+    );
+    
+    // Clock generator
+    always begin
+        clk = 1; #5ns;
+        clk = 0; #5ns;
+    end
+    
+    initial begin
+        rst = 1;
+        #20ns; // Reset after two clock periods
+        rst = 0;
+        
+        strobe = 0;
+        A = 0; B = 0; C_in = 0;
+        #CLOCK_PERIOD;
+        
+        for (int i=0; i<8; i++) begin
+            // Generate all possible input combinations
+            {A, B, C_in} = i[2:0]; // Extract bits to assign to A, B, C_in
+            
+            strobe <= 1;
+            #CLOCK_PERIOD;
+            
+            strobe <= 0;
+            #CLOCK_PERIOD;
+            
+            // Calculate expected sum and carry
+            wire expected_S = (A ^ B ^ C_in);
+            wire expected_C_out = ((A & B) | (A & C_in) | (B & C_in));
+            
+            if ($time == 0)
+                $display("i | A B C_in | S C_out | Expected S C_out");
+            else
+                $display("%d | %b %b %b | %b %b | %b %b", 
+                         i, A, B, C_in, S, C_out, expected_S, expected_C_out);
+            
+            if (S == expected_S && C_out == expected_C_out) begin
+                $display("  Test case %d: PASS", i);
+            end else begin
+                $display("  Test case %d: FAIL", i);
+            end
+            
+            #CLOCK_PERIOD;
+        end
+        
+        $display("\nSimulation completed successfully!");
+    end
+    
+endmodule
+```

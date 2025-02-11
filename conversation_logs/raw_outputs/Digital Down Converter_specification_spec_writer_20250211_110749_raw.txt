@@ -1,0 +1,46 @@
+Timestamp: 2025-02-11 11:07:49
+Sender: spec_writer
+Topic: Digital Down Converter
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for a Digital Down Converter (DDC). Let me think about what a DDC does. From what I remember, a DDC is used in digital signal processing to convert a high-frequency signal down to a lower frequency, making it easier to handle for further processing.
+
+First, the module name should be something clear like `digital_down_converter`. That makes sense.
+
+Next, the description. It should briefly explain that the module converts a high-frequency input to a lower intermediate frequency by mixing with a complex exponential and decimating. I think that's accurate.
+
+Now, looking at the inputs. The main input is the digital signal coming in. Let's say it's `input_data` which is a 16-bit wide bus because many systems use 12 or 16 bits for such signals. So, width would be 16 bits. The description should mention that it's the complex digital input signal.
+
+Then there's the clock signal, `clk`, which is typically a positive edge-triggered clock. Reset is important too; usually, we have an active-high reset (`rst_n`), so when it's low, the module resets. The sampling frequency here would be 160 MHz because that's a common high-frequency value for such applications.
+
+For outputs, the decimated output after down-conversion will be `output_data`, also 16 bits wide. It should mention that this is the complex digital signal at the lower IF. There's also an `output_valid` signal to indicate when the output data is valid, which helps in synchronization.
+
+Functionality-wise, the DDC performs several steps. First, it multiplies the input by a complex exponential (which is essentially mixing with a sine and cosine of a specific frequency). Then, it low-pass filters this result to remove high-frequency components that could alias after decimation. After filtering, it decimates the sample rate by an integer factor, say 4x in this case. Finally, it ensures the output is properly clocked out at the lower rate.
+
+Regarding timing requirements, the clock is a positive edge-triggered 160 MHz signal. The reset is active-high, so when `rst_n` is low, everything resets. The DDC should be ready to process data one clock cycle after reset is released. The output valid signal should assert one clock cycle after each decimated sample is available.
+
+I also need to make sure that the specifications are clear and structured without any markdown or code blocks as per the user's request. So, I'll present it in a straightforward format with sections labeled appropriately.
+</think>
+
+1. Module Name: digital_down_converter  
+2. Description: A Digital Down Converter (DDC) that converts a high-frequency complex digital input signal to a lower intermediate frequency (IF). The conversion involves mixing with a complex exponential and decimating the sample rate.  
+3. Inputs:  
+   - input_data: 16 bits Complex digital input signal (I and Q components).  
+   - clk: 1 bit Clock signal (positive edge-triggered).  
+   - rst_n: 1 bit Active-high reset signal.  
+   - sampling_freq: 32 bits Sampling frequency of the input signal (e.g., 160 MHz).  
+4. Outputs:  
+   - output_data: 16 bits Complex digital output signal at lower IF.  
+   - output_valid: 1 bit Indicates when output_data is valid.  
+5. Functionality:  
+   The DDC performs the following operations:  
+   - Multiplication of input_data with a complex exponential (mixing).  
+   - Low-pass filtering to remove high-frequency components.  
+   - Decimation by an integer factor (e.g., 4x) to reduce the sample rate.  
+   - Clocking out the decimated signal at the lower IF clock rate.  
+6. Timing Requirements:  
+   -clk: Positive edge-triggered clock at 160 MHz.  
+   -rst_n: Active-high reset signal.  
+   -The DDC must be ready to process data one clock cycle after rst_n is released.  
+   -output_valid asserts for one clock cycle after each valid decimated sample is available.

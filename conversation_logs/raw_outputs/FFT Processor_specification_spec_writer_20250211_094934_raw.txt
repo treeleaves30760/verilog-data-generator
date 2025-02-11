@@ -1,0 +1,54 @@
+Timestamp: 2025-02-11 09:49:34
+Sender: spec_writer
+Topic: FFT Processor
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a detailed Verilog specification for an FFT Processor based on the user's query. Let me break down how I should approach this.
+
+First, I'll start by understanding what the user is asking for. They want a clear, structured specification in a specific format without any markdown or code blocks. The example provided includes sections like Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. So, I need to follow that structure closely.
+
+I should consider the key components of an FFT Processor. It typically involves handling complex data, performing butterfly operations, managing control signals, and adhering to specific timing requirements. The user mentioned including all necessary details for implementation, so I must ensure each part is thoroughly covered.
+
+For the Module Name, it's straightforward: "FFT_Processor."
+
+Next, the Description should briefly explain what the FFT Processor does. It's a digital circuit that computes the Fast Fourier Transform using butterfly operations and control logic. That sets the stage.
+
+Now, moving on to Inputs. I need to list each input with its width and description. The data inputs are complex numbers, so they'll have both real and imaginary parts. Let's say 16 bits each for real_part and imag_part. Then there are control signals: start, clock, reset, and a done signal as an output.
+
+For the Outputs, I'll include the transformed data with the same structure as inputs—real and imaginary parts, each 16 bits wide. The done signal is crucial to indicate when processing is complete.
+
+In the Functionality section, I need to describe what the module does step by step. It should start processing upon receiving a valid complex number pair, perform butterfly operations iteratively, manage control logic for stages, and handle clocking and resets properly. Also, it needs to output the results correctly and signal completion.
+
+Timing Requirements are essential. The FFT Processor will operate with a specific clock frequency, say 100 MHz, and have a reset that's active high. The processing time depends on the number of points (like N=1024) and the clock rate. I should note that the done signal is asserted when all samples are processed.
+
+I need to make sure each part is concise but detailed enough for implementation. For example, specifying the widths as 16 bits for real and imaginary parts gives clear guidance on data handling. Including control signals like start and done ensures proper synchronization with other system components.
+
+I should avoid any unnecessary explanations or markdown formatting, sticking strictly to the structure provided in the example. Each section should be clearly labeled and items listed with appropriate details.
+
+Finally, I'll review everything to ensure it's comprehensive yet concise, covering all necessary aspects for someone implementing the FFT Processor in Verilog.
+</think>
+
+```  
+1. Module Name: FFT_Processor  
+2. Description: A digital circuit implementing a Fast Fourier Transform (FFT) processor capable of computing the discrete Fourier transform (DFT) of complex input data using butterfly operations and control logic.  
+3. Inputs:  
+   - real_part: 16-bit Real part of complex input number  
+   - imag_part: 16-bit Imaginary part of complex input number  
+   - start: 1-bit Start signal to initiate FFT computation  
+   - clock: 1-bit System clock  
+   - reset: 1-bit Active-high asynchronous reset signal  
+4. Outputs:  
+   - real_out: 16-bit Real part of transformed output  
+   - imag_out: 16-bit Imaginary part of transformed output  
+   - done: 1-bit Signal indicating completion of FFT computation  
+5. Functionality:  
+   - The FFT_Processor accepts complex input data (real and imaginary parts) and computes the FFT using butterfly operations.  
+   - The processor supports in-place computation, reusing the input memory for intermediate results.  
+   - It includes control logic to manage the iterative butterfly operations, bit-reversal permutation, and scaling factors.  
+   - The done signal is asserted when the FFT computation is complete and ready for output.  
+6. Timing Requirements:  
+   - Clock frequency: 100 MHz (10 ns period)  
+   - Reset is active-high; all internal states are reset to a known state upon assertion.  
+   - Processing time depends on the number of FFT points (e.g., N=1024) and clock rate.  
+```

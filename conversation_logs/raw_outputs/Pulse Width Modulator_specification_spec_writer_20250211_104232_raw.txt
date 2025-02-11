@@ -1,0 +1,50 @@
+Timestamp: 2025-02-11 10:42:32
+Sender: spec_writer
+Topic: Pulse Width Modulator
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a detailed Verilog specification for a Pulse Width Modulator (PWM). Let me start by understanding what a PWM is and its key components.
+
+A PWM is used to control power to a load by varying the pulse duration of a digital signal. It's commonly used in motor speed controllers or LED dimmers. The main parts are a counter, comparator, and logic for generating the output pulse based on the reference and duty cycle.
+
+First, I'll outline the module name as pwm_modulator. Next, the description should briefly explain its purpose. 
+
+For inputs, I need:
+-clk: the system clock.
+-rst: active-high reset signal.
+-duty_cycle: an input that sets the desired duty cycle in percentage (e.g., 0 to 100).
+-ref_period: defines the reference period for the modulated pulses.
+
+Outputs will include:
+-pwm_out: the actual pulse width modulated output, a digital signal.
+ pwm_done: indicates when one modulation cycle is complete.
+
+In functionality, I'll describe how the module counts cycles using an internal counter. It compares this count to the duty_cycle and ref_period to generate the PWM signal. The output starts high for the duration of duty_cycle and goes low until the reference period ends, then repeats.
+
+Timing requirements are crucial. The clock is a standard 100MHz, with a reset that takes effect on the falling edge of rst. The pwm_done signal should be valid within one clock cycle after the end of each pulse.
+
+I'll make sure to structure this information clearly without any markdown or code blocks, keeping it concise and easy to understand for implementation.
+</think>
+
+```  
+1. Module Name: pwm_modulator  
+2. Description: A Pulse Width Modulator (PWM) that generates a digital output signal with adjustable duty cycle based on input parameters.  
+3. Inputs:  
+   - clk: 1 bit System clock input  
+   - rst: 1 bit Active-high reset signal  
+   - duty_cycle: 8 bits Duty cycle value (0% to 100%)  
+   - ref_period: 8 bits Reference period for pulse generation  
+4. Outputs:  
+   - pwm_out: 1 bit Pulse width modulated output signal  
+   - pwm_done: 1 bit Indicates completion of a modulation cycle  
+5. Functionality:  
+   The PWM generator operates as follows:  
+   - Generates a digital pulse with variable width based on the duty_cycle input.  
+   - Compares an internal counter to the duty_cycle and ref_period values.  
+   - Outputs a high signal for (duty_cycle / 100) * ref_period time, then switches to low until the next cycle starts.  
+6. Timing Requirements:  
+   - Clock frequency: 100 MHz  
+   - Reset is active-high; takes effect on falling edge of rst.  
+   - pwm_done signal asserts high within one clock cycle after completion of each modulation cycle.  
+```

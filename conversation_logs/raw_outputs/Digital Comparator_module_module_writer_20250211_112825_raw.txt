@@ -1,0 +1,84 @@
+Timestamp: 2025-02-11 11:28:25
+Sender: module_writer
+Topic: Digital Comparator
+Phase: module
+--------------------------------------------------------------------------------
+<think>
+Alright, I need to create a Verilog module for a 4-bit digital comparator that compares two binary numbers and outputs their relationship—whether they're equal, greater than, or less than. The user provided specific inputs, outputs, functionality, and timing requirements.
+
+First, I'll start by defining the module with the correct name and ports. The module should be named `comparator_4bit` with inputs A, B as 4-bit wires, and outputs E, G, L as single bits. Also, it needs clock and reset signals.
+
+Next, considering the functionality: the comparator must compare each bit starting from the MSB to LSB. If all bits are equal, E is set. Otherwise, determine if A is greater or less than B based on where they first differ.
+
+I'll use a synthesis-friendly approach without using case statements since they can lead to non-synthesizable constructs in some cases. Instead, I'll implement the logic using bitwise operations and condition checks.
+
+For the timing requirements, the critical path must be <=10ns for a 100MHz clock. This suggests that the design should be simple enough to meet this delay without complex combinational logic. Since we're dealing with 4 bits, the maximum number of comparisons is manageable within this constraint.
+
+I'll implement the comparison by iterating through each bit from MSB (bit 3) to LSB (bit 0). I'll use a loop or conditional checks to determine where A and B first differ. If all bits are equal after checking all positions, set E=1. Otherwise, compare the differing bit to decide G or L.
+
+I should also ensure that the module handles reset properly—on rst high, all outputs should be reset to 0.
+
+Finally, I'll write the Verilog code with clear comments explaining each part of the logic for better readability.
+</think>
+
+```verilog
+module comparator_4bit (
+    input wire [3:0] A,
+    input wire [3:0] B,
+    input wire clk,
+    input wire rst,
+    output reg E,
+    output reg G,
+    output reg L
+);
+
+    // Reset signals
+    always @(posedge rst) begin
+        E <= 0;
+        G <= 0;
+        L <= 0;
+    end
+
+    // Clocking process for comparison logic
+    always @(posedge clk) begin
+        if (rst == 1) begin
+            E <= 0;
+            G <= 0;
+            L <= 0;
+        end else begin
+            E <= 0;
+            G <= 0;
+            L <= 0;
+
+            // Compare each bit from MSB to LSB
+            if (A[3] > B[3]) begin
+                G <= 1;
+            elsif (A[3] < B[3]) begin
+                L <= 1;
+            end else begin
+                // If MSBs are equal, move to next bit
+                if (A[2] > B[2]) begin
+                    G <= 1;
+                elsif (A[2] < B[2]) begin
+                    L <= 1;
+                end else begin
+                    if (A[1] > B[1]) begin
+                        G <= 1;
+                    elsif (A[1] < B[1]) begin
+                        L <= 1;
+                    end else begin
+                        if (A[0] > B[0]) begin
+                            G <= 1;
+                        elsif (A[0] < B[0]) begin
+                            L <= 1;
+                        end else begin
+                            E <= 1;
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+endmodule
+```

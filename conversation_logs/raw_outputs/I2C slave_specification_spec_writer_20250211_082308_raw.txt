@@ -1,0 +1,65 @@
+Timestamp: 2025-02-11 08:23:08
+Sender: spec_writer
+Topic: I2C slave
+Phase: specification
+--------------------------------------------------------------------------------
+<think>
+Okay, so I need to create a Verilog specification for an I2C slave module. Let me start by understanding what an I2C slave does. The I2C protocol is used for communication between devices, where one acts as a master and the others as slaves.
+
+First, I'll outline the module name, which should be something clear like `i2c_slave`. Next, the description should briefly explain that this module implements the I2C slave functionality, handling data transmission under the master's control.
+
+Now, for the inputs. The I2C bus has SCL (clock) and SDA (data). These are bidirectional lines, so in Verilog, they'll be inputs with pull-ups to avoid floating issues. So, `scl` and `sda` will each be 1-bit inputs.
+
+The outputs should include the clock (`scl_out`) and data (`sda_out`). Since these lines are driven by the slave but also need to handle tri-stating when not active, I'll use a 2-bit width for each. The first bit can indicate whether the line is driven (high) or tri-stated (low), and the second bit carries the actual value.
+
+Moving on to functionality. The module needs to handle data reception and transmission. It should support standard addressing with a 7-bit address. When the master sends an address, if it matches, the slave acknowledges by pulling SDA low. For receiving data, the slave reads bytes from the master until instructed otherwise. Transmitting allows the slave to send data upon master's request.
+
+I also need to consider control signals. The module should have a `reset` input for initialization and a `clk` input for timing. A `data_ready` output can signal when data is received, and `tx_empty` can indicate when transmission is complete.
+
+Timing requirements are crucial. The I2C protocol specifies certain timings like the minimum hold time on SDA after SCL. So, I'll note that the module must adhere to these timings for proper communication. Clock stretching might be a feature, where the slave can control SCL during data transfer.
+
+I should also include optional features like support for 10-bit addressing and general call addressing. These add flexibility but complicate the specification, so they're noted as optional.
+
+Finally, I'll structure all this information in the specified format without any markdown or code blocks, keeping it clear and concise.
+</think>
+
+```
+Module Name: i2c_slave  
+Description: A Verilog implementation of an I2C slave device that communicates with an I2C master.  
+
+Inputs:  
+- scl: 1-bit input representing the I2C clock line (bidirectional).  
+- sda: 1-bit input representing the I2C data line (bidirectional).  
+
+Outputs:  
+- scl_out: 2-bit output for driving the SCL line (bit 0: drive enable, bit 1: clock value).  
+- sda_out: 2-bit output for driving the SDA line (bit 0: drive enable, bit 1: data value).  
+
+Functionality:  
+The I2C slave module implements standard I2C protocol functionality including:  
+1. Addressing (7-bit or optional 10-bit and general call addressing).  
+2. Data reception from the master when addressed with a read command.  
+3. Data transmission to the master when addressed with a write command.  
+4. Acknowledgment generation on SDA line during communication.  
+5. Handling of start and stop conditions.  
+
+Timing Requirements:  
+- The module must adhere to I2C timing specifications, including minimum hold times on SDA after SCL transitions.  
+- Clock stretching is supported for Slave acknowledgment (ACK) timing.  
+
+Additional Features:  
+- Optional support for 10-bit addressing.  
+- Optional support for General Call addressing.  
+- Data reception buffer with configurable depth.  
+- Interrupt generation upon data reception or transmission completion.  
+
+Control Signals:  
+- reset: 1-bit input to reset the module's state machine and internal registers.  
+- clk: System clock input for timing operations.  
+- data_ready: 1-bit output indicating new data has been received.  
+- tx_empty: 1-bit output indicating transmission buffer is empty.  
+
+Interface Protocol:  
+- The module adheres to I2C protocol version 2.1 specifications.  
+- SCL and SDA lines are tri-stated when not actively driving.  
+```

@@ -1,0 +1,36 @@
+Description: A high-speed DDR3 memory controller that manages read, write, refresh, and other memory operations with proper timing and protocol compliance.  
+
+Inputs:  
+- clk: 1 bit Description: System clock input.  
+- rst_n: 1 bit Description: Active-low reset signal.  
+- addr: 15 bits Description: Memory address (row, column, bank).  
+- cmd: 4 bits Description: Command interface (read, write, activate, refresh, etc.).  
+- dmask: 8 bits Description: Data mask for write operations.  
+- wdata: 64 bits Description: Write data input.  
+- rdata: 64 bits Description: Read data output (tri-stated).  
+- wen: 1 bit Description: Write enable signal.  
+- auto_rst_en: 1 bit Description: Auto-refresh enable control.  
+- intr: 1 bit Description: Interrupt input from memory device.  
+
+Outputs:  
+- ck: 1 bit Description: Memory clock output (differential pair).  
+- ckb: 1 bit Description: Complementary memory clock output.  
+- drck: 1 bit Description: Data rate clock output.  
+- addrq: 15 bits Description: Address lines with timing requirements.  
+- cmdq: 4 bits Description: Command lines with setup and hold times.  
+- dmaskq: 8 bits Description: Data mask output with proper timing.  
+- wdataq: 64 bits Description: Write data output with setup time.  
+- rdataq: 64 bits Description: Read data input with hold time.  
+- wenq: 1 bit Description: Write enable signal with required timing.  
+- auto_rst_eq: 1 bit Description: Auto-refresh control signal.  
+- intr_i: 1 bit Description: Interrupt output to the system.  
+
+Functionality:  
+The DDR3 Memory Controller manages all aspects of memory operations, including command sequencing, address translation, data masking, and timing compliance. It supports burst mode operations, refresh cycles (manual and auto), error detection, and interrupt handling. The controller ensures proper setup and hold times for inputs relative to the clock and generates differential clocks for the memory interface.  
+
+Timing Requirements:  
+- Clock (clk): 160 MHz  
+- Reset (rst_n): Active-low reset with a minimum of 100 ns.  
+- Setup time for all inputs relative to clk: 0.5 ns.  
+- Hold time for all inputs relative to clk: 0.5 ns.  
+- Output timing for data and commands must meet DDR3 specifications, including CK-to-DQ skew control.

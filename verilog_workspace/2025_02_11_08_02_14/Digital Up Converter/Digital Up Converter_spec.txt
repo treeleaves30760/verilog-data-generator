@@ -1,0 +1,24 @@
+2. Description: A Digital Up Converter (DUC) that converts baseband I/Q signals to an RF output by mixing with a carrier signal and interpolating.
+3. Inputs:
+   - i_signal: 16-bit in-phase input representing the baseband signal's in-phase component.
+   - q_signal: 16-bit quadrature input representing the baseband signal's quadrature component.
+   - sys_clk: System clock (e.g., 100 MHz) providing timing for operations.
+   - reset_n: Active-high synchronous reset signal to initialize the DUC state.
+   - carrier_freq: Control input specifying the carrier frequency for mixing.
+   - carrier_clk: Clock signal used for generating the carrier sine and cosine values.
+4. Outputs:
+   - rf_output: 1-bit digital output representing the up-converted RF signal.
+   - empty: 1-bit signal indicating when the DUC is ready to receive new data.
+   - valid: 1-bit signal indicating when the conversion process is complete.
+5. Functionality:
+   The DUC performs the following operations:
+   - Receives complex baseband input (I and Q) at a specific rate.
+   - Generates sine and cosine values for the carrier frequency using the carrier_clk.
+   - Mixes the I and Q inputs with the generated carrier signals to up-convert the baseband signal to RF frequencies.
+   - Implements interpolation to increase the sample rate, ensuring no aliasing occurs during the conversion process.
+   - Outputs the resulting RF signal on rf_output.
+   - Asserts empty when ready for new data and valid upon completion of the conversion process.
+6. Timing Requirements:
+   - Operated synchronously by sys_clk with a specified frequency (e.g., 100 MHz).
+   - Synchronous reset via reset_n, active high.
+   - All inputs must be stable within one clock cycle after the rising edge of sys_clk to ensure proper operation.

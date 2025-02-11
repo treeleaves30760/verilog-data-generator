@@ -1,0 +1,20 @@
+2. Description: A digital circuit implementing a Fast Fourier Transform (FFT) processor capable of computing the discrete Fourier transform (DFT) of complex input data using butterfly operations and control logic.  
+3. Inputs:  
+   - real_part: 16-bit Real part of complex input number  
+   - imag_part: 16-bit Imaginary part of complex input number  
+   - start: 1-bit Start signal to initiate FFT computation  
+   - clock: 1-bit System clock  
+   - reset: 1-bit Active-high asynchronous reset signal  
+4. Outputs:  
+   - real_out: 16-bit Real part of transformed output  
+   - imag_out: 16-bit Imaginary part of transformed output  
+   - done: 1-bit Signal indicating completion of FFT computation  
+5. Functionality:  
+   - The FFT_Processor accepts complex input data (real and imaginary parts) and computes the FFT using butterfly operations.  
+   - The processor supports in-place computation, reusing the input memory for intermediate results.  
+   - It includes control logic to manage the iterative butterfly operations, bit-reversal permutation, and scaling factors.  
+   - The done signal is asserted when the FFT computation is complete and ready for output.  
+6. Timing Requirements:  
+   - Clock frequency: 100 MHz (10 ns period)  
+   - Reset is active-high; all internal states are reset to a known state upon assertion.  
+   - Processing time depends on the number of FFT points (e.g., N=1024) and clock rate.

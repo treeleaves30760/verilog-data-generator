@@ -1,0 +1,26 @@
+Description: A hardware implementation of a Convolutional Neural Network (CNN) optimized for edge computing applications.  
+
+Inputs:  
+- clk: 1-bit Clock signal  
+- rst: 1-bit Reset signal (active high)  
+- input_data: 784-bit Input image data (28x28 pixels, grayscale)  
+- start: 1-bit Start signal to initiate processing  
+
+Outputs:  
+- output_class: 10-bit Output class prediction (one-hot encoded)  
+- done: 1-bit Signal indicating completion of processing  
+
+Functionality:  
+The CNN core implements a simplified version of LeNet-5 for MNIST digit classification. It includes the following layers:  
+1. Convolutional Layer with 4 kernels, each of size 5x5, producing 4 feature maps.  
+2. ReLU activation function applied to the output of convolution.  
+3. Max pooling layer with pool size 2x2 and stride 2.  
+4. Fully connected layer with 16 neurons followed by another fully connected layer with 10 neurons (output classes).  
+5. Softmax activation for final classification.  
+
+Timing Requirements:  
+- Clock frequency: 100 MHz  
+- Reset polarity: Active high  
+- Processing time per input image: Less than 1 ms  
+
+The module processes input images in a pipelined manner, with each layer operating asynchronously to improve throughput. The design assumes fixed-point arithmetic for efficient hardware implementation and minimal resource usage.

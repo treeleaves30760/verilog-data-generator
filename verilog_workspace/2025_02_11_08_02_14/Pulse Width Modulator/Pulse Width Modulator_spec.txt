@@ -1,0 +1,18 @@
+2. Description: A Pulse Width Modulator (PWM) that generates a digital output signal with adjustable duty cycle based on input parameters.  
+3. Inputs:  
+   - clk: 1 bit System clock input  
+   - rst: 1 bit Active-high reset signal  
+   - duty_cycle: 8 bits Duty cycle value (0% to 100%)  
+   - ref_period: 8 bits Reference period for pulse generation  
+4. Outputs:  
+   - pwm_out: 1 bit Pulse width modulated output signal  
+   - pwm_done: 1 bit Indicates completion of a modulation cycle  
+5. Functionality:  
+   The PWM generator operates as follows:  
+   - Generates a digital pulse with variable width based on the duty_cycle input.  
+   - Compares an internal counter to the duty_cycle and ref_period values.  
+   - Outputs a high signal for (duty_cycle / 100) * ref_period time, then switches to low until the next cycle starts.  
+6. Timing Requirements:  
+   - Clock frequency: 100 MHz  
+   - Reset is active-high; takes effect on falling edge of rst.  
+   - pwm_done signal asserts high within one clock cycle after completion of each modulation cycle.

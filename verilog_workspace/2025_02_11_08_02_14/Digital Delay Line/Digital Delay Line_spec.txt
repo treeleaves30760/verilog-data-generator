@@ -1,0 +1,16 @@
+2. Description: A programmable digital delay line that introduces a fixed or variable time delay between an input signal and its output.  
+3. Inputs:  
+   - data_in: 8 bits [Input data to be delayed]  
+   - clk: 1 bit [System clock]  
+   - rst_n: 1 bit [Active-low reset]  
+   - delay_value: 4 bits [Programmable delay value (0 to 15 clock cycles)]  
+4. Outputs:  
+   - data_out: 8 bits [Delayed output data]  
+5. Functionality:  
+   - The module introduces a programmable delay between the input and output signals based on the delay_value control signal.  
+   - The delay is implemented using a shift register with a length determined by the delay_value.  
+   - The delay can be adjusted in real-time by changing the delay_value input.  
+6. Timing Requirements:  
+   - Clock (clk): 100 MHz, non-inverted  
+   - Reset (rst_n): Active-low reset with a minimum hold time of 3 clock cycles  
+   - All inputs must be stable for at least one full clock cycle before any transitions to ensure proper synchronization.

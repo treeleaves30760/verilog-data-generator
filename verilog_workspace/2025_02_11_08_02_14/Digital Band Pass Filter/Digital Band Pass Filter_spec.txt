@@ -1,0 +1,10 @@
+2. Description: A second-order Butterworth band pass filter with tunable center and bandwidth frequencies.
+3. Inputs:
+   - clk: 1-bit clock signal
+   - rst: 1-bit reset signal
+   - d_in: 16-bit input data
+4. Outputs:
+   - d_out: 16-bit filtered output
+   - valid: 1-bit flag indicating valid output
+5. Functionality: The filter passes signals within a specified frequency range, using delay elements and adders for computation.
+6. Timing Requirements: Clock-driven, reset functionality, setup time after reset.

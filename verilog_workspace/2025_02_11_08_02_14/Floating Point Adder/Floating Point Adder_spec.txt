@@ -1,0 +1,24 @@
+Description: A 32-bit floating-point adder implementing IEEE 754 addition with special value handling.  
+
+Inputs:  
+- a: 32-bit input number  
+- b: 32-bit input number  
+- clk: clock signal  
+- rst: asynchronous reset  
+
+Outputs:  
+- sum: 32-bit output number  
+- invalid_op: 1-bit flag indicating an invalid operation (e.g., NaNs)  
+- div_by_zero: 1-bit flag for overflow due to division by zero  
+- overflow: 1-bit flag for overflow during addition  
+
+Functionality:  
+The floating-point adder performs the following operations:  
+1. Adds two 32-bit floating-point numbers according to IEEE 754 standard.  
+2. Handles special cases such as NaN, infinity, and zero.  
+3. Detects underflow and overflow conditions.  
+4. Sets status flags for invalid operations, division by zero, and overflow.  
+
+Timing Requirements:  
+- Clock (clk): 10ns period  
+- Reset (rst): Asynchronous reset active high

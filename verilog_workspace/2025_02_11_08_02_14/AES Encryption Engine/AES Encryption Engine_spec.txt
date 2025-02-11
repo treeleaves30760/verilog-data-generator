@@ -1,0 +1,20 @@
+1. Module Name: aes_engine  
+2. Description: High-speed AES encryption engine supporting 128/192/256-bit keys.  
+3. Inputs:  
+   - aes_key: 256-bit AES encryption key (128/192/256 bits)  
+   - aes_input: 128-bit Plaintext input to be encrypted  
+   - start: 1-bit Start signal to begin encryption process  
+   - reset_n: 1-bit Asynchronous active-low reset signal  
+   - clock: 1-bit System clock input  
+4. Outputs:  
+   - aes_output: 128-bit Ciphertext output after encryption  
+   - aes_done: 1-bit Completion signal when encryption is complete  
+5. Functionality:  
+   The AES engine processes plaintext into ciphertext using the AES algorithm with support for 128/192/256-bit keys. It performs the following steps:  
+   - Initialization on reset_n assertion.  
+   - Waits for start signal to begin encryption.  
+   - Encrypts the aes_input according to AES specifications, producing aes_output.  
+   - Asserts aes_done when encryption completes.  
+6. Timing Requirements:  
+   - Clock frequency: Up to 300 MHz  
+   - Reset_n is asynchronous and halts all operations upon assertion.

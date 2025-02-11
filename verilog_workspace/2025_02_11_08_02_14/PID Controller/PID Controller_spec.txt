@@ -1,0 +1,19 @@
+2. Description: Digital PID (Proportional-Integral-Derivative) Controller Implementation
+3. Inputs:
+   - setpoint: 32-bit Input representing the desired process value
+   - process_value: 32-bit Input representing the actual process measurement
+   - clock: 1-bit Clock signal for timing operations
+   - reset_n: 1-bit Active-low asynchronous reset signal
+4. Outputs:
+   - control_output: 32-bit Output representing the computed control signal
+5. Functionality:
+   The PID controller calculates the error between the setpoint and process_value.
+   It computes three terms:
+   - Proportional term (Kp * error)
+   - Integral term (Ki * integral of error over time)
+   - Derivative term (Kd * rate of change of error)
+   These terms are summed with their respective coefficients to produce the control output.
+   The output is limited by saturation limits to prevent excessive actuator operation.
+6. Timing Requirements:
+   - clock: Standard digital clock signal
+   - reset_n: Active-low asynchronous reset, used to initialize internal states and integral term to zero

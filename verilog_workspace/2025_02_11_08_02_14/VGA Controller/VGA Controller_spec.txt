@@ -1,0 +1,28 @@
+2. Description: A VGA controller module responsible for generating timing signals (horizontal and vertical sync) and pixel data to interface with a VGA display.  
+3. Inputs:  
+   - clk: 1 bit System clock input  
+   - rst_n: 1 bit Active-low reset signal  
+   - pixel_clk_en: 1 bit Enable pixel clock generation  
+   - hsync_in: 1 bit Horizontal sync input from graphics engine  
+   - vsync_in: 1 bit Vertical sync input from graphics engine  
+   - rgb_data: 24 bits RGB pixel data input (R[7:0], G[7:0], B[7:0])  
+   - irq: 1 bit Interrupt request output from VGA controller  
+4. Outputs:  
+   - vga_r: 8 bits Red component of RGB output to VGA interface  
+   - vga_g: 8 bits Green component of RGB output to VGA interface  
+   - vga_b: 8 bits Blue component of RGB output to VGA interface  
+   - vga_hs: 1 bit Horizontal sync output to VGA interface  
+   - vga_vs: 1 bit Vertical sync output to VGA interface  
+   - pixel_clk: 1 bit Pixel clock output for timing synchronization  
+5. Functionality:  
+   - Generates horizontal and vertical sync signals based on input timing controls.  
+   - Handles RGB data conversion and formatting for VGA output.  
+   - Supports multiple resolutions (e.g., 640x480, 800x600, 1024x768).  
+   - Implements a FIFO buffer to ensure smooth pixel data flow.  
+   - Includes overscan blanking to prevent artifacts on the VGA display.  
+   - Manages interrupt generation for system-level synchronization.  
+6. Timing Requirements:  
+   -clk: System clock at 25 MHz (adjustable)  
+   -rst_n: Active-low reset, self-clearing after release  
+   -pixel_clk: Generated from system clock with a programmable divisor (e.g., 4x for 60 Hz refresh rate)  
+   -Latency after rst_n assertion: 1 pixel clock cycle before operational

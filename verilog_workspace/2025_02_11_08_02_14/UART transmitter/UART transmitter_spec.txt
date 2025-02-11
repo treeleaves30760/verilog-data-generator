@@ -1,0 +1,20 @@
+2. Description: UART Transmitter Module for serial data transmission.
+3. Inputs:
+   - clk: 1 bit Clock signal (50MHz)
+   - rst: 1 bit Active-high reset signal
+   - data_in: 8 bits Parallel data input to be transmitted
+   - send_en: 1 bit Transmit enable signal
+4. Outputs:
+   - tx_data: 1 bit Serial data output
+   - tx_busy: 1 bit Indicates if the transmitter is busy
+   - tx_done: 1 bit Signal when transmission completes
+5. Functionality:
+   - Converts parallel data to serial format.
+   - Implements start and stop bits for each character.
+   - Generates baud rate using a clock divider (BAUD_RATE = 16).
+   - Manages state machine for idle, transmitting states.
+   - Asserts tx_done when transmission completes.
+6. Timing Requirements:
+   - Clock: clk (50MHz)
+   - Reset: rst (active-high)
+   - Send enable must be synchronized with clock

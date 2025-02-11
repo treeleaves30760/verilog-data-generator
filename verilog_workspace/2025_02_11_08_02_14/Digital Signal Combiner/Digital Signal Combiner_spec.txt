@@ -1,0 +1,18 @@
+2. Description: A module that combines multiple digital signals into a single output based on specific rules and conditions.  
+3. Inputs:  
+   - in1: 1 bit Description: First input signal  
+   - in2: 1 bit Description: Second input signal  
+   - in3: 1 bit Description: Third input signal  
+   - enable: 1 bit Description: Enable signal to activate the combiner  
+4. Outputs:  
+   - out: 1 bit Description: Combined output signal  
+5. Functionality:  
+   The combiner module takes three input signals (in1, in2, in3) and an enable signal. When the enable signal is high, the module performs the following operations:  
+   - If any of the input signals is high (1), the output will be high (1).  
+   - If all input signals are low (0), the output will remain low (0).  
+   - The output is updated on each rising edge of the clock signal.  
+6. Timing Requirements:  
+   - Clock: clk 1 bit, active-high clock signal with a frequency of 50 MHz  
+   - Reset: rst_n 1 bit, active-low reset signal that resets all internal states when asserted  
+   - Setup Time: All inputs must be stable for at least 1 ns before the rising edge of the clock  
+   - Hold Time: All inputs must remain stable for at least 1 ns after the rising edge of the clock

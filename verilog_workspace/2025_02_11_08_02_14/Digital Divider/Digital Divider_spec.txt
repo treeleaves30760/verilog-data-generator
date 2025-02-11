@@ -1,0 +1,19 @@
+2. Description: This module performs division operations on two unsigned binary numbers.
+3. Inputs:
+   - dividend: 8-bit input representing the dividend number.
+   - divisor: 8-bit input representing the divisor number.
+   - clk: 1-bit clock signal (active edge: rising)
+   - rst: 1-bit reset signal (active high)
+   - start: 1-bit signal to initiate division operation
+4. Outputs:
+   - quotient: 8-bit output representing the result of division.
+   - remainder: 8-bit output representing the remainder after division.
+   - done: 1-bit flag indicating completion of division operation.
+   - overflow: 1-bit flag indicating if dividend exceeds divisor * 2^width.
+   - underflow: 1-bit flag indicating if dividend is less than divisor and not zero.
+5. Functionality:
+   The digital_divider module performs unsigned division of two binary numbers, dividend and divisor. It calculates the quotient and remainder. When start is asserted (high), the operation begins. The done signal is raised when the division process completes. Overflow occurs when dividend >= divisor * 2^width, and underflow occurs when dividend < divisor and dividend != 0. The module handles edge cases such as division by zero gracefully.
+6. Timing Requirements:
+   -clk: Positive-edge clock signal for synchronous operations.
+   -rst: Active-high reset signal to initialize the module state.
+   -start: Asynchronous input to trigger division operation; must be high before processing begins.

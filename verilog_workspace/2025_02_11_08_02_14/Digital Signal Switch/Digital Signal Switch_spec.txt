@@ -1,0 +1,15 @@
+2. Description: A 2-to-1 digital signal switch that routes one of two input signals to the output based on a control signal.  
+3. Inputs:  
+   - IN_A: 1 bit Description: First input signal  
+   - IN_B: 1 bit Description: Second input signal  
+   - SEL: 1 bit Description: Selection control signal (0 selects IN_A, 1 selects IN_B)  
+4. Outputs:  
+   - OUT: 1 bit Description: Output signal (routes either IN_A or IN_B based on SEL)  
+5. Functionality:  
+   The module routes the selected input to the output based on the SEL control signal. When SEL is 0, the output is equal to IN_A. When SEL is 1, the output is equal to IN_B. The selection occurs synchronously with each clock cycle.  
+6. Timing Requirements:  
+   - Clock (CLK): 50 MHz  
+   - Reset (RST): Active-high reset signal  
+   - Setup time for inputs: 1 ns before rising edge of CLK  
+   - Hold time for inputs: 2 ns after rising edge of CLK  
+   - Output propagation delay: 5 ns after rising edge of CLK

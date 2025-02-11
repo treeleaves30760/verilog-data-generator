@@ -1,0 +1,13 @@
+2. Description: A digital high pass filter that processes input samples and outputs filtered samples above a specified cutoff frequency.
+3. Inputs:
+   - clk: 1-bit Clock signal
+   - rst: 1-bit Reset signal
+   - d_in: 16-bit Signed integer Input data sample
+4. Outputs:
+   - d_out: 16-bit Signed integer Output data sample
+5. Functionality:
+   The filter processes each input sample and produces an output sample based on the difference equation y[n] = x[n] - x[n-1]. This implementation uses a simple first-order high pass filter structure to attenuate low-frequency components of the input signal while allowing high-frequency components to pass through.
+6. Timing Requirements:
+   - Clock: Positive-edge triggered synchronous design
+   - Reset: Active-high reset that initializes internal states and flip-flops
+   - Filter operates synchronously with the clock signal, processing one sample per clock cycle

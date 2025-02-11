@@ -1,0 +1,19 @@
+Description: Modulates digital data onto a carrier signal using BPSK/QPSK.  
+
+Inputs:  
+- clk: 1 Description: System clock.  
+- rst: 1 Description: Active-high reset signal.  
+- data_in: 1 Description: Digital data input to be modulated.  
+- modulate_enable: 1 Description: Enable modulation operation.  
+
+Outputs:  
+- d0: 1 Description: Modulated signal I/Q component (D0).  
+- d1: 1 Description: Modulated signal I/Q component (D1).  
+
+Functionality:  
+The module samples the digital data input at each clock cycle, converts it into symbols, and modulates them onto a carrier signal using BPSK or QPSK. The modulation process adjusts the phase of the carrier based on the input data. The differential output signals (D0 and D1) represent the in-phase and quadrature components of the modulated signal.  
+
+Timing Requirements:  
+- Clock: clk Description: 100MHz clock with positive edge sampling.  
+- Reset: rst Description: Active-high reset; must be held high for at least two clock cycles to ensure proper initialization.  
+- Data Input: data_in Description: Must be stable 10ns before and after the clock edge.

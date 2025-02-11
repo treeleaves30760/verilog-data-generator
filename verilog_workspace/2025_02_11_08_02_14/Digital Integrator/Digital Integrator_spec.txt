@@ -1,0 +1,16 @@
+2. Description: This module computes the digital integration of an input signal using numerical methods. It employs the trapezoidal rule for integration, suitable for discrete-time systems.  
+3. Inputs:  
+   - clk : 1 bit (System clock)  
+   - rst : 1 bit (Active-high reset signal)  
+   - in_data : 16 bits (Digital input to be integrated)  
+4. Outputs:  
+   - out_integrated : 16 bits (Result of the integration process)  
+5. Functionality:  
+   The Digital_Integrator module performs numerical integration on the input data using the trapezoidal rule. It accumulates the integral over time steps, updating the result based on the current and previous input values. The integration is performed at each rising edge of the clock signal after the reset is released.  
+6. Timing Requirements:  
+   - Clock: Positive-edge triggered system clock (clk)  
+   - Reset: Active-high reset signal (rst)  
+   - Integration occurs synchronously with the clock, with a time interval determined by the clock period.  
+
+Parameters:  
+- n_steps : unsigned integer (Default = 10) (Number of integration steps before output is valid)

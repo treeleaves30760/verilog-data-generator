@@ -1,0 +1,25 @@
+2. Description: A digital audio mixer that combines multiple input signals with adjustable gain, panning, and effects processing.  
+3. Inputs:  
+   - in_signal[7:0][15:0]: 16-bit audio signal for each of the 8 input channels  
+   - clk: 1-bit clock signal (48 kHz)  
+   - rst_n: 1-bit active-high reset signal  
+   - gain_adjust[7:0][4:0]: 5-bit gain adjustment value for each channel  
+   - pan_control[7:0][3:0]: 4-bit panning control value for each channel (left/right balance)  
+   - volume_control[7:0][4:0]: 5-bit volume level setting for each channel  
+   - effect_enable[7:0]: 1-bit control to enable effects processing for each channel  
+   - bypass_mode[7:0]: 1-bit control to bypass processing for each channel  
+   - mute_switch[7:0]: 1-bit switch to mute/unmute each input channel  
+4. Outputs:  
+   - out_signal[15:0]: 16-bit mixed audio output (main output)  
+   - aux_out_signal[15:0]: 16-bit effects loop output  
+   - status_bit[0]: 1-bit status indicator (high if any input is muted or overloaded)  
+5. Functionality:  
+   - Each input channel's signal is scaled by its gain, pan, and volume controls.  
+   - Effects processing (e.g., reverb, delay) can be applied to selected channels when enabled.  
+   - Bypass mode allows unmuted inputs to pass through without processing.  
+   - Mute detection: If any channel is muted, the status bit is set high.  
+   - Output signals are summed and routed to main and auxiliary outputs based on effects routing.  
+6. Timing Requirements:  
+   - Clock (clk): 48 kHz sampling rate  
+   - Reset (rst_n): Active-high reset with low-to-high transition initializing all gain and pan values to default positions  
+   - All operations are synchronous to the clock signal

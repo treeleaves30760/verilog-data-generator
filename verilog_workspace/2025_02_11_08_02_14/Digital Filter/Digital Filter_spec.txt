@@ -1,0 +1,16 @@
+Description: A 16th-order elliptic digital filter capable of low-pass and high-pass configurations.  
+Inputs:  
+- clk: 1 bit (System clock)  
+- rst_n: 1 bit (Active-low reset signal)  
+- data_in: 16 bits (Input data to be filtered)  
+- enable: 1 bit (Enable filtering process)  
+- mode: 3 bits (Filter configuration: 000 for low-pass, 001 for high-pass)  
+Outputs:  
+- data_out: 16 bits (Filtered output data)  
+- ready: 1 bit (Indicates when the filter is ready to accept new input)  
+Functionality:  
+The Digital_Filter module performs a finite impulse response (FIR) filtering operation on the input data. It supports both low-pass and high-pass configurations based on the mode input. The filter uses pre-defined coefficients stored in memory, with 16 taps for a 16th-order response. When enabled, the filter processes the input data sequentially, applying the appropriate frequency response according to the selected mode.  
+Timing Requirements:  
+- Clock: clk (100 MHz)  
+- Reset: rst_n (active-low reset)  
+- Latency: The module introduces a latency of 16 clock cycles after enable is asserted before the first valid output is produced.

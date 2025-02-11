@@ -1,0 +1,21 @@
+2. Description: A 2nd-order Butterworth Digital Low Pass Filter (DLPF) designed to attenuate frequencies above a specified cutoff frequency.  
+3. Inputs:  
+   - clk: 1 bit Clock signal  
+   - rst: 1 bit Active-high synchronous reset  
+   - data_in: 16 bits Input digital audio sample  
+4. Outputs:  
+   - data_out: 16 bits Filtered output digital audio sample  
+5. Functionality:  
+   The DLPF processes each input sample to produce an output sample based on a recursive difference equation:  
+   y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] - a1 * y[n-1] - a2 * y[n-2]  
+   where:  
+   - b0 = 0.5*( (sqrt(3)+1)/ (sqrt(3)+2) ) ≈ 0.4899  
+   - b1 = 0.5*( (sqrt(3)-1)/ (sqrt(3)+2) ) ≈ 0.1736  
+   - b2 = 0.5*(1/(sqrt(3)+2)) ≈ 0.0748  
+   - a1 = 0.9356  
+   - a2 = 0.3020  
+   The filter operates on signed 16-bit integer samples and maintains internal state variables to track previous inputs and outputs for recursive computation.  
+6. Timing Requirements:  
+   - Clock (clk): 48 kHz system clock  
+   - Reset (rst): Active-high synchronous reset, all internal states are cleared upon assertion  
+   - Data processing is synchronized with the rising edge of the clock signal

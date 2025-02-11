@@ -1,0 +1,23 @@
+Description: A generic FIFO buffer with read and write operations.
+
+Inputs:
+- clk: 1 bit Clock signal
+- rst_n: 1 bit Active low reset signal
+- wr_en: 1 bit Write enable signal
+- din: W bits Input data (W is the width of the data bus)
+
+Outputs:
+- dout: W bits Output data
+- full: 1 bit Indicates if the FIFO is full
+- empty: 1 bit Indicates if the FIFO is empty
+- almost_full: 1 bit Indicates when the FIFO is almost full
+
+Functionality:
+The FIFO buffer implements a first-in-first-out memory structure with separate read and write ports. It supports asynchronous read and write operations, controlled by the wr_en and rd_en signals. The internal memory is implemented using a RAM block for efficient data storage and retrieval.
+
+Timing Requirements:
+- Clock: clk (rising edge)
+- Reset: rst_n (active low)
+- Minimum clock period: 5 ns
+- Setup time for inputs: 1 ns
+- Hold time for inputs: 1 ns

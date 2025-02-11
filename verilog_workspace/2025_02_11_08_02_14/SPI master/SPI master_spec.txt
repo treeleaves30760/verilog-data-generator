@@ -1,0 +1,26 @@
+2. Description: A full-duplex SPI master controller supporting multiple slaves via chip select (CS) lines, capable of handling various clock polarities and phases.  
+3. Inputs:  
+   - clk: 1 bit Clock input  
+   - rst_n: 1 bit Active-low reset signal  
+   - cs_width: 4 bits Number of slave devices supported (up to 16)  
+   - sck_freq_div: 8 bits SPI clock frequency divisor  
+   - cpol: 1 bit Clock polarity (0 = falling, 1 = rising)  
+   - cpha: 1 bit Clock phase (0 = first edge, 1 = second edge)  
+   - start: 1 bit Transaction start signal  
+   - cs_addr: log2(cs_width)+1 bits Chip select address for the target slave  
+   - tx_data: 8 bits Data to be transmitted in a single byte transfer  
+   - tx_length: 4 bits Number of bytes to transmit (up to 16)  
+   - enable: 1 bit Master enable signal  
+   - done: 1 bit Transaction completion indicator  
+4. Outputs:  
+   - sck_out: cs_width bits SPI clock output for each slave  
+   - cs_out: cs_width bits Chip select signals for each slave  
+   - mosi_out: 8 bits Master Output, Slave Input (MOSI) data bus  
+5. Functionality:  
+   The spi_master module generates the SCK signal based on the sck_freq_div value and manages the CS lines to select the appropriate slave device. It supports full-duplex communication, allowing simultaneous transmission and reception of data. The master handles multiple slaves by cycling through their respective CS signals according to the cs_addr input. When a transaction is initiated with the start signal, the master sends the tx_data to the selected slave and waits for acknowledgment if required. The controller ensures proper clock timing based on CPOL and CPHA settings.  
+6. Timing Requirements:  
+   - Clock (clk): 100 MHz  
+   - Reset (rst_n): Active-low reset with a hold time of at least one clock cycle before rising edge  
+   - Setup time for SCK: 5 ns before the rising edge  
+   - Hold time for SCK: 5 ns after the falling edge  
+   - The master should be ready to initiate a new transaction within 10 clock cycles after reset.

@@ -1,0 +1,1 @@
+sin_value = sin(2 * £k * f / sampling_freq)

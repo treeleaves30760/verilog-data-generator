@@ -1,0 +1,37 @@
+Description: A Verilog implementation of an I2C slave device that communicates with an I2C master.  
+
+Inputs:  
+- scl: 1-bit input representing the I2C clock line (bidirectional).  
+- sda: 1-bit input representing the I2C data line (bidirectional).  
+
+Outputs:  
+- scl_out: 2-bit output for driving the SCL line (bit 0: drive enable, bit 1: clock value).  
+- sda_out: 2-bit output for driving the SDA line (bit 0: drive enable, bit 1: data value).  
+
+Functionality:  
+The I2C slave module implements standard I2C protocol functionality including:  
+1. Addressing (7-bit or optional 10-bit and general call addressing).  
+2. Data reception from the master when addressed with a read command.  
+3. Data transmission to the master when addressed with a write command.  
+4. Acknowledgment generation on SDA line during communication.  
+5. Handling of start and stop conditions.  
+
+Timing Requirements:  
+- The module must adhere to I2C timing specifications, including minimum hold times on SDA after SCL transitions.  
+- Clock stretching is supported for Slave acknowledgment (ACK) timing.  
+
+Additional Features:  
+- Optional support for 10-bit addressing.  
+- Optional support for General Call addressing.  
+- Data reception buffer with configurable depth.  
+- Interrupt generation upon data reception or transmission completion.  
+
+Control Signals:  
+- reset: 1-bit input to reset the module's state machine and internal registers.  
+- clk: System clock input for timing operations.  
+- data_ready: 1-bit output indicating new data has been received.  
+- tx_empty: 1-bit output indicating transmission buffer is empty.  
+
+Interface Protocol:  
+- The module adheres to I2C protocol version 2.1 specifications.  
+- SCL and SDA lines are tri-stated when not actively driving.

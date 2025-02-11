@@ -1,0 +1,18 @@
+2. Description: A digital signal router that directs input signals to one of multiple output ports based on a control signal.
+3. Inputs:
+   - data_in: 16-bit description="Input data signal to be routed."
+   - clk: 1-bit description="System clock input."
+   - rst: 1-bit description="Active-high reset signal."
+   - dest_addr: 3-bit description="Destination address for routing control (0-3)."
+4. Outputs:
+   - data_out_0: 16-bit description="Output data to destination 0."
+   - data_out_1: 16-bit description="Output data to destination 1."
+   - data_out_2: 16-bit description="Output data to destination 2."
+   - data_out_3: 16-bit description="Output data to destination 3."
+5. Functionality:
+   The router receives a 16-bit data input and routes it to one of four output ports based on the 3-bit dest_addr control signal. When rst is high, all outputs are reset to 0. On each rising edge of clk, the router evaluates the dest_addr and forwards the data_in to the corresponding output. If dest_addr is invalid (4-7), no output is triggered.
+6. Timing Requirements:
+   - Clock:clk:100MHz description="System clock with 100MHz frequency."
+   - Reset:rst:high description="Active-high reset signal with a minimum hold time of 5ns."
+   - Setup Time:Setup_time=2ns description="Minimum setup time for inputs relative to the rising edge of clk."
+   - Propagation Delay:Propagation_delay=5ns description="Maximum propagation delay from data_in to any output."

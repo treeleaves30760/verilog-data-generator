@@ -1,0 +1,23 @@
+2. Description: High-resolution pulse-width modulation (PWM) generator supporting multiple output channels with adjustable duty cycle and frequency control.  
+3. Inputs:  
+   - clk: 1 bit [System clock input]  
+   - rst_n: 1 bit [Active low reset signal]  
+   - enable: 1 bit [Enable PWM generation]  
+   - channel_sel: log2(N_CHANNELS) bits [Select the output channel (0 to N-1)]  
+   - duty_cycle: $duty_width bits [$DUTY_WIDTH-bit duty cycle control (0 to 100%)]  
+   - sync_in: 1 bit [External synchronization input]  
+4. Outputs:  
+   - pwm_out: 1 bit [PWM output signal for selected channel]  
+   - busy: 1 bit [Indicates if an update is in progress]  
+5. Functionality:  
+   - Generates PWM signals for multiple channels based on the selected duty cycle and frequency.  
+   - Supports external synchronization via sync_in input.  
+   - Adjusts duty cycle dynamically while minimizing glitch-free transitions during updates.  
+   - Provides busy flag to indicate ongoing configuration changes.  
+6. Timing Requirements:  
+   - Clock (clk): 100MHz (user-defined)  
+   - Reset (rst_n): Active low, asynchronous reset with hold time >= 2 clock cycles.  
+   - Setup time for inputs: 1 clock cycle before clk rising edge.  
+   - Hold time for inputs: 1 clock cycle after clk falling edge.  
+   - Pulse width resolution: 1ns (based on clock frequency).  
+   - Propagation delay from input to output: <= 2 clock cycles.

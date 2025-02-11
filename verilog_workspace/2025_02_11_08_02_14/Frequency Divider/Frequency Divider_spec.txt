@@ -1,0 +1,7 @@
+
+I should also ensure that all necessary details are included for implementation. That means specifying each input and output clearly, including their widths and descriptions. The functionality section needs to be clear enough for someone to understand how the module works without ambiguity.
+
+Let me double-check if I've covered everything: Module Name, Description, Inputs with names, widths, and descriptions, Outputs similarly, Functionality explained in a straightforward manner, and Timing Requirements with clock details and reset information.
+
+I think that's all. Now, I'll format it exactly as the user requested without any additional text or markdown.
+</think>

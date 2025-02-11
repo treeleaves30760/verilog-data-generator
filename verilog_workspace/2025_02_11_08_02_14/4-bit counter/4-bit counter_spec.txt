@@ -1,0 +1,12 @@
+2. Description: A 4-bit counter that increments its value on each rising edge of the clock signal. The counter resets to zero when the reset input is asserted.  
+3. Inputs:  
+   - clk: 1 bit Clock input  
+   - rst: 1 bit Active-high asynchronous reset input  
+   - en: 1 bit Enable input to control counting functionality  
+4. Outputs:  
+   - count: 4 bits Binary output representing the current count value (0 to 15)  
+5. Functionality:  
+   The counter increments its value by 1 on each rising edge of the clock signal when the enable input is high. When the reset input is asserted, the counter resets to zero immediately. The counting operation is controlled by the enable input, which allows or disables the counting functionality.  
+6. Timing Requirements:  
+   - Clock:clk: 50 MHz (example frequency)  
+   - Reset:rst: Active-high reset with setup time of 1 clock cycle and hold time of 1 clock cycle

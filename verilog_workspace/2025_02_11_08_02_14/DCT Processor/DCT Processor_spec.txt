@@ -1,0 +1,20 @@
+2. Description: A digital circuit implementing the Discrete Cosine Transform (DCT) for an 8x8 matrix with quantization support.  
+3. Inputs:  
+   - clk: 1 bit, System clock signal.  
+   - rst_n: 1 bit, Active-low system reset.  
+   - start: 1 bit, Trigger to initiate DCT processing.  
+   - data_in: 512 bits, Input matrix (64 elements of 8 bits each).  
+   - quantization_table: 512 bits, Quantization table for coefficient quantization.  
+4. Outputs:  
+   - done: 1 bit, Indicates completion of DCT processing.  
+   - data_out: 512 bits, Output matrix (64 transformed coefficients after quantization).  
+5. Functionality:  
+   - Receives an 8x8 input matrix via data_in.  
+   - Applies the DCT algorithm to compute the transform coefficients.  
+   - Quantizes the coefficients using the provided quantization_table.  
+   - Outputs the quantized coefficients via data_out when processing is complete.  
+   - Supports sequential processing of multiple matrices upon receiving a start signal after reset or completion of previous processing.  
+6. Timing Requirements:  
+   - Clock frequency: 100 MHz (10 ns period).  
+   - Reset polarity: Active-low (rst_n).  
+   - Processing one matrix takes up to 1024 clock cycles from the start signal until the done signal is asserted.

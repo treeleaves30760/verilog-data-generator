@@ -1,0 +1,28 @@
+2. Description: A digital controller for traffic lights that manages the sequence of green, yellow, and red signals for both vehicular and pedestrian traffic.
+3. Inputs:
+   - clk: 8-bit clock signal (for timing operations)
+   - rst: 8-bit active-high reset signal (to initialize the controller)
+   - start: 1-bit input to initiate the traffic light sequence
+   - pedestrian: 4-bit input indicating pedestrian crossing requests (each bit represents a different phase)
+4. Outputs:
+   - traffic_light: 3-bit output (R, G, B) for each traffic light (0-7)
+   - pedestrian_grant: 1-bit output to indicate when pedestrians can cross
+   - violation: 1-bit output to detect any signal violations or illegal states
+5. Functionality:
+   - Implements a traffic light cycle with the following sequence:
+     - Green (G) for 50 clock cycles
+     - Yellow (Y) for 10 clock cycles
+     - Red (R) for 30 clock cycles
+     - Repeat the cycle indefinitely unless interrupted by pedestrian input or reset.
+   - Monitors the pedestrian input and grants crossing when:
+     - The current traffic light is red.
+     - Pedestrian request persists for two full traffic light cycles.
+     - Grants are prioritized over vehicular traffic if both start and pedestrian inputs are active simultaneously.
+   - Detects signal violations, such as:
+     - Simultaneous green and red signals
+     - Unintended yellow or red skips in the sequence
+     - Outputs a violation flag when any invalid state is detected.
+6. Timing Requirements:
+   - Clock (clk): 100 MHz (10 ns period)
+   - Reset (rst): Active high for 100 ns to ensure full initialization
+   - All signals are synchronous to the clock edge (rising edge)

@@ -1,0 +1,55 @@
+<think>
+Okay, so I need to create a Verilog specification for a digital calculator that's controlled by a finite state machine (FSM). Let me break this down step by step.
+
+First, I should figure out what the module is called. The user mentioned "Digital Calculator with FSM Control," so maybe something like `digital_calculator` would be appropriate.
+
+Next, the description. It needs to be brief but informative. So, it's a 4-digit digital calculator that can add and subtract, controlled by an FSM. That covers the basic functionality.
+
+Now, onto the inputs. I need to list all the necessary input signals. There should be switches for numbers (0-9) and operations (+, -). Each switch would be a button, so I'll represent them as individual inputs. Also, a clock signal is needed, along with a reset button. The display should have segments to indicate when it's on or off, so I'll include segment control inputs.
+
+For the outputs, the main part is the 7-segment display showing the result. Each segment (a to g) will be an output bit. Additionally, there should be status LEDs for power and operation completion, each requiring a single output bit.
+
+The functionality section needs to outline what the calculator does. It starts in an idle state, waiting for input. When a number is entered, it displays it. Pressing the operator switch changes the state to wait for the second operand. After entering the second number, it performs the operation and displays the result. The FSM should handle these transitions smoothly.
+
+Regarding timing requirements, the calculator needs a clock with a frequency of 100 MHz. It should reset on the falling edge of the reset button. There's no mention of asynchronous resets, so I'll assume a synchronous one. Debouncing for switches is important to prevent multiple presses from a single button press, so that should be handled in the implementation.
+
+I also need to make sure all inputs and outputs are correctly specified with their widths and descriptions. Each input switch is a single bit since they're individual buttons. The display segments each require a single bit as well.
+
+Wait, I think I might have missed something about the FSM states. Let me see: idle, first operand entry, operator selection, second operand entry, calculation, result display. That seems comprehensive enough for basic addition and subtraction.
+
+I should also consider how the calculator handles invalid inputs or errors, but since the user didn't specify, maybe it's beyond the scope here. I'll focus on the required operations.
+
+Putting it all together, I think I've covered all necessary parts. Now, I'll structure this into the specified format without any markdown or code blocks, just plain text as per the instructions.
+</think>
+
+1. Module Name: digital_calculator  
+2. Description: A 4-digit digital calculator with FSM control for addition and subtraction operations.  
+3. Inputs:  
+   - switch_0: 1 bit (number '0' input)  
+   - switch_1: 1 bit (number '1' input)  
+   - switch_2: 1 bit (number '2' input)  
+   - switch_3: 1 bit (number '3' input)  
+   - switch_4: 1 bit (number '4' input)  
+   - switch_5: 1 bit (number '5' input)  
+   - switch_6: 1 bit (number '6' input)  
+   - switch_7: 1 bit (number '7' input)  
+   - switch_8: 1 bit (number '8' input)  
+   - switch_9: 1 bit (number '9' input)  
+   - op_add: 1 bit (addition operation input)  
+   - op_sub: 1 bit (subtraction operation input)  
+   - clock: 1 bit (system clock)  
+   - reset: 1 bit (synchronous reset signal)  
+   - seg_on: 7 bits (segment control for display 'ON' state)  
+4. Outputs:  
+   - display_segments: 7 bits (a, b, c, d, e, f, g segments of the 7-segment display)  
+   - result_valid: 1 bit (LED indicator for valid operation completion)  
+   - power_on: 1 bit (LED indicator for power status)  
+5. Functionality:  
+   - Implements a finite state machine to control calculator operations.  
+   - Supports addition and subtraction of two 4-digit numbers.  
+   - Displays intermediate and final results on a 7-segment display.  
+   - Includes states for idle, number entry, operator selection, calculation, and result display.  
+6. Timing Requirements:  
+   - Clock frequency: 100 MHz  
+   - Reset signal: Synchronous reset on falling edge of 'reset' input.  
+   - Debouncing implemented for switch inputs to prevent multiple triggers from a single button press.

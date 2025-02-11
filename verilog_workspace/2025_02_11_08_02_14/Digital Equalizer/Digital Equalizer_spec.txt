@@ -1,0 +1,15 @@
+2. Description: A 16-bit stereo digital equalizer with five adjustable frequency bands, providing gain control for each band and a bypass feature for individual bands.  
+3. Inputs:  
+   - SCK: 1 bit System Clock  
+   - SFS: 1 bit System Frame Sync  
+   - D: 16 bits Audio Data Input  
+   - LR: 1 bit Left/Right Channel Indicator  
+4. Outputs:  
+   - D_out: 16 bits Processed Audio Data Output  
+   - EQ_out: 5 bits Equalizer Band Control Outputs (one per band)  
+5. Functionality:  
+   The DigitalEqualizer processes each audio sample based on the selected frequency band and applies the corresponding gain adjustment. Each band can be independently bypassed by setting its respective EQ_out control bit to 0. The equalizer operates on both left and right channels, with channel selection determined by the LR input.  
+6. Timing Requirements:  
+   - Clock: SCK (System Clock) at 48 MHz or 96 MHz  
+   - Reset: Asynchronous reset signal for initialization  
+   - Frame Sync: SFS to synchronize frame-based operations

@@ -1,0 +1,30 @@
+2. Description:  
+   A 32-bit RISC-V processor core implementing the RV32I instruction set architecture.  
+
+3. Inputs:  
+   - clk: 1 bit Clock signal  
+   - rst_n: 1 bit Asynchronous reset active low  
+   - inst: 32 bits Instruction memory read data  
+   - dadr: 32 bits Data address (AXI)  
+   - drd: 32 bits Data read (AXI)  
+   - dwrdv: 1 bit Data write valid (AXI)  
+   - branch_addr: 32 bits Branch address from the instruction decode stage  
+   - jump_addr: 32 bits Jump address from the instruction decode stage  
+
+4. Outputs:  
+   - pc: 32 bits Program counter output  
+   - ctrl: 16 bits Control signals (ALU control, register file control)  
+   - dadr: 32 bits Data memory write address  
+   - drd: 32 bits Data read data  
+   - dwr: 32 bits Data write data  
+   - dwrdv: 1 bit Data write valid  
+   - intr_ack: 1 bit Interrupt acknowledge  
+
+5. Functionality:  
+   The RISC-V core executes instructions from the RV32I instruction set. It includes an instruction fetch stage, decode stage, and execute stage. The core supports arithmetic and logical operations (ALU), branch/jump instructions, interrupt handling, and load/store operations to memory. The processor uses a 5-stage pipeline: IF-ID-EX-WB.  
+
+6. Timing Requirements:  
+   - Clock (clk): Positive edge triggered synchronous design  
+   - Reset (rst_n): Active low asynchronous reset  
+   - Synchronous write operations to memory (dwrdv) must be aligned with the clock edge  
+   - Interrupts are handled in the EX stage and require synchronized acknowledgment

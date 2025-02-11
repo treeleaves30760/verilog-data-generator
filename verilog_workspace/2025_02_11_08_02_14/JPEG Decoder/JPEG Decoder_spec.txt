@@ -1,0 +1,90 @@
+<think>
+Okay, I need to create a Verilog specification for a JPEG decoder based on the user's example and their request. Let me start by understanding what the user is asking for.
+
+First, the user provided an example of a specification for a JPEG Decoder with detailed sections: Module Name, Description, Inputs, Outputs, Functionality, and Timing Requirements. They want me to create something similar but without any markdown or code blocks, just plain text in a structured format.
+
+I should make sure each section is clear and follows the structure they outlined. Let's go through each part step by step.
+
+1. **Module Name**: Straightforward, it's "JPEG Decoder".
+
+2. **Description**: A brief overview of what the module does. The example mentions decoding JPEG-compressed images into uncompressed formats like RGB or YCbCr. I should keep this concise but informative.
+
+3. **Inputs**:
+   - `clk`: Clock signal, 1 bit.
+   - `rst_n`: Active-low reset, 1 bit.
+   - `jpeg_data`: Input data from the compressed image, typically a bus with a certain width (like 8 bits for each byte).
+   - `jpeg_valid`: Indicates if the input data is valid, 1 bit.
+   - `h_sync`: Horizontal synchronization signal, 1 bit.
+   - `v_sync`: Vertical synchronization signal, 1 bit.
+
+4. **Outputs**:
+   - `rgb_data`: The decoded RGB pixel, probably a bus (e.g., 24 bits for 8-bit RGB).
+   - `rgb_valid`: Indicates if the output data is valid, 1 bit.
+   - `decode_done`: Signal when decoding is complete, 1 bit.
+
+5. **Functionality**:
+   I need to describe what the decoder does in stages. The example lists parsing JPEG headers, quantization, inverse DCT, and reconstruction. I should outline each step clearly but without too much detail.
+
+6. **Timing Requirements**:
+   - Clock: 100 MHz (user's example had this).
+   - Reset: Positive pulse to reset the state machine.
+   - Synchronization: How h_sync and v_sync are used for frame timing.
+
+I also need to ensure that each input and output is clearly defined with their widths. For instance, `jpeg_data` might be a bus like 8 bits wide if handling standard JPEG data bytes. The RGB data would likely be 24 bits (8 bits per channel).
+
+In the functionality section, I should mention the main steps without diving into too much technical detail—just enough to outline the process.
+
+For timing, specifying the clock frequency and reset condition is important for implementation. Also, noting that h_sync and v_sync are used for frame synchronization helps in understanding how these signals are utilized.
+
+I need to avoid any markdown or code blocks as per the user's instruction. So, I'll present each section with bullet points where necessary but keep it plain text.
+
+Let me structure this out:
+
+1. Module Name: JPEG Decoder
+2. Description: A brief description of decoding JPEG images into RGB or YCbCr.
+3. Inputs:
+   - clk (1 bit)
+   - rst_n (1 bit)
+   - jpeg_data (bus width, e.g., 8 bits)
+   - jpeg_valid (1 bit)
+   - h_sync (1 bit)
+   - v_sync (1 bit)
+4. Outputs:
+   - rgb_data (bus width, e.g., 24 bits)
+   - rgb_valid (1 bit)
+   - decode_done (1 bit)
+5. Functionality: Steps involved in decoding, from header parsing to outputting RGB data.
+6. Timing Requirements: Clock frequency, reset, and synchronization signals.
+
+I should make sure each part is concise but covers all necessary details for someone implementing the decoder in Verilog.
+</think>
+
+Module Name: JPEG Decoder  
+Description: A hardware implementation of a JPEG image decoder that converts compressed JPEG data into uncompressed RGB or YCbCr pixel data.  
+
+Inputs:  
+- `clk`: 1-bit clock signal  
+- `rst_n`: 1-bit active-low reset signal  
+- `jpeg_data`: W-bit input data bus for the JPEG-compressed image (e.g., W=8)  
+- `jpeg_valid`: 1-bit signal indicating valid input data  
+- `h_sync`: 1-bit horizontal synchronization signal  
+- `v_sync`: 1-bit vertical synchronization signal  
+
+Outputs:  
+- `rgb_data`: D-bit output data bus for the decoded RGB pixel (e.g., D=24)  
+- `rgb_valid`: 1-bit signal indicating valid output data  
+- `decode_done`: 1-bit signal indicating completion of decoding  
+
+Functionality:  
+The JPEG Decoder processes input data according to the JPEG standard, including:  
+1. Parsing JPEG headers (SOI, DQT, DHT, etc.)  
+2. Decoding quantization tables and Huffman codes  
+3. Performing inverse discrete cosine transform (IDCT) for each macroblock  
+4. Reconstructing pixel values using inverse quantization  
+5. Converting from YCbCr color space to RGB (if required)  
+6. Synchronizing output with h_sync and v_sync signals  
+
+Timing Requirements:  
+- Clock: 100 MHz  
+- Reset: Positive pulse on rst_n for proper initialization  
+- Synchronization: h_sync and v_sync are used to align decoded pixels with display timing

@@ -1,0 +1,24 @@
+1. Module Name: DigitalSignalGenerator  
+2. Description: A digital signal generator capable of producing sine, square, triangle, and sawtooth waveforms with programmable frequency and phase shift.  
+3. Inputs:  
+   - Clk: 1 bit Clock signal  
+   - Rst: 1 bit Reset signal  
+   - Wavetype: 2 bits Waveform type selection (00: Sine, 01: Square, 10: Triangle, 11: Sawtooth)  
+   - Freqsel: 3 bits Frequency selection (supports 4 different frequencies)  
+   - Phaseshift: 4 bits Phase shift control (0 to 15 degrees in 1-degree increments)  
+   - Amplitude: 4 bits Output amplitude control (0 to 15 LSB steps)  
+4. Outputs:  
+   - Sout: 16 bits Generated digital waveform output  
+   - Led: 1 bit Indicator for generator activity status  
+5. Functionality:  
+   - Generates the selected waveform type based on Wavetype input.  
+   - Modulates frequency based on Freqsel input, with predefined clock cycles per period.  
+   - Adjusts phase shift according to Phaseshift input during waveform generation.  
+   - Scales output amplitude according to Amplitude input, with 16-bit resolution.  
+   - Implements a lookup table for sine wave generation and mathematical calculations for other waveforms.  
+   - Outputs the generated signal on Sout and provides activity indication on Led.  
+6. Timing Requirements:  
+   - Clock (Clk): Positive edge-sensitive clock at 50 MHz  
+   - Reset (Rst): Active-high reset, holds all outputs low until released  
+   - Frequency changes take effect on the next rising edge after setup is complete  
+   - Phase shift updates occur immediately upon input change, unless in reset state

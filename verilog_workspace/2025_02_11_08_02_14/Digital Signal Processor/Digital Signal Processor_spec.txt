@@ -1,0 +1,25 @@
+2. Description: A programmable Digital Signal Processor core for performing digital signal processing tasks such as filtering, modulation, and Fast Fourier Transforms (FFT).  
+3. Inputs:  
+   - clk: 1 bit Clock input  
+   - rst: 1 bit Reset input  
+   - in_a: 16 bits Input data A  
+   - in_b: 16 bits Input data B  
+   - start: 1 bit Start processing signal  
+   - load_coeffs: 1 bit Load new coefficients into internal memory  
+   - halt: 1 bit Halt processing signal  
+4. Outputs:  
+   - out_result: 32 bits Output result of processing  
+   - done: 1 bit Processing completed signal  
+   - overflow: 1 bit Indicates overflow condition  
+   - underflow: 1 bit Indicates underflow condition  
+   - ready: 1 bit Indicates core is ready for new operation  
+5. Functionality:  
+   The DSP_Core performs digital signal processing operations including multiplication, addition, and accumulation. It supports programmable coefficients for adaptive filtering and can handle complex algorithms such as finite impulse response (FIR) filters, infinite impulse response (IIR) filters, and FFTs. The core includes:  
+   - Multiply-Accumulate (MAC) unit for efficient computation  
+   - Coefficient memory for storing filter coefficients  
+   - Data path for processing input samples  
+   - Control logic for managing operations and state transitions  
+6. Timing Requirements:  
+   - Clock (clk): 100 MHz  
+   - Reset (rst): Active high, asynchronous reset  
+   - Processing time varies based on algorithm complexity and input length

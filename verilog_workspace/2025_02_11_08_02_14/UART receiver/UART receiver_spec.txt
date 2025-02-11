@@ -1,0 +1,22 @@
+2. Description: A UART receiver module that decodes serial data into parallel form and handles flow control signals.  
+3. Inputs:  
+   - RXD: 1 bit Serial data input (UART receive)  
+   - CLOCK: 50MHz System clock  
+   - RESET: 1 bit Asynchronous reset signal  
+   - CTS: 1 bit Clear-to-send from transmitter  
+   - DSR: 1 bit Data-set ready (optional)  
+4. Outputs:  
+   - TXD: 8 bits Parallel data output (UART transmit)  
+   - RTS: 1 bit Request-to-send to transmitter  
+   - READY: 1 bit Indicates receiver is ready for new data  
+   - OVR: 1 bit Overrun error flag  
+   - FE: 1 bit Frame error flag  
+   - PE: 1 bit Parity error flag  
+   - RXRDY: 1 bit Receive ready signal (data available)  
+5. Functionality:  
+   The UART receiver module captures serial data from the RXD input, samples it at the falling edge of the CLOCK signal, and converts it into parallel form. It handles start bits, data bits, parity checking, and stop bits. The module includes error detection for frame errors, parity errors, and overruns. It also manages flow control signals (CTS and DSR) and generates appropriate responses on RTS. FIFO storage is implemented to handle multiple received bytes before they are processed by the system.  
+6. Timing Requirements:  
+   - CLOCK: 50MHz system clock  
+   - RESET: Asynchronous reset signal that halts all operations and resets internal states  
+   - Each bit in the serial stream takes two clock cycles for sampling (falling edge)  
+   - After reset, the receiver requires a fixed delay before it can start receiving new data (typically 2 characters worth of time)

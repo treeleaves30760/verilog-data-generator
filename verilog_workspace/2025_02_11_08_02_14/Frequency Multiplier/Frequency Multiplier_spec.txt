@@ -1,0 +1,12 @@
+2. Description: A circuit that doubles the input clock frequency based on a multiplier factor.  
+3. Inputs:  
+   - clk: 1 bit, input clock signal.  
+   - reset_n: 1 bit, active low reset signal.  
+   - mult_factor: 1 bit, multiplier factor (0 for x1, 1 for x2).  
+4. Outputs:  
+   - multiplied_clk: 1 bit, output clock with doubled frequency when mult_factor is 1.  
+5. Functionality:  
+   The module doubles the input clock frequency when mult_factor is high (1). It uses edge detection and flip-flops to ensure proper synchronization and avoid timing violations. When reset_n is low, all internal states are reset.  
+6. Timing Requirements:  
+   - Clock (clk): Input clock with a period of T. Output multiplied_clk has a period of T/2 when mult_factor is 1.  
+   - Reset (reset_n): Active low reset with setup time t_SETUP and hold time t_HOLD relative to the clock edge.

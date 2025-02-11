@@ -1,0 +1,13 @@
+2. Description: Digital-to-Analog Converter (DAC) for audio signal generation.
+3. Inputs:
+   - digital_audio_in: 16 [Digital audio sample input]
+   - clk: 1 [System clock]
+   - rst: 1 [Active-low reset signal]
+4. Outputs:
+   - audio_out: 1 [Analog output voltage]
+   - dac_done: 1 [Digital-to-analog conversion complete signal]
+5. Functionality:
+   The Audio DAC converts the digital audio input into an analog output. It samples the digital_audio_in at each rising edge of the clock (clk). The conversion is synchronized with the system clock, and the output voltage corresponds to the digital value of digital_audio_in. When rst is active (low), the DAC resets all internal states and stops conversion until rst is released.
+6. Timing Requirements:
+   - Clock: clk operates at a frequency matching common audio sample rates (e.g., 44.1 kHz, 48 kHz).
+   - Reset: rst must be held low for at least two clock cycles to ensure proper initialization.

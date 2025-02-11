@@ -1,0 +1,18 @@
+2. Description: A 4-to-1 multiplexer that selects one of four input signals based on a 2-bit control signal.  
+3. Inputs:  
+   - D0: 1 bit Data Input 0  
+   - D1: 1 bit Data Input 1  
+   - D2: 1 bit Data Input 2  
+   - D3: 1 bit Data Input 3  
+   - S0: 1 bit Selection Line 0 (Least Significant Bit)  
+   - S1: 1 bit Selection Line 1 (Most Significant Bit)  
+4. Outputs:  
+   - Y: 1 bit Output Signal  
+5. Functionality:  
+   The multiplexer selects one of the four data inputs (D0-D3) based on the two selection lines (S0 and S1). The output (Y) is determined as follows:  
+   - When S1=0 and S0=0, Y = D0  
+   - When S1=0 and S0=1, Y = D1  
+   - When S1=1 and S0=0, Y = D2  
+   - When S1=1 and S0=1, Y = D3  
+6. Timing Requirements:  
+   - The output (Y) will propagate within the specified delay after all inputs stabilize.

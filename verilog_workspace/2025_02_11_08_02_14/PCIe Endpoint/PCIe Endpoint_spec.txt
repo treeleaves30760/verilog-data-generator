@@ -1,0 +1,31 @@
+2. Description: Digital circuit implementing PCIe protocol as an endpoint device.
+3. Inputs:
+   - clk: 1 bit Clock signal (e.g., 250MHz)
+   - rst_n: 1 bit Active-low reset signal
+   - ccfg_addr: 6 bits Configuration address bus
+   - ccfg_data: 32 bits Configuration data bus
+   - ccfg_write: 1 bit Write indicator for configuration space
+   - cmd: 16 bits Command register interface
+   - sts: 16 bits Status register interface
+   - int: 1 bit Interrupt request signal
+   - gpios_in: 8 bits General-purpose input signals
+4. Outputs:
+   - ccfg_data: 32 bits Configuration data bus (for reads)
+   - tl_bar_rdy: 1 bit Transaction layer ready signal
+   - tl_bar_adr: 6 bits Bus address for transaction layer
+   - tl_bar_wr: 1 bit Write indicator for transaction layer
+   - tl_bar_wdata: 32 bits Write data for transaction layer
+   - tl_bar_wstrb: 4 bits Byte enables for write data
+   - tl_bar_rdata: 32 bits Read data from transaction layer
+   - tl_bar_rresp: 2 bits Response code from transaction layer
+   - gpios_out: 8 bits General-purpose output signals
+5. Functionality:
+   - Implements PCIe endpoint functionality including configuration space access, command/status register handling, and interrupt generation.
+   - Supports read/write operations to the configuration space based on ccfg_addr and ccfg_write signals.
+   - Manages command and status registers through cmd and sts interfaces.
+   - Provides interrupt functionality with multiple vectors (up to 4) via the int signal.
+   - Interfaces with the transaction layer for bus mastering and I/O transactions, adhering to PCIe protocol specifications.
+6. Timing Requirements:
+   - Clock: clk at 250MHz
+   - Reset: rst_n is active low; must be held for at least one clock cycle before other signals are valid
+   - Setup/hold times for all input signals relative to the clock must meet timing constraints specified in PCIe protocol.

@@ -1,0 +1,54 @@
+<think>
+Okay, so I need to create a Verilog specification for a Direct Digital Synthesizer (DDS). Let me think about what DDS does. It's used to generate precise digital signals, right? So it converts digital representations into analog waveforms.
+
+First, the module name should be something like `dds_core`. That makes sense because it's the core part of the DDS system.
+
+Next, the description: I'll say it generates a digitally synthesized waveform based on an input frequency. It uses a lookup table and interpolation to get high-quality output samples.
+
+Now, for the inputs. The main ones are:
+
+- `clk`: This is the clock signal. It should be a 1-bit input, probably named sys_clk or something similar. I'll need to specify it as an input with a default value of '1' since clocks usually don't change unless reset.
+
+- `rst_n`: Reset signal, active low. So another 1-bit input, defaulting to '1'.
+
+- `frequency_control`: This is the frequency word given to the DDS. It needs to be wide enough for the maximum frequency. Let's say it's 32 bits, so `frequency_word` as a 32-bit input.
+
+- `lookup_table_data`: The sine/cosine values stored in memory. Each value is, say, 16 bits, and there are 1024 entries. So this would be an array of 1024 elements, each 16 bits wide. I'll name it `sine_cosine_lut` with a default value pointing to the initial array.
+
+- `interpolation_factor`: Determines how many samples per step. Maybe 8 bits, so `interp_factor` as 8-bit input, defaulting to 0.
+
+For outputs:
+
+- `dds_output`: The digital-to-analog converted output. Since it's high-resolution, maybe a 16-bit output, named `dac_out`, with a default of 0.
+
+Functionality-wise, the DDS needs to generate samples based on the frequency word and use the lookup table for waveforms. It should perform interpolation to get smooth transitions between samples. The clock domain is important here; it's likely in the system clock domain unless specified otherwise.
+
+Timing requirements: I need to mention the clock frequency, reset polarity, and any setup/hold times. Also, the DDS should be able to handle a certain maximum frequency without missing samples or causing overflow.
+
+Wait, did I miss anything? Maybe the interpolation part—how it's implemented. Oh, but in the specification, I just need to describe it, not code it. So I'll note that interpolation is done using the factor provided.
+
+I think that covers all parts. Let me structure this properly without any markdown.
+</think>
+
+Module Name: dds_core  
+Description: Direct Digital Synthesizer core for generating precise digital waveforms based on frequency control and lookup tables.  
+
+Inputs:  
+- `clk`: 1-bit system clock (sys_clk) [default = '1']  
+- `rst_n`: 1-bit active-low reset signal [default = '1']  
+- `frequency_word`: 32-bit input for desired output frequency [default = 0]  
+- `sine_cosine_lut`: 1024 x 16-bit lookup table containing sine/cosine values [default = initial array of sine values]  
+- `interp_factor`: 8-bit interpolation factor (e.g., 1 to 8) [default = 0]  
+
+Outputs:  
+- `dac_out`: 16-bit digital-to-analog converter output [default = 0]  
+
+Functionality:  
+The DDS core generates high-quality analog waveforms by converting a digital frequency control word into a time-interleaved sequence of digital samples. It uses a sine/cosine lookup table for waveform generation and performs interpolation to achieve smooth transitions between samples. The module operates in the system clock domain, with support for programmable interpolation factors to enhance output quality.  
+
+Timing Requirements:  
+- Clock: System clock (sys_clk) at 100 MHz  
+- Reset: Active-low reset signal (rst_n) with a setup time of 2 clock cycles and hold time of 1 clock cycle  
+- Maximum frequency: 50 MHz to prevent sample overflow and ensure stable operation  
+
+This specification provides the necessary details for implementing the DDS core in Verilog.

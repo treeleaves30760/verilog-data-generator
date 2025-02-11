@@ -1,0 +1,27 @@
+2. Description: A digital signal mixer that combines multiple input signals with adjustable gain levels into a single output signal.  
+3. Inputs:  
+   - IN0: 16 signed description: Input signal 0  
+   - IN1: 16 signed description: Input signal 1  
+   - IN2: 16 signed description: Input signal 2  
+   - IN3: 16 signed description: Input signal 3  
+   - IN4: 16 signed description: Input signal 4  
+   - IN5: 16 signed description: Input signal 5  
+   - IN6: 16 signed description: Input signal 6  
+   - IN7: 16 signed description: Input signal 7  
+   - GAIN0: 8 unsigned description: Gain control for input 0 (0-255)  
+   - GAIN1: 8 unsigned description: Gain control for input 1 (0-255)  
+   - GAIN2: 8 unsigned description: Gain control for input 2 (0-255)  
+   - GAIN3: 8 unsigned description: Gain control for input 3 (0-255)  
+   - GAIN4: 8 unsigned description: Gain control for input 4 (0-255)  
+   - GAIN5: 8 unsigned description: Gain control for input 5 (0-255)  
+   - GAIN6: 8 unsigned description: Gain control for input 6 (0-255)  
+   - GAIN7: 8 unsigned description: Gain control for input 7 (0-255)  
+4. Outputs:  
+   - OUT: 16 signed description: Mixed output signal  
+   - OVF: 1 unsigned description: Overflow flag (1 if overflow occurs, 0 otherwise)  
+5. Functionality:  
+   The mixer sums the products of each input signal and its corresponding gain control. The result is truncated to 16 bits. If the sum exceeds the 16-bit signed integer range (-32768 to 32767), the overflow flag (OVF) is set to 1.  
+6. Timing Requirements:  
+   - Clock: clk (no specified frequency)  
+   - Reset: rst (active-high synchronous reset)  
+   - Operations are performed synchronously on the falling edge of the clock signal.

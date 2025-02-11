@@ -1,0 +1,30 @@
+2. Description: HDMI transmitter module responsible for encoding video and audio data into TMDS (Transition Minimized Differential Signaling) streams for transmission over HDMI cables.  
+3. Inputs:  
+   - pixel_clock: 1 bit [Input pixel clock signal]  
+   - reset_n: 1 bit [Active low reset signal]  
+   - rgb_data: 24 bits [Red, green, and blue video data (8 bits per channel)]  
+   - hsync: 1 bit [Horizontal sync signal]  
+   - vsync: 1 bit [Vertical sync signal]  
+   - audio_data: 16 bits [Audio data stream]  
+4. Outputs:  
+   - tmds_a_p: 1 bit [TMDS_A differential pair (positive)]  
+   - tmds_a_n: 1 bit [TMDS_A differential pair (negative)]  
+   - tmds_b_p: 1 bit [TMDS_B differential pair (positive)]  
+   - tmds_b_n: 1 bit [TMDS_B differential pair (negative)]  
+   - tmds_c_p: 1 bit [TMDS_C differential pair (positive)]  
+   - tmds_c_n: 1 bit [TMDS_C differential pair (negative)]  
+   - tmds_d_p: 1 bit [TMDS_D differential pair (positive)]  
+   - tmds_d_n: 1 bit [TMDS_D differential pair (negative)]  
+   - tmds_clock_p: 1 bit [TMDS clock signal (positive)]  
+   - tmds_clock_n: 1 bit [TMDS clock signal (negative)]  
+5. Functionality:  
+   - Encodes RGB video data into TMDS streams for each of the four TMDS channels (A, B, C, D).  
+   - Handles horizontal and vertical sync signals to synchronize video output.  
+   - Integrates audio data into the TMDS stream as per HDMI specifications.  
+   - Generates the TMDS clock signal at 270 MHz for high-speed data transmission.  
+   - Implements TMDS encoding to minimize electromagnetic interference (EMI).  
+6. Timing Requirements:  
+   - Pixel clock: 120 MHz (adjustable based on resolution)  
+   - TMDS clock: 270 MHz  
+   - Reset signal: Active low, asynchronous reset  
+   - Skew between data and clock signals must be minimized to meet HDMI standards.
